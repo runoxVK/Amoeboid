@@ -1,0 +1,35 @@
+{
+  "home": [
+    {
+      "title": "About",
+      "body": "# RUNOX\n\nelectrical engineer · game developer · world-builder · artist\n\nI build things at the edge of hardware and imagination. Circuits that do something clever. Games that pull you into worlds I've been constructing for years. Art that doesn't explain itself.\n\nThis place — REQUIEM — is my corner of the internet. It only reveals itself to those who look. You found it. Welcome."
+    }
+  ],
+  "projects": {
+    "ee": [
+      {
+        "title": "Example Circuit",
+        "body": "A short description of what this project does and why it's interesting.\n\n**status:** in progress\n\n[View on GitHub](https://github.com/yourusername/project)"
+      }
+    ],
+    "gamedev": [],
+    "worldbuild": [],
+    "misc": [],
+    "legacy": []
+  },
+  "art": {
+    "photo": [],
+    "music": [],
+    "other": []
+  },
+  "consumption": {
+    "games": [],
+    "media": [
+      {
+        "title": "Jojos Bizarre Adventure",
+        "body": "Parts 1-7. Part 7 is the one.\n\nThe Steel Ball Run arc redefined what manga could do structurally. Mandom is the best Stand ability ever conceived.\n\n**status:** finished"
+      }
+    ],
+    "music": []
+  }
+}
