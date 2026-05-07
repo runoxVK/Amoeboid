@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>REQUIEM</title>
+  <title>AMOEBOID</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
@@ -16,7 +16,7 @@
   <div class="terminal" id="terminal">
     <div class="terminal-output" id="output" aria-live="polite"></div>
     <div class="terminal-input-row" id="input-row" style="display:none;">
-      <span class="prompt" aria-hidden="true">runox@requiem:~$&nbsp;</span>
+      <span class="prompt" aria-hidden="true">runox@amoeboid:~$&nbsp;</span>
       <input
         type="text"
         id="cmd-input"
@@ -30,6 +30,16 @@
     </div>
   </div>
 
+  <!-- ── File viewer overlay ── -->
+  <div id="viewer" class="viewer" aria-modal="true" role="dialog" aria-label="File viewer" style="display:none;">
+    <div class="viewer-bar">
+      <span class="viewer-title" id="viewer-title"></span>
+      <button class="viewer-close" id="viewer-close" aria-label="Close">✕ close</button>
+    </div>
+    <div class="viewer-body" id="viewer-body"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <script src="terminal.js"></script>
 </body>
 </html>
