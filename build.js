@@ -34,24 +34,6 @@ function slugToTitle(filename) {
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
-/** Strip Obsidian-specific syntax that doesn't render on the web.
- *  - [[#Section]] wiki links → just the section name
- *  - [[File]] links → just the file name
- *  - [[File|Alias]] links → just the alias
- *  - ![[Embed]] transclusions → removed entirely
- */
-function stripObsidian(text) {
-  return text
-    // remove transclusions: ![[anything]]
-    .replace(/!\[\[[^\]]*\]\]/g, '')
-    // [[File|Alias]] → Alias
-    .replace(/\[\[[^\]|]+\|([^\]]+)\]\]/g, '$1')
-    // [[#Section]] or [[File#Section]] → Section name only
-    .replace(/\[\[[^\]]*#([^\]]+)\]\]/g, '$1')
-    // [[File]] → File
-    .replace(/\[\[([^\]]+)\]\]/g, '$1');
-}
-
 /** Read all .md files from a directory.
  *  Returns an array of { title, body } objects, sorted alphabetically.
  *  Missing directories are silently skipped.
@@ -67,7 +49,7 @@ function readDir(dirPath) {
       const raw      = fs.readFileSync(fullPath, 'utf8').trim();
       return {
         title: slugToTitle(filename),
-        body:  stripObsidian(raw),
+        body:  raw,
       };
     });
 }
