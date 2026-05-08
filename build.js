@@ -34,10 +34,38 @@ function slugToTitle(filename) {
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
-/** Read all .md files from a directory.
- *  Returns an array of { title, body } objects, sorted alphabetically.
- *  Missing directories are silently skipped.
- */
+/** Strip Obsidian-specific syntax */
+function stripObsidian(text) {
+  return text
+    .replace(/!\[\[[^\]]*\]\]/g, '')
+    .replace(/\[\[[^\]|]+\|([^\]]+)\]\]/g, '$1')
+    .replace(/\[\[[^\]]*#([^\]]+)\]\]/g, '$1')
+    .replace(/\[\[([^\]]+)\]\]/g, '$1');
+}
+
+/** Extract the first plain paragraph as a short description (max 160 chars) */
+function extractDescription(raw) {
+  const lines = raw.split('\n');
+  for (const line of lines) {
+    const t = line.trim();
+    if (!t) continue;
+    if (t.startsWith('#')) continue;
+    if (t.startsWith('!')) continue;
+    if (t.startsWith('>')) continue;
+    if (t.startsWith('-') || t.startsWith('*')) continue;
+    if (t.startsWith('|')) continue;
+    // strip inline markdown
+    const plain = t
+      .replace(/\*\*([^*]+)\*\*/g, '$1')
+      .replace(/\*([^*]+)\*/g, '$1')
+      .replace(/`([^`]+)`/g, '$1')
+      .replace(/\[([^\]]+)\]\([^)]+\)/g, '$1');
+    if (plain.length > 10) return plain.slice(0, 160) + (plain.length > 160 ? '…' : '');
+  }
+  return '';
+}
+
+/** Read all .md files from a directory. */
 function readDir(dirPath) {
   if (!fs.existsSync(dirPath)) return [];
 
@@ -45,11 +73,25 @@ function readDir(dirPath) {
     .filter(f => f.endsWith('.md'))
     .sort()
     .map(filename => {
-      const fullPath = path.join(dirPath, filename);
-      const raw      = fs.readFileSync(fullPath, 'utf8').trim();
+      const fullPath  = path.join(dirPath, filename);
+      const raw       = fs.readFileSync(fullPath, 'utf8').trim();
+      const clean     = stripObsidian(raw);
+      const slug      = filename.replace(/\.md$/i, '');
+      // thumbnail: assets/thumbnails/<slug>.png (or .jpg/.gif/.webp)
+      const exts      = ['.png', '.jpg', '.jpeg', '.gif', '.webp'];
+      const thumbBase = path.join(__dirname, 'assets', 'thumbnails', slug);
+      let   thumbnail = null;
+      for (const ext of exts) {
+        if (fs.existsSync(thumbBase + ext)) {
+          thumbnail = 'assets/thumbnails/' + slug + ext;
+          break;
+        }
+      }
       return {
-        title: slugToTitle(filename),
-        body:  raw,
+        title:       slugToTitle(filename),
+        description: extractDescription(clean),
+        thumbnail,
+        body:        clean,
       };
     });
 }
