@@ -182,83 +182,56 @@ function renderEntries(entries, titleCls) {
 
   lastEntries = entries;
 
-  // print text lines first, then inject cards into DOM after render
-  const out = [['', '']];
+  // Build cards directly — no placeholder/setTimeout needed
+  const base = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? '' : '/PersonalSiteVK';
+
+  // We return a special marker and handle rendering outside printLines
+  // by building cards immediately after the section header prints
+  gap();
   entries.forEach(function(entry, i) {
-    out.push(['  __CARD__' + i, '__card__']);
+    var card = document.createElement('div');
+    card.style.cssText = 'display:flex;align-items:flex-start;gap:14px;padding:10px 14px;margin:3px 0;border:1px solid rgba(168,255,120,0.1);border-radius:3px;cursor:pointer;background:#0e120e;transition:border-color 0.15s;max-width:640px;opacity:0;animation:fadein 0.05s forwards;';
+
+    card.addEventListener('mouseenter', function() { card.style.borderColor = 'rgba(168,255,120,0.35)'; });
+    card.addEventListener('mouseleave', function() { card.style.borderColor = 'rgba(168,255,120,0.1)'; });
+    card.addEventListener('click', function() { openViewer(entry.title, entry.body); });
+
+    // thumbnail
+    var thumb = document.createElement('div');
+    thumb.style.cssText = 'width:80px;height:60px;flex-shrink:0;border-radius:2px;overflow:hidden;background:#141414;border:1px solid rgba(168,255,120,0.08);display:flex;align-items:center;justify-content:center;';
+    if (entry.thumbnail) {
+      var img = document.createElement('img');
+      img.src = base + '/' + entry.thumbnail;
+      img.alt = entry.title;
+      img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+      img.onerror = function() { thumb.innerHTML = '<span style="font-size:10px;color:#3a4a3a;font-family:\'IBM Plex Mono\',monospace;">no img</span>'; };
+      thumb.appendChild(img);
+    } else {
+      thumb.innerHTML = '<span style="font-size:11px;color:#3a4a3a;font-family:\'IBM Plex Mono\',monospace;">' + (i + 1) + '</span>';
+    }
+
+    // text
+    var info = document.createElement('div');
+    info.style.cssText = 'display:flex;flex-direction:column;gap:4px;min-width:0;justify-content:center;';
+    var titleEl = document.createElement('span');
+    titleEl.style.cssText = 'font-family:\'IBM Plex Mono\',monospace;font-size:13px;font-weight:600;color:#a8ff78;';
+    titleEl.textContent = '[' + (i + 1) + '] ' + entry.title;
+    var descEl = document.createElement('span');
+    descEl.style.cssText = 'font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;color:#6a8a6a;line-height:1.5;';
+    descEl.textContent = entry.description || 'click to open →';
+
+    info.appendChild(titleEl);
+    info.appendChild(descEl);
+    card.appendChild(thumb);
+    card.appendChild(info);
+    output.appendChild(card);
+    scrollBottom();
   });
-  out.push(['', '']);
-  out.push(['  click a card or type its number to open', 'muted']);
-  out.push(['', '']);
 
-  // build actual card elements after a tick
-  setTimeout(function() {
-    var placeholders = output.querySelectorAll('.line-__card__');
-    var recent = Array.from(placeholders).slice(-entries.length);
-    recent.forEach(function(el, i) {
-      var entry = entries[i];
-      var base = (location.hostname === 'localhost' || location.hostname === '127.0.0.1') ? '' : '/PersonalSiteVK';
-
-      // build card
-      var card = document.createElement('div');
-      card.style.cssText = [
-        'display:flex',
-        'align-items:flex-start',
-        'gap:14px',
-        'padding:10px 14px',
-        'margin:3px 0 3px 1rem',
-        'border:1px solid rgba(168,255,120,0.1)',
-        'border-radius:3px',
-        'cursor:pointer',
-        'background:#0e120e',
-        'transition:border-color 0.15s',
-        'max-width:640px',
-      ].join(';');
-
-      card.addEventListener('mouseenter', function() { card.style.borderColor = 'rgba(168,255,120,0.35)'; });
-      card.addEventListener('mouseleave', function() { card.style.borderColor = 'rgba(168,255,120,0.1)'; });
-      card.addEventListener('click', function() { openViewer(entry.title, entry.body); });
-
-      // thumbnail
-      var thumb = document.createElement('div');
-      thumb.style.cssText = 'width:80px;height:60px;flex-shrink:0;border-radius:2px;overflow:hidden;background:#141414;border:1px solid rgba(168,255,120,0.08);display:flex;align-items:center;justify-content:center;';
-
-      if (entry.thumbnail) {
-        var img = document.createElement('img');
-        img.src = base + '/' + entry.thumbnail;
-        img.alt = entry.title;
-        img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
-        img.onerror = function() {
-          thumb.innerHTML = '<span style="font-size:10px;color:#3a4a3a;font-family:\'IBM Plex Mono\',monospace;">img</span>';
-        };
-        thumb.appendChild(img);
-      } else {
-        thumb.innerHTML = '<span style="font-size:10px;color:#3a4a3a;font-family:\'IBM Plex Mono\',monospace;">' + (i + 1) + '</span>';
-      }
-
-      // text side
-      var info = document.createElement('div');
-      info.style.cssText = 'display:flex;flex-direction:column;gap:4px;min-width:0;';
-
-      var titleEl = document.createElement('span');
-      titleEl.style.cssText = 'font-family:\'IBM Plex Mono\',monospace;font-size:13px;font-weight:600;color:#a8ff78;';
-      titleEl.textContent = '[' + (i + 1) + '] ' + entry.title;
-
-      var descEl = document.createElement('span');
-      descEl.style.cssText = 'font-family:\'IBM Plex Sans\',sans-serif;font-size:12px;color:#6a8a6a;line-height:1.5;';
-      descEl.textContent = entry.description || 'click to open →';
-
-      info.appendChild(titleEl);
-      info.appendChild(descEl);
-      card.appendChild(thumb);
-      card.appendChild(info);
-
-      // replace placeholder span with card
-      el.parentNode.replaceChild(card, el);
-    });
-  }, 80);
-
-  return out;
+  gap();
+  line('  click a card or type its number to open', 'muted');
+  gap();
+  return [];
 }
 
 function subsectionMenu(sectionKey) {
@@ -279,15 +252,19 @@ function subsectionMenu(sectionKey) {
 
 function showSubsection(sectionKey, subKey) {
   const meta = SECTION_META[sectionKey]?.subsections[subKey];
-  if (!meta) return [['', ''], [`  unknown subcommand. try: ${sectionKey}`, 'error'], ['', '']];
-
+  if (!meta) {
+    printLines([['', ''], [`  unknown subcommand. try: ${sectionKey}`, 'error'], ['', '']]);
+    return;
+  }
   const entries = CONTENT?.[sectionKey]?.[subKey] ?? [];
-  return [
+  // print header first, then cards render directly via renderEntries
+  printLines([
     ['', ''],
     [`  [ ${meta.icon} ]  ${meta.label.toUpperCase()}`, 'head'],
     ['  ─────────────────────────────────────────', 'muted'],
-    ...renderEntries(entries, meta.cls || 'amber'),
-  ];
+  ]).then(function() {
+    renderEntries(entries, meta.cls || 'amber');
+  });
 }
 
 // ── Static content ────────────────────────────────────
@@ -421,7 +398,7 @@ function runCommand(raw) {
 
     case 'projects':
       sub && SECTION_META.projects.subsections[sub]
-        ? printLines(showSubsection('projects', sub))
+        ? showSubsection('projects', sub)
         : sub
           ? (line('', ''), line(`  unknown subcommand: ${sub}. try: projects`, 'error'), line('', ''))
           : printLines(subsectionMenu('projects'));
@@ -429,7 +406,7 @@ function runCommand(raw) {
 
     case 'art':
       sub && SECTION_META.art.subsections[sub]
-        ? printLines(showSubsection('art', sub))
+        ? showSubsection('art', sub)
         : sub
           ? (line('', ''), line(`  unknown subcommand: ${sub}. try: art`, 'error'), line('', ''))
           : printLines(subsectionMenu('art'));
@@ -437,7 +414,7 @@ function runCommand(raw) {
 
     case 'consumption':
       sub && SECTION_META.consumption.subsections[sub]
-        ? printLines(showSubsection('consumption', sub))
+        ? showSubsection('consumption', sub)
         : sub
           ? (line('', ''), line(`  unknown subcommand: ${sub}. try: consumption`, 'error'), line('', ''))
           : printLines(subsectionMenu('consumption'));
