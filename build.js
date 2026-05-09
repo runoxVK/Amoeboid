@@ -34,12 +34,25 @@ function slugToTitle(filename) {
     .replace(/\b\w/g, c => c.toUpperCase());
 }
 
-/** Strip Obsidian-specific syntax */
+/** Strip/convert Obsidian-specific syntax */
 function stripObsidian(text) {
   return text
+    // ![[file.pdf]] — strip PDFs and non-image embeds entirely
+    .replace(/!\[\[[^\]]*\.(pdf|PDF|docx|xlsx|pptx)\]\]/g, '')
+    // ![[image.png]] or ![[image.jpg]] etc → standard markdown image
+    // images are expected in assets/images/
+    .replace(/!\[\[([^\]]+\.(png|jpg|jpeg|gif|webp|svg))\]\]/gi, function(_, filename) {
+      // strip any subfolder Obsidian may have prepended
+      var base = filename.split('/').pop().split('\\').pop();
+      return '![' + base + '](assets/images/' + base + ')';
+    })
+    // any remaining ![[embed]] — strip
     .replace(/!\[\[[^\]]*\]\]/g, '')
+    // [[File|Alias]] → Alias
     .replace(/\[\[[^\]|]+\|([^\]]+)\]\]/g, '$1')
+    // [[#Section]] → Section name
     .replace(/\[\[[^\]]*#([^\]]+)\]\]/g, '$1')
+    // [[File]] → File
     .replace(/\[\[([^\]]+)\]\]/g, '$1');
 }
 
