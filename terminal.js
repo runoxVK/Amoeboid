@@ -85,6 +85,17 @@ function openWindow(title, markdown) {
 
   var html = marked.parse(stripObsidian(markdown));
 
+  // Convert YouTube links to embedded players
+  html = html.replace(
+    /(?:<a[^>]*href=")?https?:\/\/(?:www\.)?(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:[^"<\s]*)(?:"[^>]*>[^<]*<\/a>)?/g,
+    function(_, videoId) {
+      return '<div style="position:relative;padding-bottom:56.25%;height:0;margin:0.75rem 0;">' +
+        '<iframe src="https://www.youtube.com/embed/' + videoId + '" ' +
+        'style="position:absolute;top:0;left:0;width:100%;height:100%;border:1px solid rgba(168,255,120,0.15);" ' +
+        'allowfullscreen loading="lazy"></iframe></div>';
+    }
+  );
+
   // starting position — staggered so windows don't stack exactly
   var offset = (document.querySelectorAll('.retro-window').length % 6) * 28;
   var startX = 60 + offset;
@@ -275,7 +286,7 @@ function renderEntries(entries, titleCls) {
 
 // ── Section metadata ──────────────────────────────────
 const SECTION_META = {
-  projects: {
+  vomit: {
     subsections: {
       ee:         { label: 'Electrical Engineering', icon: 'EE',    cls: 'amber'  },
       gamedev:    { label: 'Game Development',        icon: 'GAME',  cls: 'coral'  },
@@ -284,7 +295,7 @@ const SECTION_META = {
       legacy:     { label: 'Legacy // high school',   icon: 'OLD',   cls: 'muted'  },
     },
   },
-  art: {
+  digestion: {
     subsections: {
       photo: { label: 'Photography', icon: 'PHO', cls: 'coral'  },
       music: { label: 'Music',       icon: 'MUS', cls: 'amber'  },
@@ -349,9 +360,9 @@ var HELP_LINES = [
   ['  available commands', 'head'],
   ['  ─────────────────────────────────────────', 'muted'],
   ['  home             .  about runox', 'dim'],
-  ['  projects         .  things built & building', 'dim'],
+  ['  vomit            .  projects & things built', 'dim'],
+  ['  digestion        .  photography, music & art', 'dim'],
   ['  consumption      .  media log', 'dim'],
-  ['  art              .  photography, music, other work', 'dim'],
   ['  help             .  show this list', 'dim'],
   ['  clear            .  clear the screen', 'dim'],
   ['', ''],
@@ -460,19 +471,19 @@ function runCommand(raw) {
     case 'whoami':
       printLines(homeLines());
       break;
-    case 'projects':
-      sub && SECTION_META.projects.subsections[sub]
-        ? showSubsection('projects', sub)
+    case 'vomit':
+      sub && SECTION_META.vomit.subsections[sub]
+        ? showSubsection('vomit', sub)
         : sub
-          ? (line('', ''), line('  unknown subcommand: ' + sub + '. try: projects', 'error'), line('', ''))
-          : printLines(subsectionMenu('projects'));
+          ? (line('', ''), line('  unknown subcommand: ' + sub + '. try: vomit', 'error'), line('', ''))
+          : printLines(subsectionMenu('vomit'));
       break;
-    case 'art':
-      sub && SECTION_META.art.subsections[sub]
-        ? showSubsection('art', sub)
+    case 'digestion':
+      sub && SECTION_META.digestion.subsections[sub]
+        ? showSubsection('digestion', sub)
         : sub
-          ? (line('', ''), line('  unknown subcommand: ' + sub + '. try: art', 'error'), line('', ''))
-          : printLines(subsectionMenu('art'));
+          ? (line('', ''), line('  unknown subcommand: ' + sub + '. try: digestion', 'error'), line('', ''))
+          : printLines(subsectionMenu('digestion'));
       break;
     case 'consumption':
       sub && SECTION_META.consumption.subsections[sub]
@@ -521,9 +532,9 @@ cmdInput.addEventListener('keydown', function(e) {
     var val = cmdInput.value.trim().toLowerCase();
     var completions = [
       'home',
-      'projects', 'projects ee', 'projects gamedev',
-      'projects worldbuild', 'projects misc', 'projects legacy',
-      'art', 'art photo', 'art music', 'art other',
+      'vomit', 'vomit ee', 'vomit gamedev',
+      'vomit worldbuild', 'vomit misc', 'vomit legacy',
+      'digestion', 'digestion photo', 'digestion music', 'digestion other',
       'consumption', 'consumption games', 'consumption media', 'consumption music',
       'help', 'clear',
     ];

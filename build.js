@@ -13,9 +13,9 @@ const path = require('path');
 // All the sections and subsections the site knows about.
 // Keys must match the folder names inside content/.
 const STRUCTURE = {
-  home:        { subsections: null },          // content/home/*.md
-  projects:    { subsections: ['ee', 'gamedev', 'worldbuild', 'misc', 'legacy'] },
-  art:         { subsections: ['photo', 'music', 'other'] },
+  home:        { subsections: null },
+  vomit:       { subsections: ['ee', 'gamedev', 'worldbuild', 'misc', 'legacy'] },
+  digestion:   { subsections: ['photo', 'music', 'other'] },
   consumption: { subsections: ['games', 'media', 'music'] },
 };
 

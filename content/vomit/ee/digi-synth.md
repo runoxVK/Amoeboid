@@ -5,6 +5,7 @@ _Vivaan Kaushal — runoxVK_
 
 A three-phase monophonic synthesizer built on the Raspberry Pi Pico using MicroPython. Each phase adds a layer of hardware and software complexity, culminating in a fully amplified instrument with real-time potentiometer control over pitch, octave, and timbre.
 
+https://youtu.be/7it6Z9qBXX4?si=z7N5v-2RsTX4AGbL
 ---
 
 ## Repository structure
@@ -20,6 +21,7 @@ RaspberryPiPico-Synthesizer-VK/
 └── README.md
 ```
 
+![[PicoSynthesizer_VKAUSHAL.png]]
 ---
 
 ## Phase I — Concept test
@@ -327,4 +329,3 @@ LOOP forever:
 |Clamping|Forces a value within a min/max range: `max(min_val, min(max_val, x))`|
 |Dirty checking|Storing previous state and only acting when it changes|
 |LM386|Audio amplifier IC — boosts PWM signal to drive a speaker at audible volume|
-![[PicoSynthesizer_VKAUSHAL.png]]
