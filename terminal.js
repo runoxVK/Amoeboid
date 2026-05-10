@@ -16,6 +16,9 @@ let booting      = true;
 let lastEntries  = [];
 let zTop         = 100;
 
+// Detect base path automatically — works for localhost and any GitHub Pages repo name
+const BASE = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
+
 // ── Helpers ───────────────────────────────────────────
 function line(text, cls) {
   cls = cls || '';
@@ -78,8 +81,7 @@ function stripObsidian(text) {
 
 // ── Window manager ────────────────────────────────────
 function openWindow(title, markdown) {
-  var base = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-    ? '' : '/PersonalSiteVK';
+  // base path handled by global BASE constant
 
   var html = marked.parse(stripObsidian(markdown));
 
@@ -221,8 +223,7 @@ function renderEntries(entries, titleCls) {
   }
 
   lastEntries = entries;
-  var base = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-    ? '' : '/PersonalSiteVK';
+  // base path handled by global BASE constant
 
   gap();
   entries.forEach(function(entry, i) {
@@ -238,7 +239,7 @@ function renderEntries(entries, titleCls) {
     thumb.className = 'entry-thumb';
     if (entry.thumbnail) {
       var img = document.createElement('img');
-      img.src = base + '/' + entry.thumbnail;
+      img.src = BASE + '/' + entry.thumbnail;
       img.alt = entry.title;
       img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
       img.onerror = function() { thumb.textContent = (i + 1); };
@@ -398,10 +399,9 @@ function homeLines() {
 
 // ── Boot ──────────────────────────────────────────────
 async function boot() {
-  var base = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-    ? '' : '/PersonalSiteVK';
+  // base path handled by global BASE constant
   try {
-    var res = await fetch(base + '/content.json');
+    var res = await fetch(BASE + '/content.json');
     if (res.ok) CONTENT = await res.json();
   } catch(_) { CONTENT = {}; }
 
