@@ -119,21 +119,37 @@ function openWindow(title, markdown) {
   barBtns.className = 'retro-titlebar-btns';
 
   // minimize
+  var isMaximized = false;
+  var savedStyle  = {};
+
   var btnMin = document.createElement('button');
   btnMin.className = 'retro-btn retro-btn-min';
-  btnMin.title = 'Minimize';
-  btnMin.textContent = '─';
+  btnMin.title = 'Maximize';
+  btnMin.textContent = '□';
   btnMin.addEventListener('click', function() {
-    var body = win.querySelector('.retro-body');
-    var resizer = win.querySelector('.retro-resizer');
-    if (body.style.display === 'none') {
-      body.style.display = '';
-      if (resizer) resizer.style.display = '';
-      btnMin.textContent = '─';
+    if (!isMaximized) {
+      savedStyle = {
+        left:   win.style.left,
+        top:    win.style.top,
+        width:  win.style.width,
+        height: win.style.height,
+      };
+      win.style.left   = '0px';
+      win.style.top    = '0px';
+      win.style.width  = '100vw';
+      win.style.height = '100vh';
+      win.style.zIndex = ++zTop;
+      btnMin.textContent = '❐';
+      btnMin.title = 'Restore';
+      isMaximized = true;
     } else {
-      body.style.display = 'none';
-      if (resizer) resizer.style.display = 'none';
+      win.style.left   = savedStyle.left   || '60px';
+      win.style.top    = savedStyle.top    || '60px';
+      win.style.width  = savedStyle.width  || '640px';
+      win.style.height = savedStyle.height || '480px';
       btnMin.textContent = '□';
+      btnMin.title = 'Maximize';
+      isMaximized = false;
     }
   });
 
@@ -177,6 +193,7 @@ function openWindow(title, markdown) {
 
   bar.addEventListener('mousedown', function(e) {
     if (e.target === btnMin || e.target === btnClose) return;
+    if (isMaximized) return;
     dragging = true;
     dragOffX = e.clientX - win.getBoundingClientRect().left;
     dragOffY = e.clientY - win.getBoundingClientRect().top;
@@ -311,7 +328,19 @@ const SECTION_META = {
   },
 };
 
+// ── Sound effects ─────────────────────────────────────
+function playSound(section) {
+  var sounds = ['vomit', 'consumption', 'digestion'];
+  if (sounds.indexOf(section) === -1) return;
+  try {
+    var audio = new Audio(BASE + '/assets/sounds/' + section + '.mp3');
+    audio.volume = 0.6;
+    audio.play().catch(function() {}); // silently ignore autoplay blocks
+  } catch(_) {}
+}
+
 function subsectionMenu(sectionKey) {
+  playSound(sectionKey);
   var meta  = SECTION_META[sectionKey];
   var lines = [
     ['', ''],
@@ -330,6 +359,7 @@ function subsectionMenu(sectionKey) {
 }
 
 function showSubsection(sectionKey, subKey) {
+  playSound(sectionKey);
   var meta = SECTION_META[sectionKey] && SECTION_META[sectionKey].subsections[subKey];
   if (!meta) {
     printLines([['', ''], ['  unknown subcommand. try: ' + sectionKey, 'error'], ['', '']]);
