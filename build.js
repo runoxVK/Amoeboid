@@ -84,7 +84,11 @@ function readDir(dirPath) {
 
   return fs.readdirSync(dirPath)
     .filter(f => f.endsWith('.md'))
-    .sort()
+    .sort((a, b) => {
+      const statA = fs.statSync(path.join(dirPath, a)).mtimeMs;
+      const statB = fs.statSync(path.join(dirPath, b)).mtimeMs;
+      return statB - statA; // newest first
+    })
     .map(filename => {
       const fullPath  = path.join(dirPath, filename);
       const raw       = fs.readFileSync(fullPath, 'utf8').trim();

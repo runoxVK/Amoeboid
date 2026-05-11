@@ -39,28 +39,28 @@
       {
         "title": "Electric Currents And Circuits",
         "description": "These are my Electric Circuits notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics.",
-        "thumbnail": null,
+        "thumbnail": "assets/thumbnails/Electric Currents And Circuits.png",
         "pdf": "assets/pdfs/Electric Currents And Circuits.pdf",
         "body": "These are my Electric Circuits notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics."
       },
       {
         "title": "Electrostatics",
         "description": "These are my Electrostatics notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics.",
-        "thumbnail": null,
+        "thumbnail": "assets/thumbnails/Electrostatics.png",
         "pdf": "assets/pdfs/Electrostatics.pdf",
         "body": "These are my Electrostatics notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics."
       },
       {
         "title": "Magnetism",
         "description": "These are my Magnetism notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics.",
-        "thumbnail": null,
+        "thumbnail": "assets/thumbnails/Magnetism.png",
         "pdf": "assets/pdfs/Magnetism.pdf",
         "body": "These are my Magnetism notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics."
       },
       {
         "title": "Mechanics",
         "description": "These are my Mechanics notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics.",
-        "thumbnail": null,
+        "thumbnail": "assets/thumbnails/Mechanics.png",
         "pdf": "assets/pdfs/Mechanics.pdf",
         "body": "These are my Mechanics notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics."
       }

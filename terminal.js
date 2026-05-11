@@ -433,40 +433,138 @@ function playSound(section) {
   } catch(_) {}
 }
 
-function subsectionMenu(sectionKey) {
+function showAccordion(sectionKey) {
   playSound(sectionKey);
-  var meta  = SECTION_META[sectionKey];
-  var lines = [
-    ['', ''],
-    ['  // ' + sectionKey, 'muted'],
-    ['  subcommands:', 'dim'],
-    ['', ''],
-  ];
-  Object.entries(meta.subsections).forEach(function(pair) {
-    var sub  = pair[0];
-    var info = pair[1];
-    var cmd  = sectionKey + ' ' + sub;
-    lines.push(['  ' + cmd.padEnd(28) + info.label, 'dim']);
-  });
-  lines.push(['', '']);
-  return lines;
-}
+  var meta = SECTION_META[sectionKey];
+  if (!meta) return;
 
-function showSubsection(sectionKey, subKey) {
-  playSound(sectionKey);
-  var meta = SECTION_META[sectionKey] && SECTION_META[sectionKey].subsections[subKey];
-  if (!meta) {
-    printLines([['', ''], ['  unknown subcommand. try: ' + sectionKey, 'error'], ['', '']]);
-    return;
-  }
-  var entries = (CONTENT && CONTENT[sectionKey] && CONTENT[sectionKey][subKey]) || [];
-  printLines([
-    ['', ''],
-    ['  [ ' + meta.icon + ' ]  ' + meta.label.toUpperCase(), 'head'],
-    ['  ─────────────────────────────────────────', 'muted'],
-  ]).then(function() {
-    renderEntries(entries, meta.cls || 'amber');
+  gap();
+  line('  // ' + sectionKey, 'muted');
+  line('  click a folder to expand', 'dim');
+  gap();
+
+  Object.entries(meta.subsections).forEach(function(pair) {
+    var subKey = pair[0];
+    var info   = pair[1];
+    var entries = (CONTENT && CONTENT[sectionKey] && CONTENT[sectionKey][subKey]) || [];
+    var count   = entries.length;
+
+    // ── folder header row ──
+    var folder = document.createElement('div');
+    folder.style.cssText = [
+      'display:flex',
+      'align-items:center',
+      'gap:10px',
+      'padding:8px 14px',
+      'margin:2px 0',
+      'border:1px solid rgba(168,255,120,0.12)',
+      'border-radius:3px',
+      'cursor:pointer',
+      'background:#0e120e',
+      'max-width:700px',
+      'transition:border-color 0.15s',
+      'user-select:none',
+    ].join(';');
+
+    var arrow = document.createElement('span');
+    arrow.textContent = '▶';
+    arrow.style.cssText = 'font-size:10px;color:#4a7a3a;transition:transform 0.15s;display:inline-block;width:12px;flex-shrink:0;';
+
+    var label = document.createElement('span');
+    label.style.cssText = 'font-family:\'IBM Plex Mono\',monospace;font-size:13px;font-weight:600;color:#6bc24e;';
+    label.textContent = info.label.toUpperCase();
+
+    var countEl = document.createElement('span');
+    countEl.style.cssText = 'font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:#3a4a3a;margin-left:auto;';
+    countEl.textContent = count + ' ' + (count === 1 ? 'entry' : 'entries');
+
+    folder.appendChild(arrow);
+    folder.appendChild(label);
+    folder.appendChild(countEl);
+
+    // ── entries container (hidden by default) ──
+    var entriesEl = document.createElement('div');
+    entriesEl.style.cssText = 'display:none;padding:4px 0 4px 14px;';
+
+    var open = false;
+
+    folder.addEventListener('mouseenter', function() { folder.style.borderColor = 'rgba(168,255,120,0.35)'; });
+    folder.addEventListener('mouseleave', function() { folder.style.borderColor = 'rgba(168,255,120,0.12)'; });
+
+    folder.addEventListener('click', function() {
+      open = !open;
+      try { var s = new Audio(BASE + '/assets/sounds/click.mp3'); s.volume = 0.5; s.play().catch(function(){}); } catch(_) {}
+      arrow.style.transform = open ? 'rotate(90deg)' : 'rotate(0deg)';
+      arrow.style.color     = open ? '#a8ff78' : '#4a7a3a';
+      label.style.color     = open ? '#a8ff78' : '#6bc24e';
+      folder.style.borderColor = open ? 'rgba(168,255,120,0.35)' : 'rgba(168,255,120,0.12)';
+
+      if (open && entriesEl.children.length === 0) {
+        // build cards into entriesEl on first open
+        if (entries.length === 0) {
+          var empty = document.createElement('div');
+          empty.style.cssText = 'padding:10px 14px;font-family:\'IBM Plex Mono\',monospace;font-size:12px;color:#3a4a3a;';
+          empty.textContent = 'no entries yet.';
+          entriesEl.appendChild(empty);
+        } else {
+          lastEntries = entries;
+          entries.forEach(function(entry, i) {
+            var card = document.createElement('div');
+            card.className = 'entry-card';
+            card.style.marginLeft = '0';
+
+            card.addEventListener('mouseenter', function() { card.classList.add('entry-card-hover'); });
+            card.addEventListener('mouseleave', function() { card.classList.remove('entry-card-hover'); });
+            card.addEventListener('click', function() {
+              if (entry.pdf) { openPdfWindow(entry.title, entry.pdf); }
+              else { openWindow(entry.title, entry.body); }
+            });
+
+            var thumb = document.createElement('div');
+            thumb.className = 'entry-thumb';
+            if (entry.thumbnail) {
+              var img = document.createElement('img');
+              img.src = BASE + '/' + entry.thumbnail;
+              img.alt = entry.title;
+              img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block;';
+              img.onerror = function() { thumb.textContent = (i + 1); };
+              thumb.appendChild(img);
+            } else {
+              thumb.textContent = (i + 1);
+            }
+
+            var infoEl = document.createElement('div');
+            infoEl.className = 'entry-info';
+
+            var titleEl = document.createElement('span');
+            titleEl.className = 'entry-title';
+            titleEl.textContent = '[' + (i + 1) + '] ' + entry.title;
+
+            var descEl = document.createElement('span');
+            descEl.className = 'entry-desc';
+            descEl.textContent = entry.description || 'click to open →';
+
+            infoEl.appendChild(titleEl);
+            infoEl.appendChild(descEl);
+            card.appendChild(thumb);
+            card.appendChild(infoEl);
+            entriesEl.appendChild(card);
+          });
+        }
+      }
+
+      entriesEl.style.display = open ? 'flex' : 'none';
+      entriesEl.style.flexDirection = 'column';
+      entriesEl.style.gap = '4px';
+      scrollBottom();
+    });
+
+    output.appendChild(folder);
+    output.appendChild(entriesEl);
+    scrollBottom();
   });
+
+  gap();
 }
 
 // ── Static content ────────────────────────────────────
@@ -597,25 +695,13 @@ function runCommand(raw) {
       printLines(homeLines());
       break;
     case 'vomit':
-      sub && SECTION_META.vomit.subsections[sub]
-        ? showSubsection('vomit', sub)
-        : sub
-          ? (line('', ''), line('  unknown subcommand: ' + sub + '. try: vomit', 'error'), line('', ''))
-          : printLines(subsectionMenu('vomit'));
+      showAccordion('vomit');
       break;
     case 'digestion':
-      sub && SECTION_META.digestion.subsections[sub]
-        ? showSubsection('digestion', sub)
-        : sub
-          ? (line('', ''), line('  unknown subcommand: ' + sub + '. try: digestion', 'error'), line('', ''))
-          : printLines(subsectionMenu('digestion'));
+      showAccordion('digestion');
       break;
     case 'consumption':
-      sub && SECTION_META.consumption.subsections[sub]
-        ? showSubsection('consumption', sub)
-        : sub
-          ? (line('', ''), line('  unknown subcommand: ' + sub + '. try: consumption', 'error'), line('', ''))
-          : printLines(subsectionMenu('consumption'));
+      showAccordion('consumption');
       break;
     case 'clear':
     case 'cls':
@@ -656,12 +742,7 @@ cmdInput.addEventListener('keydown', function(e) {
     e.preventDefault();
     var val = cmdInput.value.trim().toLowerCase();
     var completions = [
-      'home',
-      'vomit', 'vomit ee', 'vomit gamedev',
-      'vomit worldbuild', 'vomit misc', 'vomit legacy',
-      'digestion', 'digestion photo', 'digestion music', 'digestion other', 'digestion knowledge',
-      'consumption', 'consumption games', 'consumption media', 'consumption music',
-      'help', 'clear',
+      'home', 'vomit', 'digestion', 'consumption', 'help', 'clear',
     ];
     var match = completions.find(function(c) { return c.startsWith(val) && c !== val; });
     if (match) cmdInput.value = match;
