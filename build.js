@@ -15,7 +15,7 @@ const path = require('path');
 const STRUCTURE = {
   home:        { subsections: null },
   vomit:       { subsections: ['ee', 'gamedev', 'worldbuild', 'misc', 'legacy'] },
-  digestion:   { subsections: ['photo', 'music', 'other'] },
+  digestion:   { subsections: ['photo', 'music', 'other', 'knowledge'] },
   consumption: { subsections: ['games', 'media', 'music'] },
 };
 
@@ -100,10 +100,15 @@ function readDir(dirPath) {
           break;
         }
       }
+      // pdf: assets/pdfs/<slug>.pdf — detected automatically
+      const pdfPath = path.join(__dirname, 'assets', 'pdfs', slug + '.pdf');
+      const pdf = fs.existsSync(pdfPath) ? 'assets/pdfs/' + slug + '.pdf' : null;
+
       return {
         title:       slugToTitle(filename),
         description: extractDescription(clean),
         thumbnail,
+        pdf,
         body:        clean,
       };
     });

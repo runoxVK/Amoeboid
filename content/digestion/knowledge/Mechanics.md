@@ -1,0 +1,1 @@
+These are my Mechanics notes as part of Physics C in highschool. I really enjoyed this class and it got me into physics.

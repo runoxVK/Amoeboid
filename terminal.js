@@ -80,6 +80,93 @@ function stripObsidian(text) {
 }
 
 // ── Window manager ────────────────────────────────────
+function openPdfWindow(title, pdfPath) {
+  var offset = (document.querySelectorAll('.retro-window').length % 6) * 28;
+  var startX = 60 + offset;
+  var startY = 60 + offset;
+
+  var win = document.createElement('div');
+  win.className = 'retro-window';
+  win.style.left   = startX + 'px';
+  win.style.top    = startY + 'px';
+  win.style.width  = '720px';
+  win.style.height = '90vh';
+  win.style.zIndex = ++zTop;
+
+  // title bar
+  var bar = document.createElement('div');
+  bar.className = 'retro-titlebar';
+
+  var barTitle = document.createElement('span');
+  barTitle.className = 'retro-titlebar-title';
+  barTitle.textContent = title + '.pdf';
+
+  var barBtns = document.createElement('div');
+  barBtns.className = 'retro-titlebar-btns';
+
+  var isMaximized = false;
+  var savedStyle  = {};
+
+  var btnMax = document.createElement('button');
+  btnMax.className = 'retro-btn retro-btn-min';
+  btnMax.title = 'Maximize';
+  btnMax.textContent = '□';
+  btnMax.addEventListener('click', function() {
+    if (!isMaximized) {
+      savedStyle = { left: win.style.left, top: win.style.top, width: win.style.width, height: win.style.height };
+      win.style.left = '0px'; win.style.top = '0px';
+      win.style.width = '100vw'; win.style.height = '100vh';
+      win.style.zIndex = ++zTop;
+      btnMax.textContent = '❐'; btnMax.title = 'Restore';
+      isMaximized = true;
+    } else {
+      win.style.left = savedStyle.left || '60px'; win.style.top = savedStyle.top || '60px';
+      win.style.width = savedStyle.width || '720px'; win.style.height = savedStyle.height || '90vh';
+      btnMax.textContent = '□'; btnMax.title = 'Maximize';
+      isMaximized = false;
+    }
+  });
+
+  var btnClose = document.createElement('button');
+  btnClose.className = 'retro-btn retro-btn-close';
+  btnClose.title = 'Close';
+  btnClose.textContent = '✕';
+  btnClose.addEventListener('click', function() { win.remove(); cmdInput.focus(); });
+
+  barBtns.appendChild(btnMax);
+  barBtns.appendChild(btnClose);
+  bar.appendChild(barTitle);
+  bar.appendChild(barBtns);
+
+  // pdf embed
+  var embed = document.createElement('iframe');
+  embed.src = BASE + '/' + pdfPath + '#toolbar=1&view=FitH';
+  embed.style.cssText = 'flex:1;width:100%;border:none;background:#060a06;';
+
+  // drag
+  var dragging = false, dragOffX = 0, dragOffY = 0;
+  bar.addEventListener('mousedown', function(e) {
+    if (e.target === btnMax || e.target === btnClose) return;
+    if (isMaximized) return;
+    dragging = true;
+    dragOffX = e.clientX - win.getBoundingClientRect().left;
+    dragOffY = e.clientY - win.getBoundingClientRect().top;
+    win.style.userSelect = 'none';
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove', function(e) {
+    if (!dragging) return;
+    win.style.left = Math.max(0, e.clientX - dragOffX) + 'px';
+    win.style.top  = Math.max(0, e.clientY - dragOffY) + 'px';
+  });
+  document.addEventListener('mouseup', function() { if (dragging) { dragging = false; win.style.userSelect = ''; } });
+
+  win.addEventListener('mousedown', function() { win.style.zIndex = ++zTop; });
+  win.appendChild(bar);
+  win.appendChild(embed);
+  document.body.appendChild(win);
+}
+
 function openWindow(title, markdown) {
   // base path handled by global BASE constant
 
@@ -260,7 +347,13 @@ function renderEntries(entries, titleCls) {
 
     card.addEventListener('mouseenter', function() { card.classList.add('entry-card-hover'); });
     card.addEventListener('mouseleave', function() { card.classList.remove('entry-card-hover'); });
-    card.addEventListener('click', function() { openWindow(entry.title, entry.body); });
+    card.addEventListener('click', function() {
+      if (entry.pdf) {
+        openPdfWindow(entry.title, entry.pdf);
+      } else {
+        openWindow(entry.title, entry.body);
+      }
+    });
 
     // thumbnail
     var thumb = document.createElement('div');
@@ -314,9 +407,10 @@ const SECTION_META = {
   },
   digestion: {
     subsections: {
-      photo: { label: 'Photography', icon: 'PHO', cls: 'coral'  },
-      music: { label: 'Music',       icon: 'MUS', cls: 'amber'  },
-      other: { label: 'Other Work',  icon: 'ETC', cls: 'bright' },
+      photo:     { label: 'Photography', icon: 'PHO', cls: 'coral'  },
+      music:     { label: 'Music',       icon: 'MUS', cls: 'amber'  },
+      other:     { label: 'Other Work',  icon: 'ETC', cls: 'bright' },
+      knowledge: { label: 'Knowledge',   icon: 'DOC', cls: 'violet' },
     },
   },
   consumption: {
@@ -484,7 +578,8 @@ function runCommand(raw) {
   if (/^\d+$/.test(cmd)) {
     var idx = parseInt(cmd, 10) - 1;
     if (lastEntries.length && lastEntries[idx]) {
-      openWindow(lastEntries[idx].title, lastEntries[idx].body);
+      var e = lastEntries[idx];
+      if (e.pdf) { openPdfWindow(e.title, e.pdf); } else { openWindow(e.title, e.body); }
     } else {
       line('', '');
       line('  no entry ' + cmd + '. list a section first.', 'error');
@@ -564,7 +659,7 @@ cmdInput.addEventListener('keydown', function(e) {
       'home',
       'vomit', 'vomit ee', 'vomit gamedev',
       'vomit worldbuild', 'vomit misc', 'vomit legacy',
-      'digestion', 'digestion photo', 'digestion music', 'digestion other',
+      'digestion', 'digestion photo', 'digestion music', 'digestion other', 'digestion knowledge',
       'consumption', 'consumption games', 'consumption media', 'consumption music',
       'help', 'clear',
     ];
