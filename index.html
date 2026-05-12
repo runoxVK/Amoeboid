@@ -152,8 +152,7 @@
 
     /* ── Panel images: 2-column vertical marquee ── */
     (function() {
-      var base  = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-                  ? '' : '/PersonalSiteVK';
+      var base  = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
       var GAP   = 8;    // px gap between images and columns
       var SPEED = 0.5;  // px per frame
       var raf   = null;
