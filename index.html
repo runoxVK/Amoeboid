@@ -4,6 +4,8 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AMOEBOID</title>
+  <!-- preload font so it doesn't block first paint -->
+  <link rel="preload" href="assets/fonts/Bombardier-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -82,9 +84,9 @@
 
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
-  <script src="terminal.js"></script>
+  <script defer src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
+  <script defer src="terminal.js"></script>
 
   <script>
     /* ── Static star background — drawn once, no animation ── */
@@ -117,9 +119,10 @@
 
     /* ── Flow field — inside screen, heavily throttled ── */
     var flowCanvas, flowCtx, field, fw, fh, size, columns, rows, zoom;
-    var noiseObj = new SimplexNoise();
+    var noiseObj;
 
     function setupFlow() {
+      noiseObj = new SimplexNoise();
       size = 32;
       flowCanvas = document.querySelector('#canvas');
       if (!flowCanvas) return;
@@ -166,7 +169,9 @@
       }
     }
     setupFlow();
-    setTimeout(function() { requestAnimationFrame(drawFlow); }, 2000);
+    window.addEventListener('load', function() {
+      setTimeout(function() { requestAnimationFrame(drawFlow); }, 2000);
+    });
 
     /* ── Terminal scroll redirect ── */
     window.scrollTo = function() {
