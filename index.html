@@ -95,97 +95,58 @@
       }
     });
 
-    /* ── Panel images: 2-column vertical marquee ── */
+    /* ── Panel images: CSS-animated marquee (no rAF loop) ── */
     (function() {
-      var base  = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
-      var GAP   = 8;    // px gap between images and columns
-      var SPEED = 0.5;  // px per frame
-      var raf   = null;
+      var base = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
+      var GAP  = 8;
 
       function loadMarquee() {
         fetch(base + '/content.json')
           .then(function(r) { return r.json(); })
-          .then(function(data) { preload(data._panelImages || []); })
+          .then(function(data) { build(data._panelImages || []); })
           .catch(function() {});
       }
 
-      function preload(srcs) {
+      function build(srcs) {
         if (!srcs.length) return;
-        var items  = srcs.map(function(src) { return { src: src, ratio: 1 }; });
-        var loaded = 0;
-        srcs.forEach(function(src, i) {
-          var p = new Image();
-          p.onload = function() {
-            items[i].ratio = p.naturalHeight / (p.naturalWidth || 1);
-            if (++loaded === srcs.length) build(items);
-          };
-          p.onerror = function() { if (++loaded === srcs.length) build(items); };
-          p.src = base + '/' + src;
-        });
-      }
-
-      function build(items) {
         var panel = document.getElementById('right-panel');
         if (!panel) return;
-        panel.innerHTML = '';
-        if (raf) cancelAnimationFrame(raf);
 
-        var cols   = 2;
-        var colW   = Math.floor((panel.clientWidth - GAP * (cols + 1)) / cols);
+        var cols = 2;
+        var colW = Math.floor((panel.clientWidth - GAP * (cols + 1)) / cols);
 
-        // assign images to columns (shortest first)
-        var colItems = [[], []];
-        var colH     = [0, 0];
-        items.forEach(function(it) {
+        // split images into two columns, shortest first
+        var colSrcs = [[], []];
+        var colH    = [0, 0];
+        srcs.forEach(function(src) {
           var c = colH[1] < colH[0] ? 1 : 0;
-          var h = Math.round(colW * it.ratio);
-          colItems[c].push({ src: it.src, h: h });
-          colH[c] += h + GAP;
+          colSrcs[c].push(src);
+          colH[c]++;
         });
 
-        // build a strip for each column, duplicated for seamless loop
-        var strips = [];
         for (var c = 0; c < cols; c++) {
           var x     = GAP + c * (colW + GAP);
+          var wrap  = document.createElement('div');
+          wrap.style.cssText = 'position:absolute;top:0;left:' + x + 'px;width:' + colW + 'px;overflow:hidden;bottom:0;';
+
           var strip = document.createElement('div');
-          strip.style.cssText = 'position:absolute;top:0;left:' + x + 'px;width:' + colW + 'px;';
+          strip.className = 'marquee-strip';
+          // stagger col 1
+          if (c === 1) strip.style.animationDelay = '-8s';
 
-          var stripH = colItems[c].reduce(function(s, it) { return s + it.h + GAP; }, 0);
-
-          // append twice
+          // build images twice for seamless loop
           [0, 1].forEach(function() {
-            colItems[c].forEach(function(it) {
+            colSrcs[c].forEach(function(src) {
               var img = document.createElement('img');
-              img.src = base + '/' + it.src;
-              img.className = 'panel-img';
-              img.style.cssText = [
-                'display:block',
-                'width:'  + colW + 'px',
-                'height:' + it.h  + 'px',
-                'object-fit:cover',
-                'margin-bottom:' + GAP + 'px',
-                'position:static'
-              ].join(';');
+              img.src = base + '/' + src;
+              img.style.cssText = 'display:block;width:' + colW + 'px;height:auto;margin-bottom:' + GAP + 'px;';
               strip.appendChild(img);
             });
           });
 
-          panel.appendChild(strip);
-          strips.push({ el: strip, totalH: stripH, offset: 0 });
+          wrap.appendChild(strip);
+          panel.appendChild(wrap);
         }
-
-        // stagger col 1 so columns aren't in sync
-        strips[1].offset = strips[1].totalH * 0.4;
-
-        function tick() {
-          raf = requestAnimationFrame(tick);
-          strips.forEach(function(s) {
-            s.offset += SPEED;
-            if (s.offset >= s.totalH) s.offset -= s.totalH;
-            s.el.style.top = -s.offset + 'px';
-          });
-        }
-        tick();
       }
 
       window.addEventListener('load', loadMarquee);

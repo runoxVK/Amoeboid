@@ -440,6 +440,18 @@ html, body {
   overflow: hidden;
 }
 
+@keyframes marquee-scroll {
+  from { transform: translateY(0); }
+  to   { transform: translateY(-50%); }
+}
+
+.marquee-strip {
+  display: flex;
+  flex-direction: column;
+  animation: marquee-scroll 40s linear infinite;
+  will-change: transform;
+}
+
 .panel-img {
   border: 1px solid rgba(120,232,255,0.1);
   border-radius: 2px;
