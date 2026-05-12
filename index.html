@@ -91,7 +91,7 @@
     const noise = new SimplexNoise();
 
     function setup() {
-      size = 20;
+      size = 28;  // larger cells = fewer particles = less CPU
       canvas = document.querySelector('#canvas');
       ctx = canvas.getContext('2d');
       reset();
@@ -118,8 +118,11 @@
       rows    = Math.floor(h / size) + 2;
       initField();
     }
+    var lastFrame = 0;
     function draw(now) {
       requestAnimationFrame(draw);
+      if (now - lastFrame < 33) return; // ~30fps cap
+      lastFrame = now;
       calculateField(now);
       ctx.fillStyle = 'rgba(0,0,0,0.18)';
       ctx.fillRect(0, 0, w, h);
@@ -136,7 +139,8 @@
       }
     }
     setup();
-    requestAnimationFrame(draw);
+    // delay flow field start so it doesn't compete with terminal boot
+    setTimeout(function() { requestAnimationFrame(draw); }, 1200);
 
     /* ── Terminal scroll redirect ── */
     window.scrollTo = function() {
