@@ -8,9 +8,7 @@
 </head>
 <body>
 
-  <div id="stars"></div>
-  <div id="stars2"></div>
-  <div id="stars3"></div>
+  <canvas id="star-canvas" aria-hidden="true"></canvas>
 
   <div class="scanlines" aria-hidden="true"></div>
   <div class="vignette"  aria-hidden="true"></div>
@@ -89,61 +87,86 @@
   <script src="terminal.js"></script>
 
   <script>
-    /* ── Flow field background ── */
-    let canvas, ctx, field, w, h, size, columns, rows, zoom;
-    const noise = new SimplexNoise();
+    /* ── Static star background — drawn once, no animation ── */
+    (function() {
+      var sc  = document.getElementById('star-canvas');
+      var sctx = sc.getContext('2d');
+      function drawStars() {
+        sc.width  = window.innerWidth;
+        sc.height = window.innerHeight;
+        sctx.clearRect(0, 0, sc.width, sc.height);
+        var layers = [
+          { count: 250, size: 1,   alpha: 0.4, color: '138,216,224' },
+          { count: 120, size: 1.5, alpha: 0.55, color: '74,154,170' },
+          { count: 50,  size: 2.5, alpha: 0.7,  color: '74,232,224' },
+        ];
+        layers.forEach(function(l) {
+          for (var i = 0; i < l.count; i++) {
+            var x = Math.random() * sc.width;
+            var y = Math.random() * sc.height;
+            sctx.beginPath();
+            sctx.arc(x, y, l.size, 0, Math.PI * 2);
+            sctx.fillStyle = 'rgba(' + l.color + ',' + l.alpha + ')';
+            sctx.fill();
+          }
+        });
+      }
+      drawStars();
+      window.addEventListener('resize', drawStars);
+    })();
 
-    function setup() {
-      size = 28;  // larger cells = fewer particles = less CPU
-      canvas = document.querySelector('#canvas');
-      ctx = canvas.getContext('2d');
-      reset();
-      window.addEventListener('resize', reset);
+    /* ── Flow field — inside screen, heavily throttled ── */
+    var flowCanvas, flowCtx, field, fw, fh, size, columns, rows, zoom;
+    var noiseObj = new SimplexNoise();
+
+    function setupFlow() {
+      size = 32;
+      flowCanvas = document.querySelector('#canvas');
+      if (!flowCanvas) return;
+      flowCtx = flowCanvas.getContext('2d');
+      resetFlow();
+      window.addEventListener('resize', function() { setTimeout(resetFlow, 300); });
     }
-    function initField() {
-      field = new Array(columns);
-      for (let x = 0; x < columns; x++) {
-        field[x] = new Array(rows);
-        for (let y = 0; y < rows; y++) field[x][y] = 0;
+    function resetFlow() {
+      if (!flowCanvas) return;
+      zoom = Math.random() * 90 + 20;
+      var screen = flowCanvas.parentElement;
+      fw = flowCanvas.width  = screen ? screen.clientWidth  : 400;
+      fh = flowCanvas.height = screen ? screen.clientHeight : 600;
+      columns = Math.floor(fw / size) + 2;
+      rows    = Math.floor(fh / size) + 2;
+      field = [];
+      for (var x = 0; x < columns; x++) {
+        field[x] = [];
+        for (var y = 0; y < rows; y++) field[x][y] = 0;
       }
     }
-    function calculateField(now) {
-      for (let x = 0; x < columns; x++)
-        for (let y = 0; y < rows; y++)
-          field[x][y] = noise.noise3D(x/zoom, y/zoom, now/1800) * Math.PI * 2;
-    }
-    function reset() {
-      zoom = Math.random() * 90 + 20;
-      var screen = canvas.parentElement;
-      w = canvas.width  = screen ? screen.clientWidth  : 400;
-      h = canvas.height = screen ? screen.clientHeight : 600;
-      columns = Math.floor(w / size) + 2;
-      rows    = Math.floor(h / size) + 2;
-      initField();
-    }
-    var lastFrame = 0;
-    function draw(now) {
-      requestAnimationFrame(draw);
-      if (now - lastFrame < 40) return; // ~25fps
-      lastFrame = now;
-      calculateField(now);
-      ctx.fillStyle = 'rgba(0,0,0,0.25)';
-      ctx.fillRect(0, 0, w, h);
-      ctx.strokeStyle = 'rgba(100,180,220,0.06)';
-      for (let x = 0; x < columns; x++) {
-        for (let y = 0; y < rows; y++) {
-          let angle = field[x][y];
-          let x1 = x * size, y1 = y * size;
-          ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x1 + Math.cos(angle)*size*1.5, y1 + Math.sin(angle)*size*1.5);
-          ctx.stroke();
+    var lastFlow = 0;
+    function drawFlow(now) {
+      requestAnimationFrame(drawFlow);
+      if (now - lastFlow < 80) return; // ~12fps — enough for subtle movement
+      lastFlow = now;
+      if (!flowCtx) return;
+      for (var x = 0; x < columns; x++)
+        for (var y = 0; y < rows; y++)
+          field[x][y] = noiseObj.noise3D(x/zoom, y/zoom, now/3000) * Math.PI * 2;
+      flowCtx.fillStyle = 'rgba(0,0,0,0.3)';
+      flowCtx.fillRect(0, 0, fw, fh);
+      flowCtx.strokeStyle = 'rgba(42,192,200,0.07)';
+      flowCtx.lineWidth = 1;
+      for (var x = 0; x < columns; x++) {
+        for (var y = 0; y < rows; y++) {
+          var angle = field[x][y];
+          var x1 = x * size, y1 = y * size;
+          flowCtx.beginPath();
+          flowCtx.moveTo(x1, y1);
+          flowCtx.lineTo(x1 + Math.cos(angle)*size*1.2, y1 + Math.sin(angle)*size*1.2);
+          flowCtx.stroke();
         }
       }
     }
-    setup();
-    // delay flow field start so it doesn't compete with terminal boot
-    setTimeout(function() { requestAnimationFrame(draw); }, 1200);
+    setupFlow();
+    setTimeout(function() { requestAnimationFrame(drawFlow); }, 2000);
 
     /* ── Terminal scroll redirect ── */
     window.scrollTo = function() {
@@ -210,7 +233,7 @@
         for (var c = 0; c < cols; c++) {
           var x     = GAP + c * (colW + GAP);
           var strip = document.createElement('div');
-          strip.style.cssText = 'position:absolute;top:0;left:' + x + 'px;width:' + colW + 'px;';
+          strip.style.cssText = 'position:absolute;top:0;left:' + x + 'px;width:' + colW + 'px;will-change:transform;';
 
           var stripH = colItems[c].reduce(function(s, it) { return s + it.h + GAP; }, 0);
 
@@ -244,7 +267,7 @@
           strips.forEach(function(s) {
             s.offset += SPEED;
             if (s.offset >= s.totalH) s.offset -= s.totalH;
-            s.el.style.top = -s.offset + 'px';
+            s.el.style.transform = 'translateY(' + (-s.offset).toFixed(1) + 'px)';
           });
         }
         tick();
