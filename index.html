@@ -4,12 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AMOEBOID</title>
-  <link rel="preload" href="assets/fonts/Bombardier-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-
-  <canvas id="canvas"></canvas>
 
   <div class="scanlines" aria-hidden="true"></div>
   <div class="vignette"  aria-hidden="true"></div>
@@ -83,66 +80,9 @@
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
   <script src="terminal.js"></script>
 
   <script>
-    /* ── Flow field background ── */
-    let canvas, ctx, field, w, h, size, columns, rows, zoom;
-    const noise = new SimplexNoise();
-
-    function setup() {
-      size = 28;  // larger cells = fewer particles = less CPU
-      canvas = document.querySelector('#canvas');
-      ctx = canvas.getContext('2d');
-      reset();
-      window.addEventListener('resize', reset);
-    }
-    function initField() {
-      field = new Array(columns);
-      for (let x = 0; x < columns; x++) {
-        field[x] = new Array(rows);
-        for (let y = 0; y < rows; y++) field[x][y] = 0;
-      }
-    }
-    function calculateField(now) {
-      for (let x = 0; x < columns; x++)
-        for (let y = 0; y < rows; y++)
-          field[x][y] = noise.noise3D(x/zoom, y/zoom, now/1800) * Math.PI * 2;
-    }
-    function reset() {
-      zoom = Math.random() * 90 + 20;
-      w = canvas.width  = window.innerWidth;
-      h = canvas.height = window.innerHeight;
-      ctx.strokeStyle = 'rgba(120,232,255,0.07)';
-      columns = Math.floor(w / size) + 2;
-      rows    = Math.floor(h / size) + 2;
-      initField();
-    }
-    var lastFrame = 0;
-    function draw(now) {
-      requestAnimationFrame(draw);
-      if (now - lastFrame < 50) return; // ~20fps cap
-      lastFrame = now;
-      calculateField(now);
-      ctx.fillStyle = 'rgba(0,0,0,0.18)';
-      ctx.fillRect(0, 0, w, h);
-      ctx.strokeStyle = 'rgba(100,180,220,0.07)';
-      for (let x = 0; x < columns; x++) {
-        for (let y = 0; y < rows; y++) {
-          let angle = field[x][y];
-          let x1 = x * size, y1 = y * size;
-          ctx.beginPath();
-          ctx.moveTo(x1, y1);
-          ctx.lineTo(x1 + Math.cos(angle)*size*1.5, y1 + Math.sin(angle)*size*1.5);
-          ctx.stroke();
-        }
-      }
-    }
-    setup();
-    // delay flow field until terminal has booted
-    setTimeout(function() { requestAnimationFrame(draw); }, 2500);
-
     /* ── Terminal scroll redirect ── */
     window.scrollTo = function() {
       var vp = document.getElementById('terminal-viewport');
@@ -240,7 +180,7 @@
         var lastTick = 0;
         function tick(now) {
           raf = requestAnimationFrame(tick);
-          if (now - lastTick < 33) return; // 30fps cap
+          if (now - lastTick < 33) return;
           lastTick = now;
           if (document.querySelector('.retro-window') || document.activeElement === document.getElementById('cmd-input')) return;
           strips.forEach(function(s) {
