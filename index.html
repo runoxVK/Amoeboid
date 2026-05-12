@@ -177,12 +177,8 @@
         // stagger col 1 so columns aren't in sync
         strips[1].offset = strips[1].totalH * 0.4;
 
-        var lastTick = 0;
-        function tick(now) {
+        function tick() {
           raf = requestAnimationFrame(tick);
-          if (now - lastTick < 33) return;
-          lastTick = now;
-          if (document.querySelector('.retro-window') || document.activeElement === document.getElementById('cmd-input')) return;
           strips.forEach(function(s) {
             s.offset += SPEED;
             if (s.offset >= s.totalH) s.offset -= s.totalH;

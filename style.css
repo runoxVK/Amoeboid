@@ -60,6 +60,14 @@ html, body {
   cursor: default;
 }
 
+/* ── Flow field canvas ───────────────────────────────── */
+#canvas {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  display: block;
+}
+
 /* ── CRT effects ─────────────────────────────────────── */
 .scanlines {
   pointer-events: none;
