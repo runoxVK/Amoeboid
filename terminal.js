@@ -30,7 +30,10 @@ function line(text, cls) {
   return el;
 }
 function gap() { line('', ''); }
-function scrollBottom() { window.scrollTo(0, document.body.scrollHeight); }
+function scrollBottom() {
+  var vp = document.getElementById('terminal-viewport');
+  if (vp) vp.scrollTop = vp.scrollHeight;
+}
 function echoCmd(cmd) { line('runox@amoeboid:~$ ' + cmd, 'echo'); }
 function delay(ms) { return new Promise(function(r) { setTimeout(r, ms); }); }
 
@@ -568,14 +571,7 @@ function showAccordion(sectionKey) {
 }
 
 // ── Static content ────────────────────────────────────
-var ASCII_LOGO = [
-  '  █████╗ ███╗   ███╗ ██████╗ ███████╗██████╗  ██████╗ ██╗██████╗ ',
-  ' ██╔══██╗████╗ ████║██╔═══██╗██╔════╝██╔══██╗██╔═══██╗██║██╔══██╗',
-  ' ███████║██╔████╔██║██║   ██║█████╗  ██████╔╝██║   ██║██║██║  ██║',
-  ' ██╔══██║██║╚██╔╝██║██║   ██║██╔══╝  ██╔══██╗██║   ██║██║██║  ██║',
-  ' ██║  ██║██║ ╚═╝ ██║╚██████╔╝███████╗██████╔╝╚██████╔╝██║██████╔╝',
-  ' ╚═╝  ╚═╝╚═╝     ╚═╝ ╚═════╝ ╚══════╝╚═════╝  ╚═════╝ ╚═╝╚═════╝ ',
-];
+var ASCII_LOGO = null; // replaced by font title below
 
 var HELP_LINES = [
   ['', ''],
@@ -639,7 +635,22 @@ async function boot() {
   } catch(_) { CONTENT = {}; }
 
   await delay(200);
-  for (var r of ASCII_LOGO) { line(r, 'ascii'); await delay(16); }
+  // render title in Bombardier font
+  var titleEl = document.createElement('div');
+  titleEl.style.cssText = [
+    'font-family: Bombardier, monospace',
+    'font-size: clamp(2.2rem, 5vw, 3.8rem)',
+    'color: #40b8c8',
+    'letter-spacing: 0.18em',
+    'line-height: 1',
+    'padding: 0.5rem 0 0.25rem 0',
+    'opacity: 0',
+    'animation: fadein 0.3s forwards',
+  ].join(';');
+  titleEl.textContent = 'AMOEBOID';
+  output.appendChild(titleEl);
+  scrollBottom();
+  await delay(400);
   await delay(350);
   await printLines([['', ''], ['initializing AMOEBOID...', 'dim']], 55);
   await delay(450);

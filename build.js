@@ -139,6 +139,21 @@ for (const [section, config] of Object.entries(STRUCTURE)) {
 
 fs.writeFileSync(OUT_FILE, JSON.stringify(output, null, 2), 'utf8');
 
+// ── Scan panel images ─────────────────────────────────
+const PANEL_DIR  = path.join(__dirname, 'assets', 'panel-images');
+const PANEL_EXTS = ['.png', '.jpg', '.jpeg', '.gif', '.webp', '.svg'];
+const panelImages = fs.existsSync(PANEL_DIR)
+  ? fs.readdirSync(PANEL_DIR)
+      .filter(f => PANEL_EXTS.includes(path.extname(f).toLowerCase()))
+      .sort()
+      .map(f => 'assets/panel-images/' + f)
+  : [];
+
+// Write panel images into content.json
+const parsed = JSON.parse(fs.readFileSync(OUT_FILE, 'utf8'));
+parsed._panelImages = panelImages;
+fs.writeFileSync(OUT_FILE, JSON.stringify(parsed, null, 2), 'utf8');
+
 // ── Report ────────────────────────────────────────────
 
 let total = 0;
@@ -157,4 +172,5 @@ for (const [section, data] of Object.entries(output)) {
 }
 
 console.log(`  ─────────────────────────────────`);
-console.log(`  total: ${total} file(s) → content.json\n`);
+console.log(`  total: ${total} file(s) → content.json`);
+console.log(`  panel-images: ${panelImages.length} image(s)\n`);

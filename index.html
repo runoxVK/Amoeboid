@@ -4,33 +4,249 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AMOEBOID</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,600;1,300;1,400&family=IBM+Plex+Sans:wght@300;400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
+  <canvas id="canvas"></canvas>
+
   <div class="scanlines" aria-hidden="true"></div>
   <div class="vignette"  aria-hidden="true"></div>
 
-  <div class="terminal" id="terminal">
-    <div class="terminal-output" id="output" aria-live="polite"></div>
-    <div class="terminal-input-row" id="input-row" style="display:none;">
-      <span class="prompt" aria-hidden="true">runox@amoeboid:~$&nbsp;</span>
-      <input
-        type="text"
-        id="cmd-input"
-        class="cmd-input"
-        autocomplete="off"
-        autocorrect="off"
-        autocapitalize="off"
-        spellcheck="false"
-        aria-label="Terminal input"
-      />
+  <div class="layout">
+
+    <!-- LEFT: slab monitor -->
+    <div class="slab-wrap">
+      <div class="slab">
+
+        <div class="slab-bar slab-bar-top">
+          <div class="rivet"></div>
+          <div class="rivet"></div>
+          <div class="slab-label">AMOEBOID — MK.I</div>
+          <div class="rivet"></div>
+          <div class="rivet"></div>
+        </div>
+
+        <div class="slab-body">
+          <div class="slab-col">
+            <div class="rivet"></div>
+            <div class="rivet"></div>
+            <div class="rivet"></div>
+            <div class="rivet"></div>
+          </div>
+
+          <div class="slab-screen-well">
+            <div class="slab-screen-inner">
+              <div class="screen-flicker" aria-hidden="true"></div>
+              <div id="terminal-viewport">
+                <div class="terminal-output" id="output" aria-live="polite"></div>
+              </div>
+              <div class="terminal-input-row" id="input-row" style="display:none;">
+                <span class="prompt" aria-hidden="true">runox@amoeboid:~$&nbsp;</span>
+                <input
+                  type="text"
+                  id="cmd-input"
+                  class="cmd-input"
+                  autocomplete="off"
+                  autocorrect="off"
+                  autocapitalize="off"
+                  spellcheck="false"
+                  aria-label="Terminal input"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div class="slab-col">
+            <div class="rivet"></div>
+            <div class="rivet"></div>
+            <div class="rivet"></div>
+            <div class="rivet"></div>
+          </div>
+        </div>
+
+        <div class="slab-bar slab-bar-bottom">
+          <div class="rivet"></div>
+          <div class="rivet"></div>
+          <div class="slab-scratches" aria-hidden="true"></div>
+          <div class="rivet"></div>
+          <div class="rivet"></div>
+        </div>
+
+      </div>
     </div>
+
+    <!-- RIGHT: image panel — populated dynamically from assets/panel-images/ -->
+    <div class="right-panel" id="right-panel"></div>
+
   </div>
 
   <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/simplex-noise/2.4.0/simplex-noise.min.js"></script>
   <script src="terminal.js"></script>
+
+  <script>
+    /* ── Flow field background ── */
+    let canvas, ctx, field, w, h, size, columns, rows, zoom;
+    const noise = new SimplexNoise();
+
+    function setup() {
+      size = 20;
+      canvas = document.querySelector('#canvas');
+      ctx = canvas.getContext('2d');
+      reset();
+      window.addEventListener('resize', reset);
+    }
+    function initField() {
+      field = new Array(columns);
+      for (let x = 0; x < columns; x++) {
+        field[x] = new Array(rows);
+        for (let y = 0; y < rows; y++) field[x][y] = 0;
+      }
+    }
+    function calculateField(now) {
+      for (let x = 0; x < columns; x++)
+        for (let y = 0; y < rows; y++)
+          field[x][y] = noise.noise3D(x/zoom, y/zoom, now/1800) * Math.PI * 2;
+    }
+    function reset() {
+      zoom = Math.random() * 90 + 20;
+      w = canvas.width  = window.innerWidth;
+      h = canvas.height = window.innerHeight;
+      ctx.strokeStyle = 'rgba(120,232,255,0.07)';
+      columns = Math.floor(w / size) + 2;
+      rows    = Math.floor(h / size) + 2;
+      initField();
+    }
+    function draw(now) {
+      requestAnimationFrame(draw);
+      calculateField(now);
+      ctx.fillStyle = 'rgba(0,0,0,0.18)';
+      ctx.fillRect(0, 0, w, h);
+      ctx.strokeStyle = 'rgba(100,180,220,0.07)';
+      for (let x = 0; x < columns; x++) {
+        for (let y = 0; y < rows; y++) {
+          let angle = field[x][y];
+          let x1 = x * size, y1 = y * size;
+          ctx.beginPath();
+          ctx.moveTo(x1, y1);
+          ctx.lineTo(x1 + Math.cos(angle)*size*1.5, y1 + Math.sin(angle)*size*1.5);
+          ctx.stroke();
+        }
+      }
+    }
+    setup();
+    requestAnimationFrame(draw);
+
+    /* ── Terminal scroll redirect ── */
+    window.scrollTo = function() {
+      var vp = document.getElementById('terminal-viewport');
+      if (vp) vp.scrollTop = vp.scrollHeight;
+    };
+    document.addEventListener('click', function(e) {
+      if (!e.target.closest('.retro-window') && !e.target.closest('.entry-card')) {
+        var inp = document.getElementById('cmd-input');
+        if (inp) inp.focus();
+      }
+    });
+
+    /* ── Panel images: 2-column vertical marquee ── */
+    (function() {
+      var base  = (location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+                  ? '' : '/PersonalSiteVK';
+      var GAP   = 8;    // px gap between images and columns
+      var SPEED = 0.5;  // px per frame
+      var raf   = null;
+
+      function loadMarquee() {
+        fetch(base + '/content.json')
+          .then(function(r) { return r.json(); })
+          .then(function(data) { preload(data._panelImages || []); })
+          .catch(function() {});
+      }
+
+      function preload(srcs) {
+        if (!srcs.length) return;
+        var items  = srcs.map(function(src) { return { src: src, ratio: 1 }; });
+        var loaded = 0;
+        srcs.forEach(function(src, i) {
+          var p = new Image();
+          p.onload = function() {
+            items[i].ratio = p.naturalHeight / (p.naturalWidth || 1);
+            if (++loaded === srcs.length) build(items);
+          };
+          p.onerror = function() { if (++loaded === srcs.length) build(items); };
+          p.src = base + '/' + src;
+        });
+      }
+
+      function build(items) {
+        var panel = document.getElementById('right-panel');
+        if (!panel) return;
+        panel.innerHTML = '';
+        if (raf) cancelAnimationFrame(raf);
+
+        var cols   = 2;
+        var colW   = Math.floor((panel.clientWidth - GAP * (cols + 1)) / cols);
+
+        // assign images to columns (shortest first)
+        var colItems = [[], []];
+        var colH     = [0, 0];
+        items.forEach(function(it) {
+          var c = colH[1] < colH[0] ? 1 : 0;
+          var h = Math.round(colW * it.ratio);
+          colItems[c].push({ src: it.src, h: h });
+          colH[c] += h + GAP;
+        });
+
+        // build a strip for each column, duplicated for seamless loop
+        var strips = [];
+        for (var c = 0; c < cols; c++) {
+          var x     = GAP + c * (colW + GAP);
+          var strip = document.createElement('div');
+          strip.style.cssText = 'position:absolute;top:0;left:' + x + 'px;width:' + colW + 'px;';
+
+          var stripH = colItems[c].reduce(function(s, it) { return s + it.h + GAP; }, 0);
+
+          // append twice
+          [0, 1].forEach(function() {
+            colItems[c].forEach(function(it) {
+              var img = document.createElement('img');
+              img.src = base + '/' + it.src;
+              img.className = 'panel-img';
+              img.style.cssText = [
+                'display:block',
+                'width:'  + colW + 'px',
+                'height:' + it.h  + 'px',
+                'object-fit:cover',
+                'margin-bottom:' + GAP + 'px',
+                'position:static'
+              ].join(';');
+              strip.appendChild(img);
+            });
+          });
+
+          panel.appendChild(strip);
+          strips.push({ el: strip, totalH: stripH, offset: 0 });
+        }
+
+        // stagger col 1 so columns aren't in sync
+        strips[1].offset = strips[1].totalH * 0.4;
+
+        function tick() {
+          raf = requestAnimationFrame(tick);
+          strips.forEach(function(s) {
+            s.offset += SPEED;
+            if (s.offset >= s.totalH) s.offset -= s.totalH;
+            s.el.style.top = -s.offset + 'px';
+          });
+        }
+        tick();
+      }
+
+      window.addEventListener('load', loadMarquee);
+      if (document.readyState === 'complete') loadMarquee();
+    })();
+  </script>
 </body>
 </html>
