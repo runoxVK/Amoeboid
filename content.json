@@ -72,14 +72,14 @@
     "music": []
   },
   "_panelImages": [
-    "assets/panel-images/ArcaneConcept.png",
-    "assets/panel-images/MIHArt.png",
-    "assets/panel-images/Magneto.png",
-    "assets/panel-images/MandomArt.png",
-    "assets/panel-images/ROR2SeekersArt.png",
-    "assets/panel-images/ROR2Ukelele.png",
-    "assets/panel-images/RainworldBulb.png",
-    "assets/panel-images/SubShroom.png",
-    "assets/panel-images/whitesnakeArt.png"
+    "assets/panel-images/ArcaneConcept.webp",
+    "assets/panel-images/MIHArt.webp",
+    "assets/panel-images/Magneto.webp",
+    "assets/panel-images/MandomArt.webp",
+    "assets/panel-images/ROR2SeekersArt.webp",
+    "assets/panel-images/ROR2Ukelele.webp",
+    "assets/panel-images/RainworldBulb.webp",
+    "assets/panel-images/SubShroom.webp",
+    "assets/panel-images/whitesnakeArt.webp"
   ]
 }
