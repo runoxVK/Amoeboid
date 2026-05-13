@@ -4,6 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AMOEBOID</title>
+  <link rel="preload" href="assets/fonts/Bombardier-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
+  <link rel="preload" href="assets/sounds/vomit.mp3" as="audio">
+  <link rel="preload" href="assets/sounds/digestion.mp3" as="audio">
+  <link rel="preload" href="assets/sounds/consumption.mp3" as="audio">
+  <link rel="preload" href="assets/sounds/click.mp3" as="audio">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -79,8 +84,8 @@
 
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js"></script>
-  <script src="terminal.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/marked@9/marked.min.js" defer></script>
+  <script src="terminal.js" defer></script>
 
   <script>
     /* ── Terminal scroll redirect ── */
