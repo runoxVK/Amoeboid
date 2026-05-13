@@ -79,8 +79,8 @@
       </div>
     </div>
 
-    <!-- RIGHT: empty for now -->
-    <div class="right-panel"></div>
+    <!-- RIGHT: image panel -->
+    <div class="right-panel" id="right-panel"></div>
 
   </div>
 
@@ -98,6 +98,57 @@
         if (inp) inp.focus();
       }
     });
+    /* ── Marquee ── */
+    (function() {
+      var base  = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
+      var GAP   = 8;
+      var SPEED = 0.5;
+
+      fetch(base + '/content.json')
+        .then(function(r) { return r.json(); })
+        .then(function(d) { build(d._panelImages || []); })
+        .catch(function() {});
+
+      function build(srcs) {
+        if (!srcs.length) return;
+        var panel = document.getElementById('right-panel');
+        var colW  = Math.floor((panel.clientWidth - GAP * 3) / 2);
+        var cols  = [[], []];
+        srcs.forEach(function(s, i) { cols[i % 2].push(s); });
+
+        var strips = cols.map(function(colSrcs, c) {
+          var wrap = document.createElement('div');
+          wrap.style.cssText = 'position:absolute;top:0;bottom:0;overflow:hidden;left:' + (GAP + c*(colW+GAP)) + 'px;width:' + colW + 'px';
+          panel.appendChild(wrap);
+
+          var strip = document.createElement('div');
+          strip.style.cssText = 'position:absolute;top:0;width:' + colW + 'px';
+          wrap.appendChild(strip);
+
+          [0, 1].forEach(function() {
+            colSrcs.forEach(function(src) {
+              var img = document.createElement('img');
+              img.src = base + '/' + src;
+              img.style.cssText = 'display:block;width:' + colW + 'px;height:auto;margin-bottom:' + GAP + 'px';
+              strip.appendChild(img);
+            });
+          });
+
+          return { el: strip, offset: c * 300 };
+        });
+
+        function tick() {
+          requestAnimationFrame(tick);
+          strips.forEach(function(s) {
+            var half = s.el.scrollHeight / 2;
+            if (!half) return;
+            s.offset = (s.offset + SPEED) % half;
+            s.el.style.top = -s.offset + 'px';
+          });
+        }
+        tick();
+      }
+    })();
   </script>
 </body>
 </html>
