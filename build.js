@@ -56,6 +56,16 @@ function extractDescription(raw) {
   return '';
 }
 
+/** Parse optional description line from anywhere in the file */
+function parseFrontmatter(raw) {
+  const lines = raw.split('\n');
+  const descIdx = lines.findIndex(l => l.trim().startsWith('description:'));
+  if (descIdx === -1) return { description: null, body: raw };
+  const description = lines[descIdx].replace(/^description:\s*/i, '').trim();
+  const body = lines.filter((_, i) => i !== descIdx).join('\n').trim();
+  return { description, body };
+}
+
 function readDir(dirPath) {
   if (!fs.existsSync(dirPath)) return [];
   return fs.readdirSync(dirPath)
@@ -63,7 +73,8 @@ function readDir(dirPath) {
     .sort((a, b) => fs.statSync(path.join(dirPath, b)).mtimeMs - fs.statSync(path.join(dirPath, a)).mtimeMs)
     .map(filename => {
       const raw   = fs.readFileSync(path.join(dirPath, filename), 'utf8').trim();
-      const clean = stripObsidian(raw);
+      const { description: fmDesc, body: fmBody } = parseFrontmatter(raw);
+      const clean = stripObsidian(fmBody);
       const slug  = filename.replace(/\.md$/i, '');
       const thumbBase = path.join(__dirname, 'assets', 'thumbnails', slug);
       let thumbnail = null;
@@ -73,7 +84,7 @@ function readDir(dirPath) {
       const pdfPath = path.join(__dirname, 'assets', 'pdfs', slug + '.pdf');
       return {
         title: slugToTitle(filename),
-        description: extractDescription(clean),
+        description: fmDesc || extractDescription(clean),
         thumbnail,
         pdf: fs.existsSync(pdfPath) ? 'assets/pdfs/' + slug + '.pdf' : null,
         body: clean,
@@ -81,7 +92,36 @@ function readDir(dirPath) {
     });
 }
 
-// ── WebP conversion ───────────────────────────────────
+/** Recursively scan a directory into a tree for worldbuild */
+function readTree(dirPath) {
+  if (!fs.existsSync(dirPath)) return { files: [], folders: {} };
+  const entries = fs.readdirSync(dirPath, { withFileTypes: true });
+  const result  = { files: [], folders: {} };
+  for (const entry of entries) {
+    const full = path.join(dirPath, entry.name);
+    if (entry.isDirectory()) {
+      result.folders[entry.name] = readTree(full);
+    } else if (entry.name.endsWith('.md')) {
+      const raw   = fs.readFileSync(full, 'utf8').trim();
+      const { description: fmDesc, body: fmBody } = parseFrontmatter(raw);
+      const clean = stripObsidian(fmBody);
+      const slug  = entry.name.replace(/\.md$/i, '');
+      result.files.push({
+        title:       slugToTitle(entry.name),
+        description: fmDesc || extractDescription(clean),
+        body:        clean,
+        slug,
+      });
+    }
+  }
+  // sort files newest first
+  result.files.sort((a, b) => {
+    const sa = fs.statSync(path.join(dirPath, a.slug + '.md')).mtimeMs;
+    const sb = fs.statSync(path.join(dirPath, b.slug + '.md')).mtimeMs;
+    return sb - sa;
+  });
+  return result;
+}
 async function convertToWebP() {
   let sharp;
   try { sharp = require('sharp'); } catch(_) {
@@ -137,7 +177,8 @@ async function main() {
         .map(f => 'assets/panel-images/' + f)
     : [];
   const parsed = JSON.parse(fs.readFileSync(OUT_FILE, 'utf8'));
-  parsed._panelImages = panelImages;
+  parsed._panelImages  = panelImages;
+  parsed._worldbuildTree = readTree(path.join(CONTENT_DIR, 'vomit', 'worldbuild'));
   fs.writeFileSync(OUT_FILE, JSON.stringify(parsed, null, 2), 'utf8');
 
   // 4. Report

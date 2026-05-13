@@ -1,6 +1,8 @@
 
 # RaspberryPiPico-Synthesizer-VK
 
+description: A three-phase monophonic synthesizer built on the Raspberry Pi Pico
+
 _Vivaan Kaushal — runoxVK_
 
 A three-phase monophonic synthesizer built on the Raspberry Pi Pico using MicroPython. Each phase adds a layer of hardware and software complexity, culminating in a fully amplified instrument with real-time potentiometer control over pitch, octave, and timbre.
@@ -10,6 +12,7 @@ https://youtu.be/7it6Z9qBXX4?si=z7N5v-2RsTX4AGbL
 
 ## Repository structure
 
+https://github.com/runoxVK/RaspberryPiPico-Synthesizer-VK
 ```
 RaspberryPiPico-Synthesizer-VK/
 ├── Phase I (Concept Test)/

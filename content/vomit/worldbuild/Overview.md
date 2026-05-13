@@ -1,0 +1,3 @@
+This is my long term world-building project. It has no long term goal and I simply continue to add to this because of my passion for creative writing. As a kid, I'd always imagine and continue these stories in my head and I finally wanted actually turn that real. Things are subject to change and my writing style will mature overtime. This is just as much of a journey for me as is it is for you.
+
+Baroque is a huge world filled with many different regions that are all drastically different. There are sky islands, plagued swamps and civilizations that live in Volcanos. Some people in this world have special powers which you can read more about in the Power Core System entry which is located in the codex. I don't want to spoil much and encourage you to explore. 

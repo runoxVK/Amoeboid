@@ -65,6 +65,7 @@ function openWindow(title, markdown) {
   makeWindow(title, w => {
     const body = el('div', 'retro-body');
     body.innerHTML = html;
+    body.querySelectorAll('a[href^="http"]').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
     w.appendChild(body);
 
     const resizer = el('div', 'retro-resizer');
@@ -99,13 +100,22 @@ function makeWindow(title, fillFn) {
   btnMax.onclick = () => {
     if (!maximized) {
       saved = { left: win.style.left, top: win.style.top, width: win.style.width, height: win.style.height };
-      win.style.cssText += ';left:0;top:0;width:100vw;height:100vh';
+      win.style.left   = '0';
+      win.style.top    = '0';
+      win.style.width  = '100vw';
+      win.style.height = '100vh';
       win.style.zIndex = ++zTop;
-      btnMax.textContent = '❐'; maximized = true;
+      btnMax.textContent = '❐';
+      btnMax.title = 'Restore';
+      maximized = true;
     } else {
-      win.style.left = saved.left; win.style.top = saved.top;
-      win.style.width = saved.width; win.style.height = saved.height;
-      btnMax.textContent = '□'; maximized = false;
+      win.style.left   = saved.left   || '60px';
+      win.style.top    = saved.top    || '60px';
+      win.style.width  = saved.width  || '640px';
+      win.style.height = saved.height || '480px';
+      btnMax.textContent = '□';
+      btnMax.title = 'Maximize';
+      maximized = false;
     }
   };
 
@@ -187,6 +197,62 @@ function makeCard(entry, index) {
   return card;
 }
 
+// ── Worldbuild tree window ────────────────────────────
+function openWorldbuildWindow() {
+  const tree = (CONTENT && CONTENT._worldbuildTree) || { files: [], folders: {} };
+  makeWindow('worldbuild', w => {
+    const container = el('div');
+    container.style.cssText = 'flex:1;overflow-y:auto;padding:1rem;';
+    renderTree(tree, container, 0);
+    w.appendChild(container);
+  });
+}
+
+function renderTree(node, parent, depth) {
+  // files first
+  node.files.forEach(file => {
+    const row = el('div');
+    row.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 8px;margin:1px 0;cursor:pointer;border-radius:2px;padding-left:' + (12 + depth * 16) + 'px';
+    row.innerHTML = '<span style="color:var(--green-mid);font-size:11px">◆</span>';
+    const lbl = el('span', '', file.title);
+    lbl.style.cssText = 'font-size:13px;color:var(--ink)';
+    row.appendChild(lbl);
+    row.addEventListener('mouseenter', () => { row.style.background = 'rgba(64,255,96,0.06)'; });
+    row.addEventListener('mouseleave', () => { row.style.background = ''; });
+    row.addEventListener('click', () => openWindow(file.title, file.body));
+    parent.appendChild(row);
+  });
+
+  // then folders
+  Object.entries(node.folders).forEach(([name, subtree]) => {
+    const folder = el('div');
+    folder.style.cssText = 'display:flex;align-items:center;gap:8px;padding:5px 8px;margin:1px 0;cursor:pointer;border-radius:2px;user-select:none;padding-left:' + (12 + depth * 16) + 'px';
+
+    const arrow = el('span', '', '▶');
+    arrow.style.cssText = 'font-size:9px;color:var(--green-mid);transition:transform 0.15s;width:10px;flex-shrink:0';
+    const lbl = el('span', '', name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()));
+    lbl.style.cssText = 'font-size:13px;font-weight:600;color:var(--green-mid)';
+
+    folder.append(arrow, lbl);
+
+    const children = el('div');
+    children.style.display = 'none';
+
+    let open = false;
+    folder.addEventListener('mouseenter', () => { folder.style.background = 'rgba(64,255,96,0.06)'; });
+    folder.addEventListener('mouseleave', () => { folder.style.background = ''; });
+    folder.addEventListener('click', () => {
+      open = !open;
+      arrow.style.transform = open ? 'rotate(90deg)' : '';
+      children.style.display = open ? 'block' : 'none';
+      if (open && !children.children.length) renderTree(subtree, children, depth + 1);
+    });
+
+    parent.appendChild(folder);
+    parent.appendChild(children);
+  });
+}
+
 // ── Accordion section ─────────────────────────────────
 const SECTIONS = {
   vomit:       { subs: { ee: 'Electrical Engineering', gamedev: 'Game Development', worldbuild: 'World Building', misc: 'Miscellaneous', legacy: 'Legacy' } },
@@ -214,7 +280,7 @@ function showSection(key) {
     const lbl = el('span', '', label.toUpperCase());
     lbl.style.cssText = 'font-family:inherit;font-size:13px;font-weight:600;color:var(--green-mid)';
 
-    const count = el('span', '', entries.length + (entries.length === 1 ? ' entry' : ' entries'));
+    const count = el('span', '', key === 'vomit' && subKey === 'worldbuild' ? 'open explorer →' : entries.length + (entries.length === 1 ? ' entry' : ' entries'));
     count.style.cssText = 'font-size:11px;color:var(--muted);margin-left:auto';
 
     folder.append(arrow, lbl, count);
@@ -228,6 +294,12 @@ function showSection(key) {
     folder.addEventListener('mouseleave', () => folder.style.borderColor = open ? 'rgba(120,232,255,0.35)' : 'rgba(120,232,255,0.12)');
 
     folder.addEventListener('click', () => {
+      // worldbuild opens a tree window instead
+      if (key === 'vomit' && subKey === 'worldbuild') {
+        clickSound();
+        openWorldbuildWindow();
+        return;
+      }
       open = !open;
       clickSound();
       arrow.style.transform = open ? 'rotate(90deg)' : '';

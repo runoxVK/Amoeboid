@@ -1,6 +1,8 @@
 
 This game (as of 2/26/25) is being made on **Godot 4.5.1** as a 2D game.
 
+description: A cancelled game project about surviving waves on enemies by building machines that get wired togethe and follow Ohm's Law
+
 ### Game Overviews:
 #### **2/25/26**: 
 Termibase as of now is a **vampire survivors + oxygen not included + don't starve + binding of Isaac + risk of rain type game** where the player scavenges a world. The player is dropped into said world with a small amount of coins which can be used to build their base. 

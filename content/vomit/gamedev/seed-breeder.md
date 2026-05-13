@@ -1,5 +1,7 @@
 # 🌱 Farming Game: "Seed Breeder"
 
+description: A Farming game built with SDL2 and C
+
 **Language:** C  
 **Libraries:** SDL2, SDL2_ttf  
 **Platform:** Windows (MSYS2 UCRT64 toolchain)  
