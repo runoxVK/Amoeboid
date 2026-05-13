@@ -79,8 +79,8 @@
       </div>
     </div>
 
-    <!-- RIGHT: image panel — populated dynamically from assets/panel-images/ -->
-    <div class="right-panel" id="right-panel"></div>
+    <!-- RIGHT: empty for now -->
+    <div class="right-panel"></div>
 
   </div>
 
@@ -88,7 +88,6 @@
   <script src="terminal.js" defer></script>
 
   <script>
-    /* ── Terminal scroll redirect ── */
     window.scrollTo = function() {
       var vp = document.getElementById('terminal-viewport');
       if (vp) vp.scrollTop = vp.scrollHeight;
@@ -99,64 +98,6 @@
         if (inp) inp.focus();
       }
     });
-
-    /* ── Panel images: CSS-animated marquee (no rAF loop) ── */
-    (function() {
-      var base = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
-      var GAP  = 8;
-
-      function loadMarquee() {
-        fetch(base + '/content.json')
-          .then(function(r) { return r.json(); })
-          .then(function(data) { build(data._panelImages || []); })
-          .catch(function() {});
-      }
-
-      function build(srcs) {
-        if (!srcs.length) return;
-        var panel = document.getElementById('right-panel');
-        if (!panel) return;
-
-        var cols = 2;
-        var colW = Math.floor((panel.clientWidth - GAP * (cols + 1)) / cols);
-
-        // split images into two columns, shortest first
-        var colSrcs = [[], []];
-        var colH    = [0, 0];
-        srcs.forEach(function(src) {
-          var c = colH[1] < colH[0] ? 1 : 0;
-          colSrcs[c].push(src);
-          colH[c]++;
-        });
-
-        for (var c = 0; c < cols; c++) {
-          var x     = GAP + c * (colW + GAP);
-          var wrap  = document.createElement('div');
-          wrap.style.cssText = 'position:absolute;top:0;left:' + x + 'px;width:' + colW + 'px;overflow:hidden;bottom:0;';
-
-          var strip = document.createElement('div');
-          strip.className = 'marquee-strip';
-          // stagger col 1
-          if (c === 1) strip.style.animationDelay = '-8s';
-
-          // build images twice for seamless loop
-          [0, 1].forEach(function() {
-            colSrcs[c].forEach(function(src) {
-              var img = document.createElement('img');
-              img.src = base + '/' + src;
-              img.style.cssText = 'display:block;width:' + colW + 'px;height:auto;margin-bottom:' + GAP + 'px;';
-              strip.appendChild(img);
-            });
-          });
-
-          wrap.appendChild(strip);
-          panel.appendChild(wrap);
-        }
-      }
-
-      window.addEventListener('load', loadMarquee);
-      if (document.readyState === 'complete') loadMarquee();
-    })();
   </script>
 </body>
 </html>
