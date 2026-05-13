@@ -50,6 +50,20 @@ function sound(name) {
 
 function clickSound() { sound('click'); }
 
+/** Search worldbuild tree for a file by title or slug */
+function findInTree(node, target) {
+  const t = target.toLowerCase().replace(/[-_]/g, ' ');
+  for (const file of node.files) {
+    if (file.title.toLowerCase() === t || file.slug.toLowerCase().replace(/[-_]/g, ' ') === t)
+      return file;
+  }
+  for (const sub of Object.values(node.folders)) {
+    const found = findInTree(sub, target);
+    if (found) return found;
+  }
+  return null;
+}
+
 // ── Markdown window ───────────────────────────────────
 function openWindow(title, markdown) {
   let html = marked.parse(markdown);
@@ -66,6 +80,20 @@ function openWindow(title, markdown) {
     const body = el('div', 'retro-body');
     body.innerHTML = html;
     body.querySelectorAll('a[href^="http"]').forEach(a => { a.target = '_blank'; a.rel = 'noopener'; });
+    // wikilink handler
+    body.querySelectorAll('.wikilink').forEach(span => {
+      span.addEventListener('click', () => {
+        const target = span.dataset.target;
+        const tree   = CONTENT && CONTENT._worldbuildTree;
+        if (!tree) return;
+        const file = findInTree(tree, target);
+        if (file) openWindow(file.title, file.body);
+        else {
+          span.style.color = 'var(--coral)';
+          span.title = 'not found: ' + target;
+        }
+      });
+    });
     w.appendChild(body);
 
     const resizer = el('div', 'retro-resizer');

@@ -36,9 +36,12 @@ function stripObsidian(text) {
       return '![' + base + '](assets/images/' + base + ')';
     })
     .replace(/!\[\[[^\]]*\]\]/g, '')
-    .replace(/\[\[[^\]|]+\|([^\]]+)\]\]/g, '$1')
+    // [[File|Alias]] → clickable wikilink with alias text
+    .replace(/\[\[([^\]|]+)\|([^\]]+)\]\]/g, '<span class="wikilink" data-target="$1">$2</span>')
+    // [[#Section]] → plain text
     .replace(/\[\[[^\]]*#([^\]]+)\]\]/g, '$1')
-    .replace(/\[\[([^\]]+)\]\]/g, '$1');
+    // [[File]] → clickable wikilink
+    .replace(/\[\[([^\]]+)\]\]/g, '<span class="wikilink" data-target="$1">$1</span>');
 }
 
 function extractDescription(raw) {

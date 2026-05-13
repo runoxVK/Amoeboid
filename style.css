@@ -576,6 +576,8 @@ html, body {
 .retro-body em     { color:var(--ink-dim);font-style:italic; }
 .retro-body a      { color:var(--green-mid);text-decoration:underline; }
 .retro-body a:hover{ color:var(--green); }
+.retro-body .wikilink { color:var(--green-mid);text-decoration:underline;cursor:pointer;border-bottom:1px dashed var(--green-mid); }
+.retro-body .wikilink:hover { color:var(--green); }
 .retro-body ul,.retro-body ol { padding-left:1.1rem;margin:0.35rem 0; }
 .retro-body li { font-family:var(--font-sans);color:var(--ink);font-size:0.86em;line-height:1.8; }
 .retro-body li::marker { color:var(--muted); }
