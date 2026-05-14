@@ -300,7 +300,7 @@ function showSection(key) {
     const entries = (CONTENT[key] && CONTENT[key][subKey]) || [];
 
     const folder = el('div');
-    folder.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 14px;margin:2px 0;border:1px solid rgba(120,232,255,0.12);border-radius:3px;cursor:pointer;background:#04090c;max-width:700px;user-select:none';
+    folder.style.cssText = 'display:flex;align-items:center;gap:10px;padding:8px 14px;margin:2px 0;border:1px solid rgba(64,255,96,0.18);border-top:1px solid rgba(64,255,96,0.35);border-radius:3px;cursor:pointer;background:rgba(20,60,25,0.25);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);max-width:700px;user-select:none;box-shadow:inset 0 1px 0 rgba(64,255,96,0.08),0 0 12px rgba(40,200,64,0.06)';
 
     const arrow = el('span', '', '▶');
     arrow.style.cssText = 'font-size:10px;color:rgba(120,232,255,0.3);transition:transform 0.15s;width:12px;flex-shrink:0';
@@ -318,8 +318,16 @@ function showSection(key) {
 
     let open = false;
 
-    folder.addEventListener('mouseenter', () => folder.style.borderColor = 'rgba(120,232,255,0.35)');
-    folder.addEventListener('mouseleave', () => folder.style.borderColor = open ? 'rgba(120,232,255,0.35)' : 'rgba(120,232,255,0.12)');
+    folder.addEventListener('mouseenter', () => {
+      folder.style.background = 'rgba(40,120,50,0.35)';
+      folder.style.borderColor = 'rgba(64,255,96,0.5)';
+      folder.style.boxShadow = 'inset 0 1px 0 rgba(64,255,96,0.15),0 0 18px rgba(40,200,64,0.15)';
+    });
+    folder.addEventListener('mouseleave', () => {
+      folder.style.background = open ? 'rgba(30,80,35,0.30)' : 'rgba(20,60,25,0.25)';
+      folder.style.borderColor = open ? 'rgba(64,255,96,0.4)' : 'rgba(64,255,96,0.18)';
+      folder.style.boxShadow = 'inset 0 1px 0 rgba(64,255,96,0.08),0 0 12px rgba(40,200,64,0.06)';
+    });
 
     folder.addEventListener('click', () => {
       // worldbuild opens a tree window instead
@@ -332,7 +340,10 @@ function showSection(key) {
       clickSound();
       arrow.style.transform = open ? 'rotate(90deg)' : '';
       arrow.style.color     = open ? 'var(--green)' : 'rgba(120,232,255,0.3)';
-      lbl.style.color       = open ? 'var(--green)'  : 'var(--green-mid)';
+      lbl.style.color       = open ? 'var(--green)' : 'var(--green-mid)';
+      folder.style.background  = open ? 'rgba(30,80,35,0.30)' : 'rgba(20,60,25,0.25)';
+      folder.style.borderColor = open ? 'rgba(64,255,96,0.4)'  : 'rgba(64,255,96,0.18)';
+      folder.style.boxShadow   = open ? 'inset 0 1px 0 rgba(64,255,96,0.12),0 0 20px rgba(40,200,64,0.12)' : 'inset 0 1px 0 rgba(64,255,96,0.08),0 0 12px rgba(40,200,64,0.06)';
 
       if (open && !entriesEl.children.length) {
         if (!entries.length) {
