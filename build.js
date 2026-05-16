@@ -180,7 +180,7 @@ async function main() {
         .map(f => 'assets/panel-images/' + f)
     : [];
   const parsed = JSON.parse(fs.readFileSync(OUT_FILE, 'utf8'));
-  parsed._panelImages  = panelImages;
+  parsed._panelImages    = panelImages;
   parsed._worldbuildTree = readTree(path.join(CONTENT_DIR, 'vomit', 'worldbuild'));
 
   // scan music folder
@@ -233,7 +233,10 @@ async function main() {
     }
   }
 
-  fs.writeFileSync(OUT_FILE, JSON.stringify(parsed, null, 2), 'utf8');
+  fs.writeFileSync(OUT_FILE, JSON.stringify(parsed), 'utf8'); // minified — no whitespace
+
+  const slimSize = Math.round(fs.statSync(OUT_FILE).size / 1024);
+  console.log('  content.json: ' + slimSize + 'KB (minified)');
 
   // 4. Report
   let total = 0;

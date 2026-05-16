@@ -19,9 +19,6 @@
           numOctaves="1"
           seed="2"
           result="noise">
-          <animate attributeName="baseFrequency"
-            values="0.0 0.08;0.0 0.085;0.0 0.08"
-            dur="6s" repeatCount="indefinite"/>
         </feTurbulence>
         <feDisplacementMap
           in="SourceGraphic"
@@ -119,16 +116,32 @@
         if (inp) inp.focus();
       }
     });
+
+    /* ── Single fetch — shared by marquee and music ── */
+    var base = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
+    var _contentData = null;
+    var _contentCallbacks = [];
+    fetch(base + '/content.json')
+      .then(function(r) { return r.json(); })
+      .then(function(d) {
+        _contentData = d;
+        _contentCallbacks.forEach(function(cb) { cb(d); });
+        _contentCallbacks = [];
+      })
+      .catch(function() { _contentData = {}; });
+
+    function onContent(cb) {
+      if (_contentData) cb(_contentData);
+      else _contentCallbacks.push(cb);
+    }
+
     /* ── Marquee ── */
     (function() {
-      var base  = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
       var GAP   = 8;
       var SPEED = 0.5;
+      var lastT = 0;
 
-      fetch(base + '/content.json')
-        .then(function(r) { return r.json(); })
-        .then(function(d) { build(d._panelImages || []); })
-        .catch(function() {});
+      onContent(function(d) { build(d._panelImages || []); });
 
       function build(srcs) {
         if (!srcs.length) return;
@@ -141,11 +154,9 @@
           var wrap = document.createElement('div');
           wrap.style.cssText = 'position:absolute;top:0;bottom:0;overflow:hidden;left:' + (GAP + c*(colW+GAP)) + 'px;width:' + colW + 'px';
           panel.appendChild(wrap);
-
           var strip = document.createElement('div');
           strip.style.cssText = 'position:absolute;top:0;width:' + colW + 'px';
           wrap.appendChild(strip);
-
           [0, 1].forEach(function() {
             colSrcs.forEach(function(src) {
               var img = document.createElement('img');
@@ -154,12 +165,13 @@
               strip.appendChild(img);
             });
           });
-
           return { el: strip, offset: c * 300 };
         });
 
-        function tick() {
+        function tick(now) {
           requestAnimationFrame(tick);
+          if (now - lastT < 33) return; // 30fps cap
+          lastT = now;
           strips.forEach(function(s) {
             var half = s.el.scrollHeight / 2;
             if (!half) return;
@@ -167,11 +179,10 @@
             s.el.style.top = -s.offset + 'px';
           });
         }
-        tick();
+        requestAnimationFrame(tick);
       }
     })();
   </script>
-
 
   <!-- Kelp creature -->
   <script>
@@ -201,9 +212,12 @@
       }
     }
 
-    function tick() {
+    var lastC = 0;
+    function tick(now) {
       requestAnimationFrame(tick);
-      time += 0.016;
+      if (now - lastC < 33) return; // 30fps
+      lastC = now;
+      time += 0.033;
       W = canvas.width; H = canvas.height;
 
       hvx += Math.sin(time * 0.55) * 0.18 + Math.sin(time * 1.1 + 1.2) * 0.07;
@@ -286,17 +300,12 @@
   <audio id="bg-music" loop preload="auto"></audio>
   <script>
     (function() {
-      var music   = document.getElementById('bg-music');
-      var base    = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
+      var music = document.getElementById('bg-music');
       music.volume = 0.35;
       var started = false;
       var tracks  = [];
 
-      // fetch tracks immediately — don't wait for interaction
-      fetch(base + '/content.json')
-        .then(function(r) { return r.json(); })
-        .then(function(d) { tracks = d._music || []; })
-        .catch(function() {});
+      onContent(function(d) { tracks = d._music || []; });
 
       function play() {
         if (started || !tracks.length) return;
