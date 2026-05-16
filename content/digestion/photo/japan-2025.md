@@ -1,0 +1,1 @@
+description:This was one of my favorite trips. I improved a lot with photography once again as well as editing and I traveled a lot. Pictrues include shots from Tokyo, Osaka, Kyoto and Hiroshima. I have lots more shots on my art instagram: @vk.artsz. Half my japan RAW photo files actually got corrupted so I lost half my stuff.

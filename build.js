@@ -182,6 +182,57 @@ async function main() {
   const parsed = JSON.parse(fs.readFileSync(OUT_FILE, 'utf8'));
   parsed._panelImages  = panelImages;
   parsed._worldbuildTree = readTree(path.join(CONTENT_DIR, 'vomit', 'worldbuild'));
+
+  // scan music folder
+  const MUSIC_DIR = path.join(__dirname, 'assets', 'music');
+  parsed._music = fs.existsSync(MUSIC_DIR)
+    ? fs.readdirSync(MUSIC_DIR)
+        .filter(f => ['.mp3','.ogg','.wav','.m4a'].includes(path.extname(f).toLowerCase()))
+        .map(f => 'assets/music/' + f)
+    : [];
+
+  // scan photo albums — each subfolder of assets/images/photo/ is an album
+  const PHOTO_DIR  = path.join(__dirname, 'assets', 'images', 'photo');
+  const IMG_EXTS   = ['.jpg','.jpeg','.png','.webp','.gif'];
+  parsed._photoAlbums = [];
+  if (fs.existsSync(PHOTO_DIR)) {
+    const albumDirs = fs.readdirSync(PHOTO_DIR, { withFileTypes: true })
+      .filter(d => d.isDirectory())
+      .sort((a, b) => {
+        const mtA = fs.statSync(path.join(PHOTO_DIR, a.name)).mtimeMs;
+        const mtB = fs.statSync(path.join(PHOTO_DIR, b.name)).mtimeMs;
+        return mtB - mtA; // newest first
+      });
+
+    for (const dir of albumDirs) {
+      const albumPath = path.join(PHOTO_DIR, dir.name);
+      const images = fs.readdirSync(albumPath)
+        .filter(f => IMG_EXTS.includes(path.extname(f).toLowerCase()))
+        .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
+        .map(f => 'assets/images/photo/' + dir.name + '/' + f);
+      if (!images.length) continue;
+
+      // pull description from matching .md in content/digestion/photo/
+      let description = '';
+      const mdPath = path.join(CONTENT_DIR, 'digestion', 'photo', dir.name + '.md');
+      if (fs.existsSync(mdPath)) {
+        const raw = fs.readFileSync(mdPath, 'utf8');
+        const { description: d } = parseFrontmatter(raw);
+        description = d || extractDescription(raw);
+      }
+
+      parsed._photoAlbums.push({
+        slug: dir.name,
+        title: dir.name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+        cover: images[0],
+        count: images.length,
+        description,
+        images,
+      });
+      console.log('  photo/' + dir.name.padEnd(14) + images.length + ' image(s)');
+    }
+  }
+
   fs.writeFileSync(OUT_FILE, JSON.stringify(parsed, null, 2), 'utf8');
 
   // 4. Report

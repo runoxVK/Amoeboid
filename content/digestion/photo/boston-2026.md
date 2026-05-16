@@ -1,0 +1,1 @@
+description: I didn't take as many pictures during this time frame because I started my semester at Boston campus (northeastern) and was very busy with projects and school. I had fun going out during a very aggressive snow storm and taking pictures though. I also won another photography competition.

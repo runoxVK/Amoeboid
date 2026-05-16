@@ -1,0 +1,1 @@
+description: These were when I really started playing around with editing. Wildwood was very pivotal for me because I started to develop a style and see what worked and what didn't. There are way more pictures on my art instagram @vk.artsz

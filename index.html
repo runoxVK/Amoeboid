@@ -176,6 +176,7 @@
     })();
   </script>
 
+
   <!-- Kelp creature -->
   <script>
   (function() {
@@ -209,7 +210,6 @@
       time += 0.016;
       W = canvas.width; H = canvas.height;
 
-      // two overlapping sine waves drive the head
       hvx += Math.sin(time * 0.55) * 0.18 + Math.sin(time * 1.1 + 1.2) * 0.07;
       hvy += Math.sin(time * 0.38 + 2.0) * 0.11 + Math.sin(time * 0.85 + 0.5) * 0.05;
 
@@ -219,14 +219,12 @@
 
       hx += hvx; hy += hvy;
 
-      // soft bounce off all four edges
       var pad = 60;
-      if (hx < pad)     { hx += (pad-hx)*0.12;     hvx *= 0.5; }
-      if (hx > W-pad)   { hx += (W-pad-hx)*0.12;   hvx *= 0.5; }
-      if (hy < pad)     { hy += (pad-hy)*0.12;      hvy *= 0.5; }
-      if (hy > H-pad)   { hy += (H-pad-hy)*0.12;    hvy *= 0.5; }
+      if (hx < pad)   { hx += (pad-hx)*0.12;   hvx *= 0.5; }
+      if (hx > W-pad) { hx += (W-pad-hx)*0.12; hvx *= 0.5; }
+      if (hy < pad)   { hy += (pad-hy)*0.12;   hvy *= 0.5; }
+      if (hy > H-pad) { hy += (H-pad-hy)*0.12; hvy *= 0.5; }
 
-      // pure forward FABRIK — no anchor, tail just follows
       segs[0].x = hx; segs[0].y = hy;
       for (var i = 1; i < NUM_SEGS; i++) {
         var sx = segs[i].x - segs[i-1].x;
@@ -236,7 +234,6 @@
         segs[i].y = segs[i-1].y + (sy/d)*SEG_LEN;
       }
 
-      // draw
       ctx.clearRect(0, 0, W, H);
 
       for (var i = NUM_SEGS-1; i >= 0; i--) {
@@ -290,5 +287,30 @@
   })();
   </script>
 
+  <audio id="bg-music" loop preload="auto"></audio>
+  <script>
+    (function() {
+      var music  = document.getElementById('bg-music');
+      var base   = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
+      music.volume = 0.35;
+      var started = false;
+
+      function play() {
+        if (started) return;
+        // CONTENT is set by terminal.js after boot
+        var tracks = (typeof CONTENT !== 'undefined' && CONTENT && CONTENT._music) || [];
+        if (!tracks.length) return;
+        started = true;
+        var pick = tracks[Math.floor(Math.random() * tracks.length)];
+        music.src = base + '/' + pick;
+        music.play().catch(function() {});
+        document.removeEventListener('click', play);
+        document.removeEventListener('keydown', play);
+      }
+
+      document.addEventListener('click', play);
+      document.addEventListener('keydown', play);
+    })();
+  </script>
 </body>
 </html>

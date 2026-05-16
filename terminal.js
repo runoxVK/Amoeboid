@@ -8,7 +8,7 @@
 const BASE = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
 
 // ── State ─────────────────────────────────────────────
-let CONTENT = null;
+var CONTENT = null;
 let zTop    = 100;
 let history = [];
 let histIdx = -1;
@@ -225,6 +225,76 @@ function makeCard(entry, index) {
   return card;
 }
 
+// ── Photo lightbox ────────────────────────────────────
+function openPhotoAlbum(album) {
+  makeWindow(album.title, w => {
+    w.style.width  = '780px';
+    w.style.height = '580px';
+
+    const wrap = el('div');
+    wrap.style.cssText = 'flex:1;display:flex;flex-direction:column;min-height:0;background:#000;position:relative;';
+
+    // main image
+    const img = document.createElement('img');
+    img.style.cssText = 'flex:1;min-height:0;width:100%;object-fit:contain;display:block;';
+
+    // counter
+    const counter = el('div');
+    counter.style.cssText = 'position:absolute;top:10px;right:12px;font-size:12px;color:rgba(255,255,255,0.5);pointer-events:none;';
+
+    // prev/next buttons
+    const btnPrev = el('button', '', '‹');
+    const btnNext = el('button', '', '›');
+    [btnPrev, btnNext].forEach(b => {
+      b.style.cssText = 'position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);border:1px solid rgba(64,255,96,0.2);color:rgba(64,255,96,0.8);font-size:28px;width:40px;height:60px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;border-radius:3px;';
+    });
+    btnPrev.style.left = '8px';
+    btnNext.style.right = '8px';
+
+    // thumbnail strip
+    const strip = el('div');
+    strip.style.cssText = 'display:flex;gap:4px;padding:6px;overflow-x:auto;background:#0a0a0a;flex-shrink:0;scrollbar-width:thin;';
+
+    var idx = 0;
+    var thumbEls = [];
+
+    function show(i) {
+      idx = (i + album.images.length) % album.images.length;
+      img.src = BASE + '/' + album.images[idx];
+      counter.textContent = (idx+1) + ' / ' + album.images.length;
+      thumbEls.forEach((t, ti) => {
+        t.style.outline = ti === idx ? '2px solid var(--green)' : '2px solid transparent';
+      });
+      // scroll thumb into view
+      if (thumbEls[idx]) thumbEls[idx].scrollIntoView({ inline: 'nearest', behavior: 'smooth' });
+    }
+
+    album.images.forEach((src, i) => {
+      const t = document.createElement('img');
+      t.src = BASE + '/' + src;
+      t.style.cssText = 'width:60px;height:50px;object-fit:cover;cursor:pointer;flex-shrink:0;border-radius:2px;';
+      t.addEventListener('click', () => show(i));
+      strip.appendChild(t);
+      thumbEls.push(t);
+    });
+
+    btnPrev.addEventListener('click', () => show(idx - 1));
+    btnNext.addEventListener('click', () => show(idx + 1));
+
+    // keyboard nav when window is focused
+    w.setAttribute('tabindex', '0');
+    w.addEventListener('keydown', e => {
+      if (e.key === 'ArrowLeft')  { show(idx - 1); e.preventDefault(); }
+      if (e.key === 'ArrowRight') { show(idx + 1); e.preventDefault(); }
+    });
+
+    wrap.append(img, counter, btnPrev, btnNext);
+    w.append(wrap, strip);
+    show(0);
+    setTimeout(() => w.focus(), 50);
+  });
+}
+
 // ── Worldbuild tree window ────────────────────────────
 function openWorldbuildWindow() {
   const tree = (CONTENT && CONTENT._worldbuildTree) || { files: [], folders: {} };
@@ -334,6 +404,41 @@ function showSection(key) {
       if (key === 'vomit' && subKey === 'worldbuild') {
         clickSound();
         openWorldbuildWindow();
+        return;
+      }
+      // photo opens album cards
+      if (key === 'digestion' && subKey === 'photo') {
+        open = !open;
+        clickSound();
+        arrow.style.transform = open ? 'rotate(90deg)' : '';
+        arrow.style.color     = open ? 'var(--green)' : 'rgba(120,232,255,0.3)';
+        lbl.style.color       = open ? 'var(--green)' : 'var(--green-mid)';
+        folder.style.background  = open ? 'rgba(30,80,35,0.30)' : 'rgba(20,60,25,0.25)';
+        folder.style.borderColor = open ? 'rgba(64,255,96,0.4)'  : 'rgba(64,255,96,0.18)';
+        folder.style.boxShadow   = open ? 'inset 0 1px 0 rgba(64,255,96,0.12),0 0 20px rgba(40,200,64,0.12)' : 'inset 0 1px 0 rgba(64,255,96,0.08),0 0 12px rgba(40,200,64,0.06)';
+        if (open && !entriesEl.children.length) {
+          const albums = (CONTENT && CONTENT._photoAlbums) || [];
+          if (!albums.length) {
+            entriesEl.appendChild(el('div', '', 'no albums yet.'));
+          } else {
+            albums.forEach(album => {
+              const card = el('div', 'entry-card');
+              const thumb = el('div', 'entry-thumb');
+              const img = document.createElement('img');
+              img.src = BASE + '/' + album.cover;
+              img.style.cssText = 'width:100%;height:100%;object-fit:cover;display:block';
+              thumb.appendChild(img);
+              const info = el('div', 'entry-info');
+              info.appendChild(el('span', 'entry-title', album.title));
+              info.appendChild(el('span', 'entry-desc', album.description || album.count + ' photos'));
+              card.append(thumb, info);
+              card.addEventListener('click', () => openPhotoAlbum(album));
+              entriesEl.appendChild(card);
+            });
+          }
+        }
+        entriesEl.style.display = open ? 'flex' : 'none';
+        scrollDown();
         return;
       }
       open = !open;

@@ -1,0 +1,1 @@
+description:These pictures represent the start of my photography journey. I found my dad's old Canon SX50 HS and I first learnt how to edit on darktable

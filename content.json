@@ -54,7 +54,50 @@
     ]
   },
   "digestion": {
-    "photo": [],
+    "photo": [
+      {
+        "title": "Monroe 2026",
+        "description": "These were taken in my hometown after a huge photography break (which was taken during my last semester of freshmen year of college).",
+        "thumbnail": null,
+        "pdf": null,
+        "body": ""
+      },
+      {
+        "title": "Boston 2026",
+        "description": "I didn't take as many pictures during this time frame because I started my semester at Boston campus (northeastern) and was very busy with projects and school. I had fun going out during a very aggressive snow storm and taking pictures though. I also won another photography competition.",
+        "thumbnail": null,
+        "pdf": null,
+        "body": ""
+      },
+      {
+        "title": "Spain 2025",
+        "description": "These pictures take place in Madrid, Monasterio De Piedra, Valencia and Cordoba. I took these during my first college semester abroad in Spain and I was exposed to lots of new environments and art styles. I also won my first photography competition here (Madrid). See my art instagram for even more pictures: @vk.artsz",
+        "thumbnail": null,
+        "pdf": null,
+        "body": ""
+      },
+      {
+        "title": "Japan 2025",
+        "description": "This was one of my favorite trips. I improved a lot with photography once again as well as editing and I traveled a lot. Pictrues include shots from Tokyo, Osaka, Kyoto and Hiroshima. I have lots more shots on my art instagram: @vk.artsz. Half my japan RAW photo files actually got corrupted so I lost half my stuff.",
+        "thumbnail": null,
+        "pdf": null,
+        "body": ""
+      },
+      {
+        "title": "Wildwood 2025",
+        "description": "These were when I really started playing around with editing. Wildwood was very pivotal for me because I started to develop a style and see what worked and what didn't. There are way more pictures on my art instagram @vk.artsz",
+        "thumbnail": null,
+        "pdf": null,
+        "body": ""
+      },
+      {
+        "title": "Dominican Republic 2024",
+        "description": "These pictures represent the start of my photography journey. I found my dad's old Canon SX50 HS and I first learnt how to edit on darktable",
+        "thumbnail": null,
+        "pdf": null,
+        "body": ""
+      }
+    ],
     "music": [],
     "other": [],
     "knowledge": [
@@ -101,6 +144,7 @@
     "assets/panel-images/ROR2SeekersArt.png",
     "assets/panel-images/ROR2Ukelele.png",
     "assets/panel-images/RainworldBulb.png",
+    "assets/panel-images/SLIcon.png",
     "assets/panel-images/SubShroom.png",
     "assets/panel-images/whitesnakeArt.png"
   ],
@@ -362,5 +406,166 @@
         }
       }
     }
-  }
+  },
+  "_music": [
+    "assets/music/Floes.mp3",
+    "assets/music/GradualLiquidationFNAF.mp3"
+  ],
+  "_photoAlbums": [
+    {
+      "slug": "monroe-2026",
+      "title": "Monroe 2026",
+      "cover": "assets/images/photo/monroe-2026/MN1.jpg",
+      "count": 10,
+      "description": "These were taken in my hometown after a huge photography break (which was taken during my last semester of freshmen year of college).",
+      "images": [
+        "assets/images/photo/monroe-2026/MN1.jpg",
+        "assets/images/photo/monroe-2026/MN2.jpg",
+        "assets/images/photo/monroe-2026/MN3.jpg",
+        "assets/images/photo/monroe-2026/MN4.jpg",
+        "assets/images/photo/monroe-2026/MN5.jpg",
+        "assets/images/photo/monroe-2026/MN6.jpg",
+        "assets/images/photo/monroe-2026/MN7.jpg",
+        "assets/images/photo/monroe-2026/MN8.jpg",
+        "assets/images/photo/monroe-2026/MN9.jpg",
+        "assets/images/photo/monroe-2026/MN10.jpg"
+      ]
+    },
+    {
+      "slug": "boston-2026",
+      "title": "Boston 2026",
+      "cover": "assets/images/photo/boston-2026/BS1.jpg",
+      "count": 5,
+      "description": "I didn't take as many pictures during this time frame because I started my semester at Boston campus (northeastern) and was very busy with projects and school. I had fun going out during a very aggressive snow storm and taking pictures though. I also won another photography competition.",
+      "images": [
+        "assets/images/photo/boston-2026/BS1.jpg",
+        "assets/images/photo/boston-2026/BS2.jpg",
+        "assets/images/photo/boston-2026/BS3.jpg",
+        "assets/images/photo/boston-2026/BS4.jpg",
+        "assets/images/photo/boston-2026/IMG_2855.jpg"
+      ]
+    },
+    {
+      "slug": "spain-2025",
+      "title": "Spain 2025",
+      "cover": "assets/images/photo/spain-2025/SP1.jpg",
+      "count": 20,
+      "description": "These pictures take place in Madrid, Monasterio De Piedra, Valencia and Cordoba. I took these during my first college semester abroad in Spain and I was exposed to lots of new environments and art styles. I also won my first photography competition here (Madrid). See my art instagram for even more pictures: @vk.artsz",
+      "images": [
+        "assets/images/photo/spain-2025/SP1.jpg",
+        "assets/images/photo/spain-2025/SP2.jpg",
+        "assets/images/photo/spain-2025/SP3.jpg",
+        "assets/images/photo/spain-2025/SP4.jpg",
+        "assets/images/photo/spain-2025/SP5.jpg",
+        "assets/images/photo/spain-2025/SP6.jpg",
+        "assets/images/photo/spain-2025/SP7.jpg",
+        "assets/images/photo/spain-2025/SP8.jpg",
+        "assets/images/photo/spain-2025/SP9.jpg",
+        "assets/images/photo/spain-2025/SP10.jpg",
+        "assets/images/photo/spain-2025/SP11.jpg",
+        "assets/images/photo/spain-2025/SP12.jpg",
+        "assets/images/photo/spain-2025/SP13.jpg",
+        "assets/images/photo/spain-2025/SP14.jpg",
+        "assets/images/photo/spain-2025/SP15.jpg",
+        "assets/images/photo/spain-2025/SP16.jpg",
+        "assets/images/photo/spain-2025/SP17.jpg",
+        "assets/images/photo/spain-2025/SP18.jpg",
+        "assets/images/photo/spain-2025/SP19.jpg",
+        "assets/images/photo/spain-2025/SP20.jpg"
+      ]
+    },
+    {
+      "slug": "japan-2025",
+      "title": "Japan 2025",
+      "cover": "assets/images/photo/japan-2025/JP1.jpg",
+      "count": 33,
+      "description": "This was one of my favorite trips. I improved a lot with photography once again as well as editing and I traveled a lot. Pictrues include shots from Tokyo, Osaka, Kyoto and Hiroshima. I have lots more shots on my art instagram: @vk.artsz. Half my japan RAW photo files actually got corrupted so I lost half my stuff.",
+      "images": [
+        "assets/images/photo/japan-2025/JP1.jpg",
+        "assets/images/photo/japan-2025/JP2.jpg",
+        "assets/images/photo/japan-2025/JP3.jpg",
+        "assets/images/photo/japan-2025/JP4.jpg",
+        "assets/images/photo/japan-2025/JP5.jpg",
+        "assets/images/photo/japan-2025/JP6.jpg",
+        "assets/images/photo/japan-2025/JP8.jpg",
+        "assets/images/photo/japan-2025/JP9.jpg",
+        "assets/images/photo/japan-2025/JP10.jpg",
+        "assets/images/photo/japan-2025/JP11.jpg",
+        "assets/images/photo/japan-2025/JP12.jpg",
+        "assets/images/photo/japan-2025/JP13.jpg",
+        "assets/images/photo/japan-2025/JP14.jpg",
+        "assets/images/photo/japan-2025/JP15.jpg",
+        "assets/images/photo/japan-2025/JP16.jpg",
+        "assets/images/photo/japan-2025/JP17.jpg",
+        "assets/images/photo/japan-2025/JP18.jpg",
+        "assets/images/photo/japan-2025/JP19.jpg",
+        "assets/images/photo/japan-2025/JP20.jpg",
+        "assets/images/photo/japan-2025/JP21.jpg",
+        "assets/images/photo/japan-2025/JP22.jpg",
+        "assets/images/photo/japan-2025/JP23.jpg",
+        "assets/images/photo/japan-2025/JP24.jpg",
+        "assets/images/photo/japan-2025/JP25.jpg",
+        "assets/images/photo/japan-2025/JP26.jpg",
+        "assets/images/photo/japan-2025/JP27.jpg",
+        "assets/images/photo/japan-2025/JP28.jpg",
+        "assets/images/photo/japan-2025/JP29.jpg",
+        "assets/images/photo/japan-2025/JP30.jpg",
+        "assets/images/photo/japan-2025/JP31.jpg",
+        "assets/images/photo/japan-2025/JP32.jpg",
+        "assets/images/photo/japan-2025/JP33.jpg",
+        "assets/images/photo/japan-2025/JP34.jpg"
+      ]
+    },
+    {
+      "slug": "dominican-republic-2024",
+      "title": "Dominican Republic 2024",
+      "cover": "assets/images/photo/dominican-republic-2024/DR1.jpg",
+      "count": 6,
+      "description": "These pictures represent the start of my photography journey. I found my dad's old Canon SX50 HS and I first learnt how to edit on darktable",
+      "images": [
+        "assets/images/photo/dominican-republic-2024/DR1.jpg",
+        "assets/images/photo/dominican-republic-2024/DR2.jpg",
+        "assets/images/photo/dominican-republic-2024/DR3.jpg",
+        "assets/images/photo/dominican-republic-2024/DR4.jpg",
+        "assets/images/photo/dominican-republic-2024/DR5.jpg",
+        "assets/images/photo/dominican-republic-2024/DR6.jpg"
+      ]
+    },
+    {
+      "slug": "wildwood-2025",
+      "title": "Wildwood 2025",
+      "cover": "assets/images/photo/wildwood-2025/WW1.jpg",
+      "count": 27,
+      "description": "These were when I really started playing around with editing. Wildwood was very pivotal for me because I started to develop a style and see what worked and what didn't. There are way more pictures on my art instagram @vk.artsz",
+      "images": [
+        "assets/images/photo/wildwood-2025/WW1.jpg",
+        "assets/images/photo/wildwood-2025/WW2.jpg",
+        "assets/images/photo/wildwood-2025/WW3.jpg",
+        "assets/images/photo/wildwood-2025/WW4.jpg",
+        "assets/images/photo/wildwood-2025/WW5.jpg",
+        "assets/images/photo/wildwood-2025/WW6.jpg",
+        "assets/images/photo/wildwood-2025/WW7.jpg",
+        "assets/images/photo/wildwood-2025/WW8.jpg",
+        "assets/images/photo/wildwood-2025/WW9.jpg",
+        "assets/images/photo/wildwood-2025/WW10.jpg",
+        "assets/images/photo/wildwood-2025/WW11.jpg",
+        "assets/images/photo/wildwood-2025/WW12.jpg",
+        "assets/images/photo/wildwood-2025/WW13.jpg",
+        "assets/images/photo/wildwood-2025/WW14.jpg",
+        "assets/images/photo/wildwood-2025/WW15.jpg",
+        "assets/images/photo/wildwood-2025/WW16.jpg",
+        "assets/images/photo/wildwood-2025/WW17.jpg",
+        "assets/images/photo/wildwood-2025/WW18.jpg",
+        "assets/images/photo/wildwood-2025/WW19.jpg",
+        "assets/images/photo/wildwood-2025/WW20.jpg",
+        "assets/images/photo/wildwood-2025/WW21.jpg",
+        "assets/images/photo/wildwood-2025/WW22.jpg",
+        "assets/images/photo/wildwood-2025/WW23.jpg",
+        "assets/images/photo/wildwood-2025/WW24.jpg",
+        "assets/images/photo/wildwood-2025/WW25.jpg",
+        "assets/images/photo/wildwood-2025/WW26.jpg",
+        "assets/images/photo/wildwood-2025/WW27.jpg"
+      ]
+    }
+  ]
 }

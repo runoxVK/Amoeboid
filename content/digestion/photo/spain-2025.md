@@ -1,0 +1,1 @@
+description: These pictures take place in Madrid, Monasterio De Piedra, Valencia and Cordoba. I took these during my first college semester abroad in Spain and I was exposed to lots of new environments and art styles. I also won my first photography competition here (Madrid). See my art instagram for even more pictures: @vk.artsz

@@ -1,0 +1,1 @@
+description:These were taken in my hometown after a huge photography break (which was taken during my last semester of freshmen year of college). 
