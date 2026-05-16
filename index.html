@@ -5,10 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AMOEBOID</title>
   <link rel="preload" href="assets/fonts/Bombardier-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-  <link rel="preload" href="assets/sounds/vomit.mp3" as="audio">
-  <link rel="preload" href="assets/sounds/digestion.mp3" as="audio">
-  <link rel="preload" href="assets/sounds/consumption.mp3" as="audio">
-  <link rel="preload" href="assets/sounds/click.mp3" as="audio">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -290,19 +286,22 @@
   <audio id="bg-music" loop preload="auto"></audio>
   <script>
     (function() {
-      var music  = document.getElementById('bg-music');
-      var base   = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
+      var music   = document.getElementById('bg-music');
+      var base    = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
       music.volume = 0.35;
       var started = false;
+      var tracks  = [];
+
+      // fetch tracks immediately — don't wait for interaction
+      fetch(base + '/content.json')
+        .then(function(r) { return r.json(); })
+        .then(function(d) { tracks = d._music || []; })
+        .catch(function() {});
 
       function play() {
-        if (started) return;
-        // CONTENT is set by terminal.js after boot
-        var tracks = (typeof CONTENT !== 'undefined' && CONTENT && CONTENT._music) || [];
-        if (!tracks.length) return;
+        if (started || !tracks.length) return;
         started = true;
-        var pick = tracks[Math.floor(Math.random() * tracks.length)];
-        music.src = base + '/' + pick;
+        music.src = base + '/' + tracks[Math.floor(Math.random() * tracks.length)];
         music.play().catch(function() {});
         document.removeEventListener('click', play);
         document.removeEventListener('keydown', play);
