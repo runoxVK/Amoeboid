@@ -132,23 +132,44 @@ async function convertToWebP() {
     console.log('  run: npm install sharp   to enable auto-conversion\n');
     return;
   }
-  if (!fs.existsSync(PANEL_DIR)) return;
-  let converted = 0;
-  for (const f of fs.readdirSync(PANEL_DIR)) {
-    const ext = path.extname(f).toLowerCase();
-    if (ext === '.webp' || !['.png','.jpg','.jpeg','.gif'].includes(ext)) continue;
-    const src  = path.join(PANEL_DIR, f);
-    const dest = path.join(PANEL_DIR, path.basename(f, ext) + '.webp');
-    try {
-      await sharp(src).webp({ quality: 82 }).toFile(dest);
-      fs.unlinkSync(src);
-      converted++;
-      console.log('  converted: ' + f + ' → ' + path.basename(dest));
-    } catch(e) {
-      console.log('  warning: could not convert ' + f);
+
+  const IMG_EXTS = ['.png', '.jpg', '.jpeg', '.gif'];
+  let converted  = 0;
+
+  // convert all images in a directory (optionally recursive)
+  async function convertDir(dir, recursive, quality) {
+    if (!fs.existsSync(dir)) return;
+    for (const entry of fs.readdirSync(dir, { withFileTypes: true })) {
+      if (entry.isDirectory() && recursive) {
+        await convertDir(path.join(dir, entry.name), recursive, quality);
+        continue;
+      }
+      const ext = path.extname(entry.name).toLowerCase();
+      if (!IMG_EXTS.includes(ext)) continue;
+      const src  = path.join(dir, entry.name);
+      const dest = path.join(dir, path.basename(entry.name, ext) + '.webp');
+      try {
+        await sharp(src).webp({ quality }).toFile(dest);
+        fs.unlinkSync(src);
+        converted++;
+        console.log('  converted: ' + path.relative(__dirname, src) + ' → ' + path.basename(dest));
+      } catch(e) {
+        console.log('  warning: could not convert ' + entry.name);
+      }
     }
   }
+
+  // panel images — quality 82
+  await convertDir(path.join(__dirname, 'assets', 'panel-images'), false, 82);
+
+  // photo albums — quality 85, recursive
+  await convertDir(path.join(__dirname, 'assets', 'images', 'photo'), true, 85);
+
+  // thumbnails — quality 82
+  await convertDir(path.join(__dirname, 'assets', 'thumbnails'), false, 82);
+
   if (converted) console.log('  ' + converted + ' image(s) → WebP\n');
+  else console.log('  all images already WebP\n');
 }
 
 // ── Main ──────────────────────────────────────────────
