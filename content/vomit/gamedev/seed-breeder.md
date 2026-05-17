@@ -8,7 +8,8 @@ description: A Farming game built with SDL2 and C
 **Editor:** VS Code  
 **Terminal:** Git Bash  
 **Status:** Complete (v1.0)
-https://github.com/runoxVK/SeedBreederSDL2
+GitHub: https://github.com/runoxVK/SeedBreederSDL2
+Itch.io: https://runox.itch.io/seed-breeder
 ---
 
 ## Table of Contents

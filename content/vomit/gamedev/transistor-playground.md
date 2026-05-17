@@ -1,344 +1,643 @@
-# Transistor Playground
 
-description: A transistor simulator on Godot - Work in Progress
+# Transistor Game — Complete Documentation
 
-Language: GD Script
-Game Engine: Godot
-Still in development
-https://github.com/runoxVK/TheTransistorGame
----
-# Devlog #1 — Foundation
+**Version:** 0.1 (Prototype) **Engine:** Godot 4.2+ **Language:** GDScript **Renderer:** Forward+ **Last Updated:** 2026-04-16
 
-**Date:** 2025-04-14 **Project:** Transistor Game (working title) **Engine:** Godot 4.2+
 
+GitHub: https://github.com/runoxVK/TheTransistorPlayground
+itch.io: https://runox.itch.io/transistorplayground
+
+XOR Gate Example:
+![[XOR1.png]]
 ---
 
-## Overview
+## Table of Contents
 
-First session. Designed and implemented the full foundational architecture for a first-person circuit-building game. The core concept is Minecraft redstone but with real transistor mechanics — players walk around a large flat board in first person and place wires, transistors, resistors, repeaters, LEDs, and clocks to build working digital logic circuits.
-
----
-
-## Concept & Design Decisions
-
-### Core Premise
-
-A first-person 3D game where the player builds circuits on a flat grid, viewed and interacted with from ground level. Circuits are built from discrete components snapped to a tile grid, identical in philosophy to Minecraft redstone but with transistor-based logic instead of redstone torches.
-
-### Why This Works in 3D
-
-The simulation is entirely 2D under the hood — a flat dictionary keyed by `Vector2i` grid cells. The 3D aspect is purely visual and navigational. This keeps the simulation simple and correct while giving the game a physical, walkable feel.
-
-### Signal Strength System
-
-Adopted Minecraft's signal strength model directly. Signal starts at **15** from any source and loses **1 strength per wire tile** it travels through. At 0 the signal dies. A **Repeater** resets signal back to 15 at any point, allowing indefinitely long wire runs. This creates meaningful decisions about repeater placement and makes signal decay a visible, tangible mechanic.
-
-### Transistor Model
-
-NPN transistor analogy:
-
-- **Collector** — power input side (back of component)
-- **Emitter** — power output side (front of component)
-- **Gate/Base** — control input (left and right sides)
-
-Signal only flows Collector → Emitter when the Gate receives any signal (threshold: 1). This maps cleanly to real BJT transistor behaviour and is sufficient to construct all fundamental logic gates.
-
-### Scalability Approach
-
-The simulation was designed from the start to scale to large, intricate builds. Key decisions made early to support this:
-
-- Event-driven solver — only runs when the circuit changes, not every frame
-- Changed-only visual broadcast — `on_sim_update` is only called on nodes whose `powered` or `strength` state actually changed, not every node every tick
-- Single global `SimulationManager` autoload owns the entire graph across all boards, so circuits can eventually span multiple physical board objects
+1. [Game Overview]
+2. [Controls]
+3. [Components Reference]
+4. [Signal System]
+5. [Transistor Guide]
+6. [Logic Gate Blueprints]
+7. [Architecture Overview]
+8. [File Structure]
+9. [Simulation Engine]
+10. [Known Issues & Limitations]
+11. [Roadmap]
 
 ---
 
-## Architecture
+## 1. Game Overview
 
-### Systems Built
+A first-person circuit-building sandbox. The player walks around a large flat board and places electronic components — wires, transistors, resistors, repeaters, LEDs, clocks — to construct working digital logic circuits.
 
-#### SimulationManager (Autoload)
+The core inspiration is Minecraft redstone, but with real transistor mechanics. Instead of redstone torches and dust, you work with NPN and PNP transistors, signal decay over wire runs, and repeaters. The same logical completeness applies: with NAND gates alone you can build any digital system. From a single transistor to a full CPU, every step is buildable from the components in this game.
 
-Global BFS flood-fill solver. On any circuit change, seeds a queue from all active sources and propagates signal outward through the connection graph. Handles per-type strength rules (wire decay, repeater reset, transistor gate control, resistor drop, LED terminal). Snapshots state before each run and only notifies visual nodes that actually changed.
+The world is a single large flat board viewed from first-person ground level. Components snap to a 1m × 1m tile grid. Wires connect automatically to adjacent components. Signal flows, decays, and is gated exactly as you would expect from real digital electronics.
 
-#### ComponentRegistry (Autoload)
+---
 
-Single source of truth for all component types. Each entry defines the scene path, default simulation node properties, and info panel text. Adding a new component means adding one dictionary entry here — nothing else changes.
+## 2. Controls
 
-#### CircuitBoard
-
-Owns a flat 2D grid (`Dictionary` keyed by `Vector2i`). Handles world↔grid coordinate conversion, component instantiation, and — critically — directional connection routing. When building the sim graph, it asks each component which node ID a given neighbour direction should connect to. This allows transistors to have separate gate/collector/emitter nodes that neighbours connect to correctly based on physical position.
-
-#### Player
-
-Standard first-person `CharacterBody3D`. Raycasts from camera center to detect hovered board cells. Left-click places, middle-click removes, right-click toggles sources or opens the info panel. Scroll wheel and number keys cycle the component hotbar.
-
-#### InfoPanel
-
-HUD overlay showing static component data (description, real-world analogy, usage tips) plus live simulation state (current strength, powered status, gate open/closed for transistors, frequency for clocks). Appears on right-click inspect, dismissed with Escape.
-
-### Component Types Implemented
-
-|Component|Behaviour|
+|Action|Key / Button|
 |---|---|
-|Wire|Carries signal. Loses 1 strength per tile.|
-|Source|Emits strength 15. Right-click to toggle on/off.|
-|Repeater|Resets any incoming signal back to strength 15.|
-|Transistor|NPN switch. Collector→Emitter flow gated by Base signal.|
-|Resistor|Drops signal strength by 4 as it passes through.|
-|LED|Terminal. Lights up when powered, brightness scales with strength. Does not propagate signal.|
-|Clock|Auto-oscillating source. Right-click cycles preset frequencies (1Hz, 2Hz, 4Hz, 10Hz, 20Hz).|
+|Move|WASD|
+|Look|Mouse|
+|Sprint|Shift|
+|Jump|Space|
+|**Place component**|Left-click|
+|**Remove component**|Middle-click|
+|**Toggle source / clock frequency**|Right-click|
+|**Inspect component (info panel)**|Right-click (non-source)|
+|**Rotate before placing**|R (cycles 0° → 90° → 180° → 270°)|
+|Select hotbar slot|1 – 7|
+|Cycle hotbar|Scroll wheel|
+|Close info panel / release mouse|Escape|
 
-### Transistor Sim Node Structure
+### Placement workflow
 
-Each placed transistor registers **three** sim nodes with SimulationManager:
-
-- `{id}` — emitter (output), type `transistor_emitter`
-- `{id}_gate` — gate/base (control), type `transistor_gate`
-- `{id}_col` — collector (power input), type `transistor_collector`
-
-CircuitBoard routes adjacent wires to the correct node based on which side of the transistor cell they occupy.
-
----
-
-## Bugs Found and Fixed
-
-### GDScript Type Inference Errors
-
-Several variables using `:=` inference broke because `Dictionary.get()` returns `Variant` and iterating over untyped `Array` loses element types. Fixed throughout by using explicit type declarations (`var x: bool =`, `var x: Vector2i =`, etc.).
-
-### `_set` Reserved Method Conflict
-
-Transistor script used `_set` as a helper function name, which conflicts with Godot's built-in `_set(StringName, Variant) -> bool` virtual method. Renamed to `_apply`.
-
-### LED Never Lighting Up
-
-The BFS only updated a node's `powered` state if it was enqueued and propagated outward. LEDs return 0 output strength (terminal), so they were never being marked powered themselves. Fixed by separating "incoming strength to this node" from "output strength to neighbours" — LEDs now receive and store incoming strength but are not enqueued, so signal stops at them correctly.
-
-### Transistor Connections Not Routing Correctly
-
-Initial implementation connected all 4 neighbours of a transistor cell to its emitter node. Gate and collector nodes were registered but never connected to anything. Fixed by implementing `get_node_id_for_side(dir: Vector2i)` on the Transistor component and `_node_id_for_side()` on CircuitBoard, which routes each adjacent cell to the correct sub-node based on direction.
-
-### Source Visual Not Updating on Toggle
-
-`toggle_source` in CircuitBoard correctly updated the sim node but the source's own visual never changed because the sim broadcast only fires on nodes whose state changed — and sources are seeds, not propagated-to. Fixed by calling `on_sim_update` directly on the source instance after toggling.
-
-### Clock Visual Not Pulsing
-
-Clock's `_process` couldn't find its sim node because `board` and `cell` are set by CircuitBoard after `_ready()` runs. The sim node lookup was failing silently. Fixed by retrying the lookup each frame until it succeeds, then setting the initial visual state immediately on first successful acquisition.
-
-### Scene Path Mismatch
-
-ComponentRegistry hardcoded `res://components/` as scene paths. Project used `res://scenes/components/`. Updated all paths in ComponentRegistry.
+1. Select a component from the hotbar (number keys or scroll)
+2. Press R to rotate if needed — the highlight cursor rotates to preview orientation
+3. Look at the board — green highlight = valid placement, red = occupied
+4. Left-click to place
+5. Middle-click any placed component to remove it
 
 ---
 
-## Logic Gate Reference
+## 3. Components Reference
 
-Verified transistor layout for building fundamental gates. Transistor orientation: Back = Collector, Front = Emitter, Left/Right = Gate.
+### Wire
 
-**Buffer** — signal passes when gate is high: `Source A → Collector | Source B → Gate | Emitter → LED`
+Carries signal between components. Loses 1 strength per tile travelled.
 
-**AND gate** — two transistors in series: `Source → T1 Collector | T1 Emitter → T2 Collector | T2 Emitter → LED` `Input A → T1 Gate | Input B → T2 Gate`
-
-**OR gate** — two transistors in parallel: `Source → T1 Collector | Source → T2 Collector` `T1 Emitter → LED wire | T2 Emitter → same LED wire` `Input A → T1 Gate | Input B → T2 Gate`
-
----
-
-## What Works
-
-- First-person movement, sprint, jump
-- Component placement and removal on a large flat grid
-- Green/red highlight cursor showing valid/invalid placement
-- Full signal propagation with strength decay
-- Wire colour gradient (dark grey → orange → bright yellow) reflecting signal strength
-- Source toggle via right-click
-- Repeater resetting signal strength
-- Resistor dropping signal strength
-- LED lighting up as a terminal indicator, brightness proportional to strength
-- Clock auto-oscillating with right-click frequency cycling
-- Transistor with directional gate/collector/emitter routing
-- Info panel with live sim state on right-click inspect
-- Hotbar with scroll and number key selection
+|Property|Value|
+|---|---|
+|Signal loss|1 per tile|
+|Max range|15 tiles from source or repeater|
+|Connections|All 4 adjacent neighbours|
+|Visual|Flat cube (0.8 × 0.05 × 0.8m). Colour gradient: dark grey (off) → orange → bright yellow (full strength)|
 
 ---
 
-## What's Next
+### Power Source
 
-1. **Component rotation** — R key to rotate repeaters and transistors before placing. Required for clean circuit layout since transistor orientation is currently fixed.
-2. **Wire visual connection stubs** — wires should visually extend toward adjacent wires so a wire run looks like a line rather than a row of separate cubes.
-3. **IC save system** — select a region, name it, save it as a reusable black-box component. Essential for building large circuits without re-laying the same gate patterns repeatedly.
-4. **Copy/paste region** — stamp a selected rectangle of components elsewhere on the board.
-5. **Grid overlay** — faint grid lines on the board surface for easier alignment.
-6. **Blender models** — replace placeholder cubes with proper component models. Max bounding box per component: 0.9m × 0.9m × 0.4m (fits within one 1m × 1m tile with clearance).
+Emits a full-strength signal. Right-click to toggle on/off.
 
----
-
-_Engine: Godot 4.2 — Language: GDScript — Renderer: Forward+_
-
-# Devlog #2 — Transistors, Rotation, and Digital Logic
-
-**Date:** 2026-04-16 **Project:** Transistor Game (working title) **Engine:** Godot 4.2+
+|Property|Value|
+|---|---|
+|Output strength|15 (maximum)|
+|Toggle|Right-click|
+|Visual|Cube glows bright red when active, near-black when off|
 
 ---
 
-## Overview
+### Repeater
 
-This session focused entirely on getting the transistor simulation correct and building the foundational digital logic primitives. The session was longer and more debugging-heavy than expected — the simulation architecture went through several rewrites before converging on a correct, stable solver. By the end, AND, NAND, and XOR gates are all verified working in-game.
+Accepts any signal and re-emits it at full strength (15). Essential for long wire runs.
 
----
-
-## What Was Built
-
-### NPN and PNP Transistors
-
-Replaced the single generic `Transistor` component with two distinct types:
-
-**NPN Transistor**
-
-- Normally open — gate HIGH opens it
-- Conducts Collector→Emitter when gate strength ≥ threshold (1)
-- Indicator colours: yellow gate, red collector, green emitter
-
-**PNP Transistor**
-
-- Normally closed — gate LOW opens it
-- Conducts Collector→Emitter when gate strength < threshold (1)
-- Indicator colours: yellow gate, red collector, green emitter (same scheme as NPN for consistency)
-
-Both share the same physical pin layout:
-
-- Left/Right sides → Gate (yellow sphere)
-- Front (-Z) → Collector (red sphere, power IN)
-- Back (+Z) → Emitter (green sphere, power OUT)
-
-Each transistor registers three sim nodes with SimulationManager: an emitter node (main), a gate node, and a collector node. CircuitBoard routes adjacent wire connections to the correct node based on which side of the transistor they touch, using `get_node_id_for_side(dir)` on each component.
-
-### Component Rotation
-
-Added R key rotation before placement. Rotation cycles through 0°, 90°, 180°, 270° and is stored as a `rotation_step` integer on each `ComponentBase`. The highlight cursor rotates visually to preview placement orientation.
-
-CircuitBoard remaps neighbour directions into each component's local space via `_unrotate_dir()` before passing them to `get_node_id_for_side()`, so transistor pin connections are always correct regardless of rotation.
-
-### Visual Pin Indicators
-
-Removed the direction arrow that was on transistors. Replaced with colour-coded sphere indicators that sit on each face:
-
-- **Yellow** = Gate
-- **Red** = Collector (power in)
-- **Green** = Emitter (power out)
-
-Same colour scheme on both NPN and PNP so pin identity is immediately readable without knowing the transistor type.
-
-### Clock Component
-
-Auto-oscillating source. Right-click cycles through preset frequencies: 1Hz, 2Hz, 4Hz, 10Hz, 20Hz. Required for sequential logic — flip-flops, counters, shift registers. Glows cyan when powered.
+|Property|Value|
+|---|---|
+|Input threshold|Any signal > 0|
+|Output strength|Always 15|
+|Use case|Place every 14 wire tiles to maintain signal indefinitely|
+|Visual|Amber cube, glows bright yellow-white when repeating|
 
 ---
 
-## Simulation Architecture — The Hard Part
+### NPN Transistor
 
-This was the most technically demanding part of the session. The solver went through multiple rewrites before working correctly for all gate configurations.
+Normally open switch. Power flows Collector→Emitter only when Gate receives signal.
 
-### The Core Problem
-
-Transistor emitters cannot be resolved during the main BFS pass from sources. The BFS populates wires, gates, and collectors correctly — but emitters depend on both their gate AND their collector being populated first. If the BFS visits an emitter before its gate wire is populated (which happens when the gate is fed by another transistor's emitter rather than directly by a source), the emitter check sees gate=0 and fails to conduct even when it should.
-
-This manifested as: single transistors with direct sources worked fine, but chained transistors (AND gate feeding a PNP gate, NAND feeding an XOR stage) would fail intermittently depending on BFS traversal order.
-
-### What Was Tried and Why It Didn't Work
-
-**Multi-pass reset solver** — ran the full reset+BFS+resolve cycle multiple times hoping the second pass would have correct values. Failed because the reset wiped emitter outputs that downstream gates depended on, causing the same ordering problem on every pass.
-
-**Oscillation misdiagnosis** — spent time trying to fix what appeared to be oscillation (emitter alternating powered/unpowered every frame). Turned out this was just the player toggling sources on and off — each toggle triggered one clean sim run. Not actually oscillating.
-
-**Emitter self-feedback prevention** — attempted to prevent emitter output from feeding back into its own gate. This was a real concern for intentional oscillator circuits but wasn't the cause of the immediate failures.
-
-**Explicit emitter zeroing** — tried to explicitly set emitter strength to 0 when gate closes. Failed because `_flood` only propagates higher values, so downstream nodes wouldn't clear.
-
-### What Actually Works
-
-The final solver runs in a strict ordered sequence:
-
-**Step 1** — Reset all non-source nodes to strength=0, powered=false.
-
-**Step 2** — BFS from all active sources. Propagates through wires, resistors, repeaters, gates, and collectors. Emitters are explicitly skipped.
-
-**Step 3** — Unified emitter resolution loop. Scans every emitter node, checks if its gate and collector conditions are met, activates it if so, then immediately runs a BFS from that emitter before moving to the next one. The loop repeats until a complete scan produces zero new activations. NPN and PNP are handled together in the same loop — this is critical for mixed chains (NPN emitter feeding PNP gate, etc.).
-
-**Step 4** — Notify only nodes whose state changed.
-
-The immediate-BFS-after-activation in Step 3 is the key insight. When NPN1's emitter activates, its BFS immediately populates NPN2's collector and gate (if wired that way). Then when the loop reaches NPN2's emitter in the same or next iteration, the conditions are already met. No ordering dependency issues.
-
-### Why Two Passes Were Also Needed
-
-Even with the unified loop, a subtle bug remained: the PNP emitter would stay powered after its gate received signal because the emitter had been activated in a previous sim run and the reset correctly zeroed it — but then the emitter resolution loop re-activated it in the same run because the BFS hadn't yet propagated the gate signal from the AND output wire. Running two full sim passes (reset+BFS+resolve twice) guaranteed the second pass had correct gate values. Eventually this was superseded by the unified loop with immediate BFS, which handles the dependency correctly in a single pass.
+|Property|Value|
+|---|---|
+|Conducts when|Gate strength ≥ 1|
+|Default state|OFF (open circuit)|
+|Signal loss|None through transistor body|
+|Gate side|Left / Right (yellow sphere)|
+|Collector side|Front (red sphere) — power IN|
+|Emitter side|Back (green sphere) — power OUT|
+|Real analogy|BJT NPN — small base current controls large collector current|
 
 ---
 
-## Bugs Found and Fixed
+### PNP Transistor
 
-### Collector/Emitter Spheres Swapped
+Normally closed switch. Power flows Collector→Emitter unless Gate receives signal.
 
-The sphere mesh positions in the Godot scenes were placed at the wrong Z coordinates relative to what the code expected. Discovered by testing: power into the "wrong" side opened the transistor. Fixed by swapping the code's side mapping rather than moving the meshes — `dir.y == -1` = collector (front), `dir.y == 1` = emitter (back).
+|Property|Value|
+|---|---|
+|Conducts when|Gate strength = 0|
+|Default state|ON (conducts if collector powered)|
+|Signal loss|None through transistor body|
+|Gate side|Left / Right (yellow sphere)|
+|Collector side|Front (red sphere) — power IN|
+|Emitter side|Back (green sphere) — power OUT|
+|Real analogy|BJT PNP — base current blocks collector-emitter flow|
 
-### transistor_id Not Set on Emitter Node at First Sim Run
+#### Pin colour reference (same on both types)
 
-`CircuitBoard.place_component` called `SimulationManager.register_node` (which triggers a sim run via `mark_dirty`) before calling `init_sim_nodes` on the transistor. So the first simulation ran with the emitter node having `transistor_id = ""`, meaning the gate lookup always returned an empty dict and the emitter always defaulted to conducting regardless of gate state. Fixed by inserting the node directly into `SimulationManager.nodes` without triggering a sim run, then calling `init_sim_nodes`, then calling `mark_dirty`.
-
-### ComponentRegistry Template Missing transistor_id
-
-The PNP and NPN sim node templates in ComponentRegistry had no `transistor_id` field. If a simulation ran before `init_sim_nodes` completed, `n.get("transistor_id", "")` returned empty string and gate lookup failed silently. Fixed by adding `"transistor_id": "", "gate_threshold": 1` to both templates.
-
-### C_FLOW_ON Renamed But Not Fully Replaced
-
-During the colour scheme refactor (orange flow → separate red collector and green emitter colours), two `on_sim_update` calls in `TransistorPNP.gd` still referenced the old `C_FLOW_ON` constant which no longer existed. Caused a parse error on scene load. Fixed by replacing with `C_EMIT_ON` and `C_COL_ON` respectively.
-
-### _set Reserved Method Name Conflict
-
-An earlier version of `Transistor.gd` used `_set` as a helper function name. Godot's `Node` class defines `_set(StringName, Variant) -> bool` as a virtual method, causing a signature mismatch error. Renamed to `_apply`.
-
-### InfoPanel Text Wrapping Vertically
-
-The InfoPanel PanelContainer was too narrow, causing text to wrap character by character. Worked around by printing sim state to the Godot Output tab during debugging rather than relying on the in-game panel. UI fix pending.
-
----
-
-## Logic Gates Verified Working
-
-|Gate|Components|Verified|
+|Colour|Pin|Role|
 |---|---|---|
-|Buffer|1× NPN|✔|
-|AND|2× NPN in series|✔|
-|NAND|2× NPN in series + 1× PNP|✔|
-|OR|2× NPN in parallel|✔|
-|XOR|NAND + OR feeding second AND stage|✔|
+|Yellow|Gate|Control input|
+|Red|Collector|Power IN|
+|Green|Emitter|Power OUT|
 
 ---
 
-## Current Component Set
+### Resistor
 
-|Component|Behaviour|
+Reduces signal strength by a fixed amount as it passes through.
+
+|Property|Value|
 |---|---|
-|Wire|Signal decay 1 per tile, max range 15|
-|Source|Full strength (15) output, right-click to toggle|
-|Repeater|Resets signal to 15|
-|NPN Transistor|Normally open, gate HIGH conducts|
-|PNP Transistor|Normally closed, gate LOW conducts|
-|Resistor|Drops signal by 4|
-|LED|Terminal, lights on any signal|
-|Clock|Auto-oscillates, right-click cycles frequency|
+|Strength reduction|4 per resistor|
+|Use case|Drop a signal below a gate threshold, or kill a weak signal entirely|
+|Real analogy|Ohm's Law: V = IR|
+|Tip|Two in series drops by 8. Four in series kills any signal|
 
 ---
 
-## What's Next
+### LED
 
-1. **Wire visual connection stubs** — wires should visually extend toward adjacent wires so runs look like lines rather than rows of separate cubes. Critical for readability of complex circuits.
-2. **IC save system** — select a region, name it, save as reusable black-box component. Without this, building large circuits means re-laying the same gate patterns repeatedly.
-3. **InfoPanel UI fix** — panel is too narrow, text wraps vertically. Needs minimum width set.
-4. **Copy/paste region** — stamp a selected rectangle of components elsewhere on the board.
-5. **Blender models** — replace placeholder cubes. Max bounding box: 0.9m × 0.9m × 0.4m per tile.
+Lights up when it receives any signal. Terminal — does not pass signal onward.
+
+|Property|Value|
+|---|---|
+|Minimum signal|1|
+|Output|None (terminal component)|
+|Brightness|Scales with incoming signal strength|
+|Visual|Small cube glows bright green, brightness proportional to strength|
 
 ---
 
-_Engine: Godot 4.2 — Language: GDScript — Renderer: Forward+_
+### Clock
+
+Auto-oscillating source. Pulses between HIGH and LOW automatically. Required for sequential logic.
+
+|Property|Value|
+|---|---|
+|Default frequency|1 Hz (0.5s per half-cycle)|
+|Right-click|Cycles through preset frequencies|
+|Presets|1Hz / 2Hz / 4Hz / 10Hz / 20Hz|
+|Use case|Flip-flops, counters, shift registers, CPUs|
+|Visual|Cyan cube, pulses on/off|
+
+---
+
+## 4. Signal System
+
+Signal strength is an integer from 0 to 15. It works identically to Minecraft redstone signal strength.
+
+### Decay
+
+Every wire tile a signal passes through reduces its strength by 1.
+
+```
+Source(15) → Wire(14) → Wire(13) → Wire(12) → ... → Wire(1) → Wire(0, dead)
+```
+
+A signal dies after 15 wire tiles. Place a Repeater to reset it to 15.
+
+### Repeater
+
+```
+Source(15) → Wire(14) → Repeater(15) → Wire(14) → Wire(13) → ...
+```
+
+### Resistor
+
+```
+Source(15) → Resistor → Wire(10) → Wire(9) → ...  (drops 4+1 per tile)
+```
+
+### Rules summary
+
+|Component|Effect on signal|
+|---|---|
+|Wire|-1 per tile|
+|Repeater|Reset to 15|
+|Resistor|-4|
+|Transistor (open)|No loss|
+|LED|Absorbs signal, outputs nothing|
+|Source|Always 15 when active|
+
+---
+
+## 5. Transistor Guide
+
+### NPN — Normally Open
+
+Think of NPN as a door that is normally shut. Sending signal to the gate opens the door.
+
+```
+[Collector] → power enters here
+[Gate]      → when HIGH, opens the transistor
+[Emitter]   → power exits here when gate is open
+```
+
+**Truth table:**
+
+|Collector powered|Gate signal|Emitter output|
+|---|---|---|
+|No|No|No|
+|Yes|No|No|
+|No|Yes|No|
+|Yes|Yes|**Yes**|
+
+### PNP — Normally Closed
+
+Think of PNP as a door that is normally open. Sending signal to the gate closes the door.
+
+```
+[Collector] → power enters here
+[Gate]      → when LOW, conducts. When HIGH, blocks
+[Emitter]   → power exits here when gate is LOW
+```
+
+**Truth table:**
+
+|Collector powered|Gate signal|Emitter output|
+|---|---|---|
+|No|No|No|
+|Yes|No|**Yes**|
+|Yes|Yes|No|
+|No|Yes|No|
+
+### Rotation
+
+Press R before placing to rotate the transistor. The yellow gate sphere indicates the gate sides. Red collector sphere and green emitter sphere show power in and power out respectively. Rotate until the pins face the correct wire connections for your layout.
+
+### Chaining transistors
+
+Transistors can chain — the emitter of one can feed the gate or collector of another. The simulation resolves chains correctly regardless of depth: each emitter activation immediately propagates downstream, so the next transistor in the chain sees the correct input on the same simulation tick.
+
+---
+
+## 6. Logic Gate Blueprints
+
+All layouts use the default transistor orientation. C = Collector (red/front), E = Emitter (green/back), G = Gate (yellow/left or right). Arrows show wire connections.
+
+### Buffer (NPN)
+
+Output is HIGH when input is HIGH.
+
+```
+[VCC] → [C-NPN-E] → [LED]
+[Input] → [G]
+```
+
+### NOT Gate (PNP)
+
+Output is HIGH when input is LOW.
+
+```
+[VCC] → [C-PNP-E] → [LED]
+[Input] → [G]
+```
+
+### AND Gate (2× NPN in series)
+
+Output HIGH only when both inputs are HIGH.
+
+```
+[VCC] → [C-NPN1-E] → [C-NPN2-E] → [LED]
+[Input A] → [NPN1 Gate]
+[Input B] → [NPN2 Gate]
+```
+
+### OR Gate (2× NPN in parallel)
+
+Output HIGH when either input is HIGH.
+
+```
+[VCC] → [C-NPN1-E] → [LED wire]
+[VCC] → [C-NPN2-E] → [same LED wire]
+[Input A] → [NPN1 Gate]
+[Input B] → [NPN2 Gate]
+```
+
+### NAND Gate (AND + PNP invert)
+
+Output HIGH unless both inputs are HIGH.
+
+```
+[VCC] → [C-NPN1-E] → [C-NPN2-E] → [PNP Gate]
+[VCC] → [C-PNP-E] → [LED]
+[Input A] → [NPN1 Gate]
+[Input B] → [NPN2 Gate]
+```
+
+### NOR Gate (OR + PNP invert)
+
+Output HIGH only when both inputs are LOW.
+
+```
+[VCC] → [C-NPN1-E] → [PNP Gate wire]
+[VCC] → [C-NPN2-E] → [same PNP Gate wire]
+[VCC] → [C-PNP-E] → [LED]
+[Input A] → [NPN1 Gate]
+[Input B] → [NPN2 Gate]
+```
+
+### XOR Gate
+
+Output HIGH when inputs differ. Requires NAND + OR feeding a second AND stage.
+
+```
+Stage 1: Build a NAND gate   → NAND output wire
+Stage 2: Build an OR gate    → OR output wire
+Stage 3: AND gate with:
+  NPN1 collector ← VCC
+  NPN1 gate      ← NAND output wire
+  NPN1 emitter   → NPN2 collector
+  NPN2 gate      ← OR output wire
+  NPN2 emitter   → LED
+```
+
+Output is HIGH when exactly one input is HIGH.
+
+> _XOR gate verified working in-game — see screenshots._
+
+A=0; B=1
+![[XOR1.png]]
+
+A=1;B=0
+![[XOR3.png]]
+
+A=1; B=1
+![[XOR2.png]]
+---
+
+## 7. Architecture Overview
+
+The project is split into three clean layers that don't know about each other:
+
+```
+┌─────────────────────────────────────┐
+│         Visual Layer                │
+│  Component scenes, meshes,          │
+│  emission materials, indicator      │
+│  spheres. Purely cosmetic.          │
+└────────────────┬────────────────────┘
+                 │ on_sim_update()
+┌────────────────▼────────────────────┐
+│         Grid Layer                  │
+│  CircuitBoard.gd                    │
+│  2D Dictionary keyed by Vector2i.   │
+│  Source of truth for what is        │
+│  placed where. Handles raycasting,  │
+│  placement, removal, connection     │
+│  routing with rotation support.     │
+└────────────────┬────────────────────┘
+                 │ register/unregister nodes
+┌────────────────▼────────────────────┐
+│         Simulation Layer            │
+│  SimulationManager.gd (Autoload)    │
+│  Pure graph of sim nodes. Knows     │
+│  nothing about 3D. BFS solver with  │
+│  ordered transistor resolution.     │
+└─────────────────────────────────────┘
+```
+
+### Key design principles
+
+- **Simulation is 3D-unaware.** The solver operates on a graph of dictionaries. Nodes have types, strengths, and connection lists. No Vector3, no Node3D.
+- **Event-driven.** `run_simulation` only runs when `mark_dirty()` is called. No per-frame simulation cost when nothing is changing.
+- **Changed-only visual updates.** After each sim run, `on_sim_update` is only called on nodes whose `powered` or `strength` state changed. No unnecessary material writes.
+- **Directional connections.** Transistors expose `get_node_id_for_side(dir)` which CircuitBoard calls to route adjacent wires to the correct gate/collector/emitter node based on physical position and rotation.
+
+---
+
+## 8. File Structure
+
+```
+res://
+├── autoloads/
+│   ├── SimulationManager.gd    ← Global circuit solver (Autoload)
+│   └── ComponentRegistry.gd   ← All component definitions (Autoload)
+├── nodes/
+│   ├── CircuitBoard.gd         ← Grid, placement, connection routing
+│   └── Player.gd               ← First-person controller
+├── components/
+│   ├── ComponentBase.gd        ← Base class (class_name ComponentBase)
+│   ├── Wire.gd
+│   ├── Source.gd
+│   ├── Repeater.gd
+│   ├── Resistor.gd
+│   ├── LED.gd
+│   ├── Clock.gd
+│   ├── TransistorNPN.gd
+│   └── TransistorPNP.gd
+└── ui/
+    ├── InfoPanel.gd
+    └── Hotbar.gd
+```
+
+### Autoload registration order (matters)
+
+1. SimulationManager
+2. ComponentRegistry
+
+---
+
+## 9. Simulation Engine
+
+### SimNode dictionary structure
+
+Every placed component registers one or more sim nodes. Each node is a GDScript Dictionary:
+
+```gdscript
+{
+    "id":           String,       # unique node ID
+    "type":         String,       # see type list below
+    "powered":      bool,
+    "strength":     int,          # 0-15
+    "connections":  Array,        # list of connected node IDs
+    "visual_node":  Node3D,       # reference for on_sim_update calls
+    # type-specific fields:
+    "transistor_id":  String,     # transistors only
+    "gate_threshold": int,        # transistors only
+    "resistance":     int,        # resistors only
+    "clock_interval": float,      # clocks only
+}
+```
+
+### Node types
+
+|Type|Description|
+|---|---|
+|`source`|Active power source|
+|`wire`|Signal carrier, decays by 1|
+|`repeater`|Resets signal to 15|
+|`resistor`|Drops signal by `resistance`|
+|`led`|Terminal receiver|
+|`transistor_emitter_npn`|NPN output node|
+|`transistor_gate_npn`|NPN control input|
+|`transistor_collector_npn`|NPN power input|
+|`transistor_emitter_pnp`|PNP output node|
+|`transistor_gate_pnp`|PNP control input|
+|`transistor_collector_pnp`|PNP power input|
+
+### Solver sequence
+
+```
+run_simulation()
+│
+├── Snapshot previous state (for change detection)
+│
+├── Step 1: Reset all non-source nodes to strength=0, powered=false
+│
+├── Step 2: BFS from all active sources
+│   └── Propagates through: wires, repeaters, resistors,
+│       gates, collectors. Skips emitters.
+│
+├── Step 3: Unified emitter resolution loop
+│   └── Scan all emitter nodes
+│       ├── NPN: conducts if gate.strength >= 1 AND col.strength > 0
+│       ├── PNP: conducts if gate.strength < 1  AND col.strength > 0
+│       ├── If conducts: set emitter strength, _bfs([emitter_id])
+│       └── Repeat until full scan finds nothing new (safety cap: 128)
+│
+└── Step 4: Notify only changed nodes via on_sim_update()
+```
+
+The immediate BFS after each emitter activation is the critical detail — it propagates the emitter's output into downstream gates and collectors before the next emitter is evaluated, allowing chains of any depth and type to resolve correctly in a single `run_simulation` call.
+
+### Adding a new component type
+
+1. Add an entry to `ComponentRegistry.COMPONENTS` with scene path, sim template, and info text
+2. Create the `.tscn` scene with a `ComponentBase`-extending script as the root
+3. Implement `on_sim_update(powered, strength)` for visual feedback
+4. If the component needs special sim behaviour, add a case to `SimulationManager._strength_into()`
+5. If directional (like transistors), implement `get_node_id_for_side(dir)` and call `init_sim_nodes` from CircuitBoard
+
+---
+
+## 10. Known Issues & Limitations
+
+### InfoPanel text wraps vertically
+
+The info panel PanelContainer is too narrow for some screen sizes, causing text to wrap character by character. Workaround: increase the panel width in the InfoPanel scene (set VBox minimum width to 400+).
+
+### No component rotation persistence
+
+Rotation resets to 0 between placements. You must press R again for each new component. Intentional for now but could be made sticky per component type.
+
+### Fixed board size
+
+The board is a fixed 64×64 grid. No infinite terrain, no multi-board connections yet. A 64×64 grid gives 4,096 cells which is sufficient for complex gates and small CPUs but would need expansion for larger projects.
+
+### No save/load
+
+Circuit state is not persisted between sessions. The IC system (next milestone) will introduce JSON serialisation which will also enable board save/load.
+
+### Signal decay affects transistor gate inputs
+
+A gate wire that has travelled 15+ tiles without a repeater will have strength 0 and fail to open an NPN transistor. Always use a repeater before a long gate wire run, or place the gate source close to the transistor.
+
+---
+
+## 11. Roadmap
+
+### Next (v0.2)
+
+- **Wire visual connection stubs** — wires extend visually toward adjacent wires so circuit runs look like lines rather than isolated cubes
+- **InfoPanel UI fix** — readable text at all screen sizes
+- **IC save system** — select a region, name it, save as reusable black-box component placed from hotbar
+
+### Near term (v0.3)
+
+- **Copy/paste region** — select a rectangle of components and stamp elsewhere
+- **Grid overlay** — faint grid lines on board surface for alignment
+- **Component labels/signs** — placeable text signs for labelling circuit sections
+
+### Medium term (v0.4)
+
+- **Blender models** — replace placeholder cubes with real component geometry (max 0.9 × 0.9 × 0.4m per tile)
+- **Multiple boards** — vertical wall boards, boards connecting via port nodes at edges
+- **Sound design** — click on place/remove, hum on powered boards
+
+### Long term
+
+- **Analog simulation** — resistors, capacitors, inductors with real voltage/current values using Modified Nodal Analysis (MNA) solver implemented in C++ via GDExtension
+- **Audio output** — speaker component routing simulated voltage to Godot's AudioStreamGenerator
+- **Multiplayer** — shared boards, collaborative circuit building
+
+---
+
+## Appendix: Godot Project Setup
+
+### Autoloads (Project Settings → Autoload)
+
+|Name|Path|
+|---|---|
+|SimulationManager|res://autoloads/SimulationManager.gd|
+|ComponentRegistry|res://autoloads/ComponentRegistry.gd|
+
+SimulationManager must be listed above ComponentRegistry.
+
+### Scene hierarchy (Main.tscn)
+
+```
+Node3D (Main)
+├── WorldEnvironment
+├── DirectionalLight3D
+├── CircuitBoard (StaticBody3D + CircuitBoard.gd)
+│   └── CollisionShape3D (BoxShape3D 64×0.2×64)
+│   └── BoardMesh (PlaneMesh 64×64, dark grey material)
+└── Player (CharacterBody3D + Player.gd)
+    ├── CollisionShape3D (CapsuleShape3D)
+    ├── Head (Node3D, y=1.65)
+    │   └── Camera3D
+    │       └── Ray (RayCast3D, target z=-10)
+    ├── Highlight (MeshInstance3D, PlaneMesh 1×1)
+    └── HUD (CanvasLayer)
+        ├── InfoPanel (PanelContainer + InfoPanel.gd)
+        └── Hotbar (HBoxContainer + Hotbar.gd)
+```
+
+### Collision layers
+
+|Layer|Name|Used by|
+|---|---|---|
+|1|world|CircuitBoard StaticBody3D|
+|2|player|Player CharacterBody3D|
+
+Player RayCast3D collision mask: Layer 1 only.
+
+### Component scene structure
+
+All component scenes follow this pattern:
+
+```
+Node3D (root, extends ComponentBase via attached script)
+└── Mesh (MeshInstance3D with BoxMesh)
+```
+
+Transistor scenes additionally have:
+
+```
+Node3D (root)
+├── Mesh
+├── GateLight      (SphereMesh, x=-0.38, y=0.18, z=0)
+├── CollectorLight (SphereMesh, x=0, y=0.18, z=-0.38)
+└── EmitterLight   (SphereMesh, x=0, y=0.18, z=+0.38)
+```
+
+### Placeholder mesh sizes
+
+|Component|BoxMesh size (x × y × z)|
+|---|---|
+|Wire|0.8 × 0.05 × 0.8|
+|Source|0.6 × 0.3 × 0.6|
+|Repeater|0.7 × 0.2 × 0.7|
+|NPN / PNP|0.7 × 0.25 × 0.7|
+|Resistor|0.8 × 0.15 × 0.8|
+|LED|0.5 × 0.18 × 0.5|
+|Clock|0.6 × 0.3 × 0.6|
+
+When replacing with Blender models, maximum bounding box per component is **0.9 × 0.9 × 0.4m** to fit within one tile with clearance. Export as `.glb`, Forward axis -Z, Up axis Y, apply all transforms before export.
+
+---
+
+_Transistor Game — Internal Development Documentation_ _Built with Godot 4 — GDScript_
