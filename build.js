@@ -212,30 +212,40 @@ async function main() {
         .map(f => 'assets/music/' + f)
     : [];
 
-  // scan photo albums — each subfolder of assets/images/photo/ is an album
+  // scan photo albums — explicit order
+  const PHOTO_ORDER = [
+    'Monroe-2026',
+    'Boston-2026',
+    'Spain-2025',
+    'Japan-2025',
+    'Wildwood-2025',
+    'Dominican-Republic-2024',
+  ];
   const PHOTO_DIR  = path.join(__dirname, 'assets', 'images', 'photo');
   const IMG_EXTS   = ['.jpg','.jpeg','.png','.webp','.gif'];
   parsed._photoAlbums = [];
   if (fs.existsSync(PHOTO_DIR)) {
-    const albumDirs = fs.readdirSync(PHOTO_DIR, { withFileTypes: true })
+    // get all dirs, sort by explicit order first, then any extras alphabetically
+    const allDirs = fs.readdirSync(PHOTO_DIR, { withFileTypes: true })
       .filter(d => d.isDirectory())
-      .sort((a, b) => {
-        const mtA = fs.statSync(path.join(PHOTO_DIR, a.name)).mtimeMs;
-        const mtB = fs.statSync(path.join(PHOTO_DIR, b.name)).mtimeMs;
-        return mtB - mtA; // newest first
-      });
+      .map(d => d.name);
 
-    for (const dir of albumDirs) {
-      const albumPath = path.join(PHOTO_DIR, dir.name);
+    const ordered = [
+      ...PHOTO_ORDER.filter(n => allDirs.some(d => d.toLowerCase() === n.toLowerCase())),
+      ...allDirs.filter(n => !PHOTO_ORDER.some(o => o.toLowerCase() === n.toLowerCase())).sort(),
+    ];
+
+    for (const dirName of ordered) {
+      const albumPath = path.join(PHOTO_DIR, dirName);
+      if (!fs.existsSync(albumPath)) continue;
       const images = fs.readdirSync(albumPath)
         .filter(f => IMG_EXTS.includes(path.extname(f).toLowerCase()))
         .sort((a, b) => a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' }))
-        .map(f => 'assets/images/photo/' + dir.name + '/' + f);
+        .map(f => 'assets/images/photo/' + dirName + '/' + f);
       if (!images.length) continue;
 
-      // pull description from matching .md in content/digestion/photo/
       let description = '';
-      const mdPath = path.join(CONTENT_DIR, 'digestion', 'photo', dir.name + '.md');
+      const mdPath = path.join(CONTENT_DIR, 'digestion', 'photo', dirName + '.md');
       if (fs.existsSync(mdPath)) {
         const raw = fs.readFileSync(mdPath, 'utf8');
         const { description: d } = parseFrontmatter(raw);
@@ -243,14 +253,14 @@ async function main() {
       }
 
       parsed._photoAlbums.push({
-        slug: dir.name,
-        title: dir.name.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
+        slug: dirName,
+        title: dirName.replace(/[-_]/g, ' ').replace(/\b\w/g, c => c.toUpperCase()),
         cover: images[0],
         count: images.length,
         description,
         images,
       });
-      console.log('  photo/' + dir.name.padEnd(14) + images.length + ' image(s)');
+      console.log('  photo/' + dirName.padEnd(24) + images.length + ' image(s)');
     }
   }
 

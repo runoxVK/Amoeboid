@@ -477,18 +477,6 @@ function runCommand(raw) {
   line('runox@amoeboid:~$ ' + raw, 'echo');
 
   switch(cmd) {
-    case 'home':
-      gap();
-      line('  // home', 'muted');
-      gap();
-      const homeEntries = CONTENT.home || [];
-      homeEntries.forEach(entry => {
-        line('  ' + entry.title, 'head');
-        entry.body.split('\n').slice(0, 8).forEach(l => l.trim() && line('  ' + l.trim(), 'dim'));
-        gap();
-      });
-      break;
-
     case 'vomit':
     case 'digestion':
     case 'consumption':
@@ -499,7 +487,6 @@ function runCommand(raw) {
       gap();
       line('  available commands', 'head');
       line('  ─────────────────────────────────────────', 'muted');
-      line('  home             .  about', 'dim');
       line('  vomit            .  projects', 'dim');
       line('  digestion        .  art', 'dim');
       line('  consumption      .  media log', 'dim');
@@ -544,7 +531,7 @@ cmdInput.addEventListener('keydown', e => {
     else { histIdx = -1; cmdInput.value = ''; }
   } else if (e.key === 'Tab') {
     e.preventDefault();
-    const cmds = ['home', 'vomit', 'digestion', 'consumption', 'help', 'clear'];
+    const cmds = ['vomit', 'digestion', 'consumption', 'help', 'clear'];
     const val  = cmdInput.value;
     const match = cmds.find(c => c.startsWith(val) && c !== val);
     if (match) cmdInput.value = match;
@@ -577,11 +564,55 @@ async function boot() {
   line('  ready.', 'dim');
   await delay(200);
   gap();
+
+  // show home .md as terminal text intro
+  const homeEntries = CONTENT.home || [];
+  if (homeEntries.length) {
+    const intro = homeEntries[0];
+    gap();
+    intro.body.split('\n').forEach(l => {
+      const t = l.trim();
+      if (!t) { output.appendChild(el('div', 'line line-gap')); return; }
+
+      const cls = (t.startsWith('# ') || t.startsWith('## ')) ? 'head' : 'dim';
+      const text = t.startsWith('# ') ? t.slice(2) : t.startsWith('## ') ? t.slice(3) : t;
+
+      const d = el('div', 'line line-' + cls);
+      d.style.paddingLeft = '1.5rem';
+
+      const cmdMap = { 'PROJECTS': 'vomit', 'ART': 'digestion', 'MUSIC': 'digestion', 'PHOTOGRAPHY': 'digestion', 'INSPIRATIONS': 'consumption' };
+      const parts = ('  ' + text).split(/(\*[^*]+\*)/g);
+      parts.forEach(part => {
+        if (part.startsWith('*') && part.endsWith('*')) {
+          const inner = part.slice(1, -1);
+          const cmd   = cmdMap[inner];
+          const span  = el('span', '', inner);
+          span.style.cssText = 'font-weight:700;color:var(--green);' + (cmd ? 'cursor:pointer;text-decoration:underline;text-underline-offset:3px;' : '');
+          if (cmd) {
+            span.addEventListener('click', function() { runCommand(cmd); });
+            span.addEventListener('mouseenter', function() { span.style.color = 'var(--amber)'; });
+            span.addEventListener('mouseleave', function() { span.style.color = 'var(--green)'; });
+          }
+          d.appendChild(span);
+        } else {
+          d.appendChild(document.createTextNode(part));
+        }
+      });
+
+      output.appendChild(d); // no scrollDown — let it build silently
+    });
+    gap();
+  }
+
   line('  type help for commands', 'muted');
   gap();
 
   inputRow.style.display = 'flex';
   cmdInput.focus();
+
+  // scroll to top so user sees the intro from the beginning
+  const vp = document.getElementById('terminal-viewport');
+  if (vp) vp.scrollTop = 0;
 }
 
 boot();
