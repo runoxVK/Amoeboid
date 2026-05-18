@@ -214,12 +214,12 @@ async function main() {
 
   // scan photo albums — explicit order
   const PHOTO_ORDER = [
-    'Monroe-2026',
-    'Boston-2026',
-    'Spain-2025',
-    'Japan-2025',
-    'Wildwood-2025',
-    'Dominican-Republic-2024',
+    'monroe-2026',
+    'boston-2026',
+    'spain-2025',
+    'japan-2025',
+    'wildwood-2025',
+    'dominican-republic-2024',
   ];
   const PHOTO_DIR  = path.join(__dirname, 'assets', 'images', 'photo');
   const IMG_EXTS   = ['.jpg','.jpeg','.png','.webp','.gif'];
