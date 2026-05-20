@@ -9,7 +9,7 @@ const BASE = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
 
 // ── State ─────────────────────────────────────────────
 var CONTENT = null;
-let zTop    = 100;
+var zTop    = 600;
 let history = [];
 let histIdx = -1;
 let lastEntries = [];
