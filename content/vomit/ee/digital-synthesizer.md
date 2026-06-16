@@ -20,26 +20,24 @@ https://github.com/runoxVK/RaspberryPiPico-Synthesizer-VK
 ![[PicoSynthesizer_VKAUSHAL.png]]
 ---
 
-1. Github
-2. Schematic
-3. Phase I — Concept test
-  3.1 Overview
-  3.2 Hardware
-  3.3 Key logic
-  3.4 Pseudocode
-4. Phase II — Stepped potentiometer control
-  4.1 Overview
-  4.2 Hardware
-  4.3 Key logic
-  4.4 Knob definitions
-  4.5 Pseudocode
-5. Phase III — LM386 amplifier output
-  5.1 Overview
-  5.2 Hardware
-  5.3 Changes from Phase II
-  5.4 Pseudocode
-6. Phase comparison
-7. Concepts reference
+- [[#Phase I — Concept test]]
+    - [[#Overview]]
+    - [[#Hardware]]
+    - [[#Key logic]]
+    - [[#Pseudocode]]
+- [[#Phase II — Stepped potentiometer control]]
+    - [[#Overview]]
+    - [[#Hardware]]
+    - [[#Key logic]]
+    - [[#Knob definitions]]
+    - [[#Pseudocode]]
+- [[#Phase III — LM386 amplifier output]]
+    - [[#Overview]]
+    - [[#Hardware]]
+    - [[#Changes from Phase II]]
+    - [[#Pseudocode]]
+- [[#Phase comparison]]
+- [[#Concepts reference]]
 
 ## Phase I — Concept test
 

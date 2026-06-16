@@ -58,7 +58,6 @@
 
           <div class="slab-screen-well">
             <div class="slab-screen-inner">
-              <canvas id="creature-canvas"></canvas>
               <div class="screen-flicker" aria-hidden="true"></div>
               <div id="terminal-viewport">
                 <div class="terminal-output" id="output" aria-live="polite"></div>
@@ -205,119 +204,6 @@
         requestAnimationFrame(tick);
       }
     })();
-  </script>
-
-  <!-- Kelp creature -->
-  <script>
-  (function() {
-    var canvas = document.getElementById('creature-canvas');
-    var ctx    = canvas.getContext('2d');
-    var W, H;
-
-    var NUM_SEGS = 24;
-    var SEG_LEN  = 17;
-    var HEAD_R   = 11;
-    var TAIL_R   = 2.5;
-
-    var segs = [];
-    var hx, hy, hvx = 0.6, hvy = 0.3;
-    var time = 0;
-
-    function resize() {
-      var screen = canvas.parentElement;
-      W = canvas.width  = screen.clientWidth  || 400;
-      H = canvas.height = screen.clientHeight || 600;
-      if (!hx) { hx = W * 0.5; hy = H * 0.5; }
-      if (!segs.length) {
-        segs = [];
-        for (var i = 0; i < NUM_SEGS; i++)
-          segs.push({ x: hx, y: hy + i * SEG_LEN });
-      }
-    }
-
-    var lastC = 0;
-    function tick(now) {
-      requestAnimationFrame(tick);
-      if (now - lastC < 33) return;
-      lastC = now;
-      time += 0.033;
-      W = canvas.width; H = canvas.height;
-
-      hvx += Math.sin(time * 0.55) * 0.18 + Math.sin(time * 1.1 + 1.2) * 0.07;
-      hvy += Math.sin(time * 0.38 + 2.0) * 0.11 + Math.sin(time * 0.85 + 0.5) * 0.05;
-
-      hvx *= 0.91; hvy *= 0.91;
-      var spd = Math.sqrt(hvx*hvx + hvy*hvy);
-      if (spd > 1.7) { hvx = hvx/spd*1.7; hvy = hvy/spd*1.7; }
-
-      hx += hvx; hy += hvy;
-
-      var pad = 60;
-      if (hx < pad)   { hx += (pad-hx)*0.12;   hvx *= 0.5; }
-      if (hx > W-pad) { hx += (W-pad-hx)*0.12; hvx *= 0.5; }
-      if (hy < pad)   { hy += (pad-hy)*0.12;   hvy *= 0.5; }
-      if (hy > H-pad) { hy += (H-pad-hy)*0.12; hvy *= 0.5; }
-
-      segs[0].x = hx; segs[0].y = hy;
-      for (var i = 1; i < NUM_SEGS; i++) {
-        var sx = segs[i].x - segs[i-1].x;
-        var sy = segs[i].y - segs[i-1].y;
-        var d  = Math.sqrt(sx*sx+sy*sy) || 0.001;
-        segs[i].x = segs[i-1].x + (sx/d)*SEG_LEN;
-        segs[i].y = segs[i-1].y + (sy/d)*SEG_LEN;
-      }
-
-      ctx.clearRect(0, 0, W, H);
-
-      for (var i = NUM_SEGS-1; i >= 0; i--) {
-        var t   = i / (NUM_SEGS-1);
-        var r   = HEAD_R*(1-t) + TAIL_R*t;
-        var wob = Math.sin(time*2.4 + i*0.6) * (4 + (1-t)*4);
-
-        var nx = 0, ny = 0;
-        if (i < NUM_SEGS-1) {
-          var adx = segs[i].x - segs[i+1].x;
-          var ady = segs[i].y - segs[i+1].y;
-          var al  = Math.sqrt(adx*adx+ady*ady) || 1;
-          nx = -ady/al; ny = adx/al;
-        }
-
-        var px = segs[i].x + nx*wob;
-        var py = segs[i].y + ny*wob;
-        var g  = Math.round(90 + (1-t)*110);
-        var alp = 0.55 + 0.4*(1-t);
-
-        var grd = ctx.createRadialGradient(px,py,0,px,py,r*2.2);
-        grd.addColorStop(0,'rgba(20,'+(g+50)+',40,'+(0.13*(1-t*0.4))+')');
-        grd.addColorStop(1,'rgba(0,0,0,0)');
-        ctx.beginPath(); ctx.arc(px,py,r*2.2,0,Math.PI*2);
-        ctx.fillStyle = grd; ctx.fill();
-
-        ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2);
-        ctx.fillStyle = 'rgba(8,'+g+',18,'+alp+')'; ctx.fill();
-
-        ctx.beginPath(); ctx.arc(px,py,r,0,Math.PI*2);
-        ctx.strokeStyle = 'rgba(64,255,96,'+(0.18*(1-t))+')';
-        ctx.lineWidth = 0.8; ctx.stroke();
-
-        if (i === 0) {
-          var er = r*0.2;
-          [1,-1].forEach(function(s) {
-            ctx.beginPath();
-            ctx.arc(px+nx*r*0.38*s, py+ny*r*0.38*s, er, 0, Math.PI*2);
-            ctx.fillStyle = 'rgba(190,255,200,0.9)'; ctx.fill();
-            ctx.beginPath();
-            ctx.arc(px+nx*r*0.38*s, py+ny*r*0.38*s, er*0.45, 0, Math.PI*2);
-            ctx.fillStyle = 'rgba(0,15,0,0.95)'; ctx.fill();
-          });
-        }
-      }
-    }
-
-    window.addEventListener('resize', resize);
-    resize();
-    requestAnimationFrame(tick);
-  })();
   </script>
 
   <audio id="bg-music" loop preload="auto"></audio>
