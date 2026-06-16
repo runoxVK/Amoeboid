@@ -9,6 +9,7 @@ description: A Farming game built with SDL2 and C
 **Terminal:** Git Bash  
 **Status:** Complete (v1.0)
 GitHub: https://github.com/runoxVK/SeedBreederSDL2
+
 Itch.io: https://runox.itch.io/seed-breeder
 ---
 

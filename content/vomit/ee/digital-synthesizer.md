@@ -1,7 +1,7 @@
 
 # RaspberryPiPico-Synthesizer-VK
 
-description: A three-phase monophonic synthesizer built on the Raspberry Pi Pico
+description: A three-phase monophonic synthesizer built on the Raspberry Pi Pico. You can play the C Major scale with it and you can change the pitch, tone and octave using knobs to make all sorts of sounds. Overall its a very simple bare bones synthesizer with good utility.
 
 _Vivaan Kaushal — runoxVK_
 
@@ -10,19 +10,12 @@ A three-phase monophonic synthesizer built on the Raspberry Pi Pico using MicroP
 https://youtu.be/7it6Z9qBXX4?si=z7N5v-2RsTX4AGbL
 ---
 
-## Repository structure
+## Github
 
 https://github.com/runoxVK/RaspberryPiPico-Synthesizer-VK
-```
-RaspberryPiPico-Synthesizer-VK/
-├── Phase I (Concept Test)/
-│   └── PiezoBuzzerTest_VKAUS.py
-├── Phase II (Analog Control)/
-│   └── PiezoWithAnalogControl.py
-├── Phase III (LM386 Audio Amp)/
-│   └── LM386AmpSynth.py
-└── README.md
-```
+
+
+## Schematic
 
 ![[PicoSynthesizer_VKAUSHAL.png]]
 ---
@@ -34,6 +27,27 @@ _File: `PiezoBuzzerTest_VKAUS.py`_
 ### Overview
 
 Proof-of-concept that establishes the core interaction model: seven buttons map to the C4 major scale, and pressing multiple buttons simultaneously produces a blended chord tone via geometric mean frequency calculation.
+
+1. Github
+2. Schematic
+3. Phase I — Concept test
+  3.1 Overview
+  3.2 Hardware
+  3.3 Key logic
+  3.4 Pseudocode
+4. Phase II — Stepped potentiometer control
+  4.1 Overview
+  4.2 Hardware
+  4.3 Key logic
+  4.4 Knob definitions
+  4.5 Pseudocode
+5. Phase III — LM386 amplifier output
+  5.1 Overview
+  5.2 Hardware
+  5.3 Changes from Phase II
+  5.4 Pseudocode
+6. Phase comparison
+7. Concepts reference
 
 ### Hardware
 

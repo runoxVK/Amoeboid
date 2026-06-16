@@ -1,8 +1,8 @@
 # Self-Balancing Robot — Complete Project Documentation
 
-description: Two-wheeled self-balancing robot with PID control
+description: Two-wheeled self-balancing robot with PID control. Its very roughly made and merely a
 
-**Project:** Two-wheeled self-balancing robot with PID control **Author:** Vivaan **Hardware:** ESP32 DevKit C, MPU-6050, DRV8833, N20 200RPM motors, 7.4V LiPo **Status:** Active — balancing behavior achieved, tuning ongoing
+**Project:** Two-wheeled self-balancing robot with PID control **Author:** Vivaan **Hardware:** ESP32 DevKit C, MPU-6050, DRV8833, N20 200RPM motors, 7.4V LiPo 
 
 https://github.com/runoxVK/SelfBalancingPIDRobot-VK
 ---
@@ -12,7 +12,7 @@ https://github.com/runoxVK/SelfBalancingPIDRobot-VK
 1) Project Overview
 2) Hardware Specifications
 3) Wiring Reference
-4)  IMU Calibration Offsets
+4) IMU Calibration Offsets
 5) Final Working Script
 6) Tuning Guide
 7) Build Logs
@@ -452,13 +452,7 @@ Robot shows active balancing behavior — corrects tilt in the right direction a
 - Target angle must be manually tuned via `t`/`v` commands after each power cycle
 - Bluetooth PID tuning not yet implemented
 ![[RobotBuild3.png]]
-#### Next steps
 
-- [ ] Fine tune target angle and PID gains
-- [ ] Consider upgrading to 500-1000RPM N20 motors
-- [ ] Implement Bluetooth live PID tuning
-- [ ] Mount to permanent chassis once balance is sustained
-- [ ] Log #4: Sustained balancing and Bluetooth tuning
 
 ---
 

@@ -1,10 +1,13 @@
 
+description: A Godot 3D simulation of transistors. You can make working logic gates with transistors such as XOR gates or AND gates and its expandable.
+
 # Transistor Game — Complete Documentation
 
 **Version:** 0.1 (Prototype) **Engine:** Godot 4.2+ **Language:** GDScript **Renderer:** Forward+ **Last Updated:** 2026-04-16
 
 
 GitHub: https://github.com/runoxVK/TheTransistorPlayground
+
 itch.io: https://runox.itch.io/transistorplayground
 
 XOR Gate Example:
@@ -13,17 +16,17 @@ XOR Gate Example:
 
 ## Table of Contents
 
-1. [Game Overview]
-2. [Controls]
-3. [Components Reference]
-4. [Signal System]
-5. [Transistor Guide]
-6. [Logic Gate Blueprints]
-7. [Architecture Overview]
-8. [File Structure]
-9. [Simulation Engine]
-10. [Known Issues & Limitations]
-11. [Roadmap]
+1. Game Overview
+2. Controls
+3. Components Reference
+4. Signal System
+5. Transistor Guide
+6. Logic Gate Blueprints
+7. Architecture Overview
+8. File Structure
+9. Simulation Engine
+10. Known Issues & Limitations
+11. Roadmap
 
 ---
 
