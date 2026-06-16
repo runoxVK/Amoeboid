@@ -20,14 +20,6 @@ https://github.com/runoxVK/RaspberryPiPico-Synthesizer-VK
 ![[PicoSynthesizer_VKAUSHAL.png]]
 ---
 
-## Phase I — Concept test
-
-_File: `PiezoBuzzerTest_VKAUS.py`_
-
-### Overview
-
-Proof-of-concept that establishes the core interaction model: seven buttons map to the C4 major scale, and pressing multiple buttons simultaneously produces a blended chord tone via geometric mean frequency calculation.
-
 1. Github
 2. Schematic
 3. Phase I — Concept test
@@ -48,6 +40,14 @@ Proof-of-concept that establishes the core interaction model: seven buttons map 
   5.4 Pseudocode
 6. Phase comparison
 7. Concepts reference
+
+## Phase I — Concept test
+
+_File: `PiezoBuzzerTest_VKAUS.py`_
+
+### Overview
+
+Proof-of-concept that establishes the core interaction model: seven buttons map to the C4 major scale, and pressing multiple buttons simultaneously produces a blended chord tone via geometric mean frequency calculation.
 
 ### Hardware
 
