@@ -1,5 +1,7 @@
 # The Elevator Progress Log
-![[ElevatorPrototype.mp4]]
+
+Progress Video: https://drive.google.com/file/d/1iu7l4jF1x6tybwvworMENWl2OrZG0G4B/view?usp=sharing
+
 ## One Month in Progress Log (6/25/26):
 
 1. Theme
