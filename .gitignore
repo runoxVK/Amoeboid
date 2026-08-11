@@ -1,0 +1,9 @@
+# Video — GitHub rejects any file over 100MB, and Pages is a poor place to serve
+# video anyway (bandwidth limits). Host clips on Drive or YouTube and link them:
+# a bare YouTube URL on its own line in a .md becomes an embedded player.
+assets/videos/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
