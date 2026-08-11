@@ -1,233 +1,214 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AMOEBOID</title>
-  <link rel="icon" href="data:,">
-  <link rel="preload" href="assets/fonts/Bombardier-Regular.ttf" as="font" type="font/ttf" crossorigin="anonymous">
-  <link rel="stylesheet" href="style.css" />
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Vivaan Kaushal</title>
+<meta name="description" content="Electrical engineering and physics at Northeastern. Circuits, games, soundtracks, photographs — and a world called Baroque.">
+<meta name="author" content="Vivaan Kaushal">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Vivaan Kaushal">
+<meta property="og:description" content="Electrical engineering and physics at Northeastern. Circuits, games, soundtracks, photographs — and a world called Baroque.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="assets/derived/wall/ror2seekersart.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..900;1,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap">
+<link rel="stylesheet" href="assets/css/site.css">
 </head>
-<body>
+<body class="page-home">
+<a class="skip" href="#main">Skip to content</a>
 
-  <!-- CRT wave filter -->
-  <svg id="crt-filter" xmlns="http://www.w3.org/2000/svg">
-    <defs>
-      <filter id="crt-wave" x="0%" y="0%" width="100%" height="100%">
-        <feTurbulence
-          type="fractalNoise"
-          baseFrequency="0.0 0.08"
-          numOctaves="1"
-          seed="2"
-          result="noise">
-        </feTurbulence>
-        <feDisplacementMap
-          in="SourceGraphic"
-          in2="noise"
-          scale="3"
-          xChannelSelector="R"
-          yChannelSelector="G"/>
-      </filter>
-    </defs>
-  </svg>
+<header class="topbar">
+  <a class="topbar__id" href="./">Vivaan Kaushal</a>
+  <button class="topbar__toggle" type="button" aria-expanded="false" aria-controls="spine">
+    <span aria-hidden="true">☰</span><span class="sr">Menu</span>
+  </button>
+</header>
 
-  <div class="scanlines" aria-hidden="true"></div>
-  <div class="vignette"  aria-hidden="true"></div>
-
-  <div class="layout">
-
-    <!-- LEFT: slab monitor -->
-    <div class="slab-wrap">
-      <div class="slab">
-
-        <div class="slab-bar slab-bar-top">
-          <div class="rivet"></div>
-          <div class="rivet"></div>
-          <div class="slab-label">AMOEBOID — MK.I</div>
-          <div class="rivet"></div>
-          <div class="rivet"></div>
-        </div>
-
-        <div class="slab-body">
-          <div class="slab-col">
-            <div class="rivet"></div>
-            <div class="rivet"></div>
-            <div class="rivet"></div>
-            <div class="rivet"></div>
-          </div>
-
-          <div class="slab-screen-well">
-            <div class="slab-screen-inner">
-              <div class="screen-flicker" aria-hidden="true"></div>
-              <div id="terminal-viewport">
-                <div class="terminal-output" id="output" aria-live="polite"></div>
-              </div>
-              <div class="terminal-input-row" id="input-row" style="display:none;">
-                <span class="prompt" aria-hidden="true">runox@amoeboid:~$&nbsp;</span>
-                <input
-                  type="text"
-                  id="cmd-input"
-                  class="cmd-input"
-                  autocomplete="off"
-                  autocorrect="off"
-                  autocapitalize="off"
-                  spellcheck="false"
-                  aria-label="Terminal input"
-                />
-              </div>
-            </div>
-          </div>
-
-          <div class="slab-col">
-            <div class="rivet"></div>
-            <div class="rivet"></div>
-            <div class="rivet"></div>
-            <div class="rivet"></div>
-          </div>
-        </div>
-
-        <div class="slab-bar slab-bar-bottom">
-          <div class="rivet"></div>
-          <div class="rivet"></div>
-          <div class="slab-scratches" aria-hidden="true"></div>
-          <div class="rivet"></div>
-          <div class="rivet"></div>
-        </div>
-
-      </div>
+<aside class="spine" id="spine">
+    <a class="spine__id" href="./">
+      <span class="spine__name">Vivaan<br>Kaushal</span>
+      <span class="spine__role">EE + Physics · Northeastern</span>
+    </a>
+    <nav class="spine__nav" aria-label="Sections">
+    <a class="navlink" href="projects/">
+      <span class="navlink__num" aria-hidden="true">01</span>
+      <span class="navlink__label">Projects</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="art/">
+      <span class="navlink__num" aria-hidden="true">02</span>
+      <span class="navlink__label">Art</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="about/">
+      <span class="navlink__num" aria-hidden="true">03</span>
+      <span class="navlink__label">About</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="other/">
+      <span class="navlink__num" aria-hidden="true">04</span>
+      <span class="navlink__label">Other</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a></nav>
+    <div class="spine__foot">
+      <div class="spine__social"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></div>
     </div>
+  </aside>
 
-    <!-- RIGHT: image panel -->
-    <div class="right-panel" id="right-panel"></div>
+<main id="main" class="main">
 
+<section class="hero panel--ink halftone">
+  <div class="hero__menacing" aria-hidden="true">ゴゴゴゴゴゴゴ</div>
+  <div class="hero__speed" aria-hidden="true"></div>
+  <div class="hero__inner">
+    <p class="kicker kicker--gold">Vivaan Kaushal · Portfolio № 001</p>
+    <h1 class="hero__title">
+      <span class="hero__word">Vivaan</span>
+      <span class="hero__word hero__word--mark">Kaushal</span>
+    </h1>
+    <p class="hero__lede">I love to simply create.</p>
+    <p class="hero__sub">Electrical engineering and physics at Northeastern. Circuits, games, soundtracks, photographs — and a world called Baroque.</p>
+    <div class="hero__cta">
+      <a class="btn btn--big" href="projects/">See the work <span aria-hidden="true">▸</span></a>
+      <a class="btn btn--big btn--ghost" href="about/">Who I am</a>
+    </div>
   </div>
+  <ul class="hero__stats"><li><b>5</b><span>projects</span></li><li><b>101</b><span>photographs</span></li><li><b>28</b><span>lore entries</span></li><li><b>1</b><span>tracks</span></li></ul>
+</section>
 
-  <script src="assets/marked.min.js" defer></script>
-  <script src="terminal.js" defer></script>
+<section class="chapters" aria-label="Sections">
+    <a class="chapter chapter--1" href="projects/">
+      <div class="chapter__media"><img src="assets/derived/thumb/room1-900.webp" alt="" loading="eager" decoding="async"><span class="chapter__scrim" aria-hidden="true"></span></div>
+      <div class="chapter__body">
+        <span class="chapter__num" aria-hidden="true">01</span>
+        <h2 class="chapter__title">Projects</h2>
+        <p class="chapter__blurb">Games built from scratch and circuits built on a bench. Full documentation for each.</p>
+        <span class="chapter__count">5 projects</span>
+      </div>
+      <span class="chapter__go" aria-hidden="true">▸</span>
+    </a>
+    <a class="chapter chapter--2" href="art/">
+      <div class="chapter__media"><img src="assets/derived/photo/monroe-2026/mn1-t.webp" alt="" loading="eager" decoding="async"><span class="chapter__scrim" aria-hidden="true"></span></div>
+      <div class="chapter__body">
+        <span class="chapter__num" aria-hidden="true">02</span>
+        <h2 class="chapter__title">Art</h2>
+        <p class="chapter__blurb">Photography from six trips, music released as Runox, and Baroque — a world I have been writing for years.</p>
+        <span class="chapter__count">101 photos · 1 tracks · 28 entries</span>
+      </div>
+      <span class="chapter__go" aria-hidden="true">▸</span>
+    </a>
+    <a class="chapter chapter--3" href="about/">
+      <div class="chapter__media"><img src="assets/derived/strip/ror2seekersart.webp" alt="" loading="lazy" decoding="async"><span class="chapter__scrim" aria-hidden="true"></span></div>
+      <div class="chapter__body">
+        <span class="chapter__num" aria-hidden="true">03</span>
+        <h2 class="chapter__title">About</h2>
+        <p class="chapter__blurb">Who I am, what I am studying, and the wall of work that shaped how I make things.</p>
+        <span class="chapter__count">11 influences</span>
+      </div>
+      <span class="chapter__go" aria-hidden="true">▸</span>
+    </a>
+    <a class="chapter chapter--4" href="other/">
+      <div class="chapter__media"><span class="chapter__scrim" aria-hidden="true"></span></div>
+      <div class="chapter__body">
+        <span class="chapter__num" aria-hidden="true">04</span>
+        <h2 class="chapter__title">Other</h2>
+        <p class="chapter__blurb">Physics notes, writing, and reviews of the games and records worth the words.</p>
+        <span class="chapter__count">4 pieces</span>
+      </div>
+      <span class="chapter__go" aria-hidden="true">▸</span>
+    </a></section>
 
-  <script>
-    window.scrollTo = function() {
-      var vp = document.getElementById('terminal-viewport');
-      if (vp) vp.scrollTop = vp.scrollHeight;
-    };
-    document.addEventListener('click', function(e) {
-      if (!e.target.closest('.retro-window') && !e.target.closest('.entry-card')) {
-        var inp = document.getElementById('cmd-input');
-        if (inp) inp.focus();
-      }
-    });
 
-    /* ── Single fetch — shared by marquee and music ── */
-    var base = location.pathname.replace(/\/[^/]*$/, '').replace(/\/$/, '');
-    var _contentData = null;
-    var _contentCallbacks = [];
-    fetch(base + '/content.json')
-      .then(function(r) { return r.json(); })
-      .then(function(d) {
-        _contentData = d;
-        _contentCallbacks.forEach(function(cb) { cb(d); });
-        _contentCallbacks = [];
-      })
-      .catch(function() { _contentData = {}; });
+    <section class="influence" aria-labelledby="influence-h">
+      <div class="influence__head">
+        <h2 class="influence__title" id="influence-h">Things that made me (my inspirations)</h2>
+        <a class="influence__more" href="about/#influences">See the whole wall ▸</a>
+      </div>
+      <div class="marquee" data-marquee>
+        <div class="marquee__track">
+          <figure class="marquee__item">
+               <img src="assets/derived/strip/ror2seekersart.webp" alt="Risk of Rain 2" loading="lazy" decoding="async">
+               <figcaption>Risk of Rain 2</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/ror2ukelele.webp" alt="Risk of Rain 2" loading="lazy" decoding="async">
+               <figcaption>Risk of Rain 2</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/kenshiconcept.webp" alt="Kenshi" loading="lazy" decoding="async">
+               <figcaption>Kenshi</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/mihart.webp" alt="Made in Heaven" loading="lazy" decoding="async">
+               <figcaption>Made in Heaven</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/whitesnakeart.webp" alt="Whitesnake" loading="lazy" decoding="async">
+               <figcaption>Whitesnake</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/mandomart.webp" alt="Mandom" loading="lazy" decoding="async">
+               <figcaption>Mandom</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/arcaneconcept.webp" alt="Arcane" loading="lazy" decoding="async">
+               <figcaption>Arcane</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/rainworldbulb.webp" alt="Rain World" loading="lazy" decoding="async">
+               <figcaption>Rain World</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/subshroom.webp" alt="Subnautica" loading="lazy" decoding="async">
+               <figcaption>Subnautica</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/slicon.webp" alt="Sister Location" loading="lazy" decoding="async">
+               <figcaption>Sister Location</figcaption>
+             </figure><figure class="marquee__item">
+               <img src="assets/derived/strip/magneto.webp" alt="Magneto" loading="lazy" decoding="async">
+               <figcaption>Magneto</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/ror2seekersart.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Risk of Rain 2</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/ror2ukelele.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Risk of Rain 2</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/kenshiconcept.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Kenshi</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/mihart.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Made in Heaven</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/whitesnakeart.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Whitesnake</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/mandomart.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Mandom</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/arcaneconcept.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Arcane</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/rainworldbulb.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Rain World</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/subshroom.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Subnautica</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/slicon.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Sister Location</figcaption>
+             </figure><figure class="marquee__item" aria-hidden="true">
+               <img src="assets/derived/strip/magneto.webp" alt="" loading="lazy" decoding="async">
+               <figcaption>Magneto</figcaption>
+             </figure>
+        </div>
+      </div>
+    </section>
+<footer class="footer panel panel--ink">
+  <div class="footer__grid">
+    <p class="footer__sig">Vivaan Kaushal</p>
+    <p class="footer__links"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><span aria-hidden="true"> · </span><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><span aria-hidden="true"> · </span><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><span aria-hidden="true"> · </span><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><span aria-hidden="true"> · </span><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></p>
+  </div>
+  <div class="footer__menacing" aria-hidden="true">ゴゴゴゴゴゴゴゴ</div>
+</footer>
+</main>
 
-    function onContent(cb) {
-      if (_contentData) cb(_contentData);
-      else _contentCallbacks.push(cb);
-    }
-
-    /* ── Marquee ── */
-    (function() {
-      var GAP   = 8;
-      var SPEED = 0.5;
-      var lastT = 0;
-
-      onContent(function(d) { build(d._panelImages || []); });
-
-      function build(srcs) {
-        if (!srcs.length) return;
-        var panel = document.getElementById('right-panel');
-        var GAP2  = 6;
-        var colW  = Math.floor((panel.clientWidth - GAP2 * 3) / 2);
-        var cols  = [[], []];
-        srcs.forEach(function(s, i) { cols[i % 2].push(s); });
-
-        var strips = cols.map(function(colSrcs, c) {
-          var wrap = document.createElement('div');
-          wrap.style.cssText = 'position:absolute;top:0;bottom:0;overflow:hidden;left:' + (GAP2 + c*(colW+GAP2)) + 'px;width:' + colW + 'px';
-          panel.appendChild(wrap);
-
-          var strip = document.createElement('div');
-          strip.style.cssText = 'position:absolute;top:0;width:' + colW + 'px';
-          wrap.appendChild(strip);
-
-          [0, 1].forEach(function() {
-            colSrcs.forEach(function(src) {
-              var img = document.createElement('img');
-              img.src = base + '/' + src;
-              img.style.cssText = 'display:block;width:' + colW + 'px;height:auto;margin-bottom:' + GAP2 + 'px';
-              strip.appendChild(img);
-            });
-          });
-
-          return { el: strip, offset: c * 300 };
-        });
-
-        var userScrolling = false;
-        var resumeTimer = null;
-
-        // single wheel listener on the whole panel — moves both columns
-        panel.addEventListener('wheel', function(e) {
-          e.preventDefault();
-          strips.forEach(function(s) {
-            s.offset += e.deltaY * 0.5;
-            var half = s.el.scrollHeight / 2;
-            if (half) s.offset = ((s.offset % half) + half) % half;
-            s.el.style.top = -s.offset + 'px';
-          });
-          userScrolling = true;
-          clearTimeout(resumeTimer);
-          resumeTimer = setTimeout(function() { userScrolling = false; }, 1500);
-        }, { passive: false });
-
-        function tick(now) {
-          requestAnimationFrame(tick);
-          if (now - lastT < 33) return;
-          lastT = now;
-          if (userScrolling) return;
-          strips.forEach(function(s) {
-            var half = s.el.scrollHeight / 2;
-            if (!half) return;
-            s.offset = (s.offset + SPEED) % half;
-            s.el.style.top = -s.offset + 'px';
-          });
-        }
-        requestAnimationFrame(tick);
-      }
-    })();
-  </script>
-
-  <audio id="bg-music" loop preload="auto"></audio>
-  <script>
-    (function() {
-      var music = document.getElementById('bg-music');
-      music.volume = 0.35;
-      var started = false;
-      var tracks  = [];
-
-      onContent(function(d) { tracks = d._music || []; });
-
-      function play() {
-        if (started || !tracks.length) return;
-        started = true;
-        music.src = base + '/' + tracks[Math.floor(Math.random() * tracks.length)];
-        music.play().catch(function() {});
-        document.removeEventListener('click', play);
-        document.removeEventListener('keydown', play);
-      }
-
-      document.addEventListener('click', play);
-      document.addEventListener('keydown', play);
-    })();
-  </script>e
+<script src="assets/js/site.js" defer></script>
 </body>
 </html>

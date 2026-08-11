@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Transistor Playground — Vivaan Kaushal</title>
+<meta name="description" content="A Godot 3D simulation of transistors. You can make working logic gates with transistors such as XOR gates or AND gates and its expandable.">
+<meta name="author" content="Vivaan Kaushal">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Transistor Playground — Vivaan Kaushal">
+<meta property="og:description" content="A Godot 3D simulation of transistors. You can make working logic gates with transistors such as XOR gates or AND gates and its expandable.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../assets/derived/thumb/transistor-playground-1400.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..900;1,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body class="page-projects">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="topbar__id" href="../../">Vivaan Kaushal</a>
+  <button class="topbar__toggle" type="button" aria-expanded="false" aria-controls="spine">
+    <span aria-hidden="true">☰</span><span class="sr">Menu</span>
+  </button>
+</header>
+
+<aside class="spine" id="spine">
+    <a class="spine__id" href="../../">
+      <span class="spine__name">Vivaan<br>Kaushal</span>
+      <span class="spine__role">EE + Physics · Northeastern</span>
+    </a>
+    <nav class="spine__nav" aria-label="Sections">
+    <a class="navlink is-active" href="../../projects/">
+      <span class="navlink__num" aria-hidden="true">01</span>
+      <span class="navlink__label">Projects</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../art/">
+      <span class="navlink__num" aria-hidden="true">02</span>
+      <span class="navlink__label">Art</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../about/">
+      <span class="navlink__num" aria-hidden="true">03</span>
+      <span class="navlink__label">About</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../other/">
+      <span class="navlink__num" aria-hidden="true">04</span>
+      <span class="navlink__label">Other</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a></nav>
+    <div class="spine__foot">
+      <div class="spine__social"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></div>
+    </div>
+  </aside>
+
+<main id="main" class="main">
+
+<article class="article">
+  <header class="ahead panel--ink halftone">
+    <a class="ahead__back" href="../"><span aria-hidden="true">◂</span> Projects</a>
+    <p class="kicker kicker--gold">Game development</p>
+    <h1 class="ahead__title">Transistor Playground</h1>
+    <p class="ahead__desc">A Godot 3D simulation of transistors. You can make working logic gates with transistors such as XOR gates or AND gates and its expandable.</p>
+    <div class="linkrow"><a class="btn btn--github" href="https://github.com/runoxVK/TheTransistorPlayground" target="_blank" rel="noopener noreferrer">
+       <span class="btn__icon" aria-hidden="true">↗</span>GitHub</a><a class="btn btn--itch" href="https://runox.itch.io/transistorplayground" target="_blank" rel="noopener noreferrer">
+       <span class="btn__icon" aria-hidden="true">↗</span>itch.io</a></div>
+    <dl class="spec"><div class="spec__row"><dt>Version</dt><dd>0.1 (Prototype)</dd></div><div class="spec__row"><dt>Engine</dt><dd>Godot 4.2+</dd></div><div class="spec__row"><dt>Language</dt><dd>GDScript</dd></div><div class="spec__row"><dt>Renderer</dt><dd>Forward+</dd></div><div class="spec__row"><dt>Last Updated</dt><dd>2026-04-16</dd></div></dl>
+    <div class="ahead__menacing" aria-hidden="true">ゴゴゴ</div>
+  </header>
+  <figure class="ahero"><img src="../../assets/derived/thumb/transistor-playground-1400.webp" alt="" loading="eager" decoding="async"></figure>
+  <div class="article__grid">
+    <nav class="toc" aria-label="Contents">
+         <p class="toc__title">Contents</p>
+         <ol><li class="toc__l2"><a href="#table-of-contents">Table of Contents</a></li><li class="toc__l2"><a href="#1-game-overview">1. Game Overview</a></li><li class="toc__l2"><a href="#2-controls">2. Controls</a></li><li class="toc__l2"><a href="#3-components-reference">3. Components Reference</a></li><li class="toc__l2"><a href="#4-signal-system">4. Signal System</a></li><li class="toc__l2"><a href="#5-transistor-guide">5. Transistor Guide</a></li><li class="toc__l2"><a href="#6-logic-gate-blueprints">6. Logic Gate Blueprints</a></li><li class="toc__l2"><a href="#7-architecture-overview">7. Architecture Overview</a></li><li class="toc__l2"><a href="#8-file-structure">8. File Structure</a></li><li class="toc__l2"><a href="#9-simulation-engine">9. Simulation Engine</a></li><li class="toc__l2"><a href="#10-known-issues-limitations">10. Known Issues &amp; Limitations</a></li><li class="toc__l2"><a href="#11-roadmap">11. Roadmap</a></li><li class="toc__l2"><a href="#appendix-godot-project-setup">Appendix: Godot Project Setup</a></li></ol>
+       </nav>
+    <div class="prose"><p>XOR Gate Example:</p>
+<figure class="embed"><img src="../../assets/derived/inline/xor1.webp" alt="XOR1" loading="lazy" decoding="async" width="1200" height="674"></figure>
+
+
+<hr>
+<h2 id="table-of-contents"><a class="anchor" href="#table-of-contents" aria-label="Link to this section">§</a>Table of Contents</h2>
+<ol>
+<li>Game Overview</li>
+<li>Controls</li>
+<li>Components Reference</li>
+<li>Signal System</li>
+<li>Transistor Guide</li>
+<li>Logic Gate Blueprints</li>
+<li>Architecture Overview</li>
+<li>File Structure</li>
+<li>Simulation Engine</li>
+<li>Known Issues &amp; Limitations</li>
+<li>Roadmap</li>
+</ol>
+<hr>
+<h2 id="1-game-overview"><a class="anchor" href="#1-game-overview" aria-label="Link to this section">§</a>1. Game Overview</h2>
+<p>A first-person circuit-building sandbox. The player walks around a large flat board and places electronic components — wires, transistors, resistors, repeaters, LEDs, clocks — to construct working digital logic circuits.</p>
+<p>The core inspiration is Minecraft redstone, but with real transistor mechanics. Instead of redstone torches and dust, you work with NPN and PNP transistors, signal decay over wire runs, and repeaters. The same logical completeness applies: with NAND gates alone you can build any digital system. From a single transistor to a full CPU, every step is buildable from the components in this game.</p>
+<p>The world is a single large flat board viewed from first-person ground level. Components snap to a 1m × 1m tile grid. Wires connect automatically to adjacent components. Signal flows, decays, and is gated exactly as you would expect from real digital electronics.</p>
+<hr>
+<h2 id="2-controls"><a class="anchor" href="#2-controls" aria-label="Link to this section">§</a>2. Controls</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Action</th>
+<th>Key / Button</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Move</td>
+<td>WASD</td>
+</tr>
+<tr>
+<td>Look</td>
+<td>Mouse</td>
+</tr>
+<tr>
+<td>Sprint</td>
+<td>Shift</td>
+</tr>
+<tr>
+<td>Jump</td>
+<td>Space</td>
+</tr>
+<tr>
+<td><strong>Place component</strong></td>
+<td>Left-click</td>
+</tr>
+<tr>
+<td><strong>Remove component</strong></td>
+<td>Middle-click</td>
+</tr>
+<tr>
+<td><strong>Toggle source / clock frequency</strong></td>
+<td>Right-click</td>
+</tr>
+<tr>
+<td><strong>Inspect component (info panel)</strong></td>
+<td>Right-click (non-source)</td>
+</tr>
+<tr>
+<td><strong>Rotate before placing</strong></td>
+<td>R (cycles 0° → 90° → 180° → 270°)</td>
+</tr>
+<tr>
+<td>Select hotbar slot</td>
+<td>1 – 7</td>
+</tr>
+<tr>
+<td>Cycle hotbar</td>
+<td>Scroll wheel</td>
+</tr>
+<tr>
+<td>Close info panel / release mouse</td>
+<td>Escape</td>
+</tr>
+</tbody></table></div>
+<h3 id="placement-workflow"><a class="anchor" href="#placement-workflow" aria-label="Link to this section">§</a>Placement workflow</h3>
+<ol>
+<li>Select a component from the hotbar (number keys or scroll)</li>
+<li>Press R to rotate if needed — the highlight cursor rotates to preview orientation</li>
+<li>Look at the board — green highlight = valid placement, red = occupied</li>
+<li>Left-click to place</li>
+<li>Middle-click any placed component to remove it</li>
+</ol>
+<hr>
+<h2 id="3-components-reference"><a class="anchor" href="#3-components-reference" aria-label="Link to this section">§</a>3. Components Reference</h2>
+<h3 id="wire"><a class="anchor" href="#wire" aria-label="Link to this section">§</a>Wire</h3>
+<p>Carries signal between components. Loses 1 strength per tile travelled.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Signal loss</td>
+<td>1 per tile</td>
+</tr>
+<tr>
+<td>Max range</td>
+<td>15 tiles from source or repeater</td>
+</tr>
+<tr>
+<td>Connections</td>
+<td>All 4 adjacent neighbours</td>
+</tr>
+<tr>
+<td>Visual</td>
+<td>Flat cube (0.8 × 0.05 × 0.8m). Colour gradient: dark grey (off) → orange → bright yellow (full strength)</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="power-source"><a class="anchor" href="#power-source" aria-label="Link to this section">§</a>Power Source</h3>
+<p>Emits a full-strength signal. Right-click to toggle on/off.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Output strength</td>
+<td>15 (maximum)</td>
+</tr>
+<tr>
+<td>Toggle</td>
+<td>Right-click</td>
+</tr>
+<tr>
+<td>Visual</td>
+<td>Cube glows bright red when active, near-black when off</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="repeater"><a class="anchor" href="#repeater" aria-label="Link to this section">§</a>Repeater</h3>
+<p>Accepts any signal and re-emits it at full strength (15). Essential for long wire runs.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Input threshold</td>
+<td>Any signal &gt; 0</td>
+</tr>
+<tr>
+<td>Output strength</td>
+<td>Always 15</td>
+</tr>
+<tr>
+<td>Use case</td>
+<td>Place every 14 wire tiles to maintain signal indefinitely</td>
+</tr>
+<tr>
+<td>Visual</td>
+<td>Amber cube, glows bright yellow-white when repeating</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="npn-transistor"><a class="anchor" href="#npn-transistor" aria-label="Link to this section">§</a>NPN Transistor</h3>
+<p>Normally open switch. Power flows Collector→Emitter only when Gate receives signal.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Conducts when</td>
+<td>Gate strength ≥ 1</td>
+</tr>
+<tr>
+<td>Default state</td>
+<td>OFF (open circuit)</td>
+</tr>
+<tr>
+<td>Signal loss</td>
+<td>None through transistor body</td>
+</tr>
+<tr>
+<td>Gate side</td>
+<td>Left / Right (yellow sphere)</td>
+</tr>
+<tr>
+<td>Collector side</td>
+<td>Front (red sphere) — power IN</td>
+</tr>
+<tr>
+<td>Emitter side</td>
+<td>Back (green sphere) — power OUT</td>
+</tr>
+<tr>
+<td>Real analogy</td>
+<td>BJT NPN — small base current controls large collector current</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="pnp-transistor"><a class="anchor" href="#pnp-transistor" aria-label="Link to this section">§</a>PNP Transistor</h3>
+<p>Normally closed switch. Power flows Collector→Emitter unless Gate receives signal.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Conducts when</td>
+<td>Gate strength = 0</td>
+</tr>
+<tr>
+<td>Default state</td>
+<td>ON (conducts if collector powered)</td>
+</tr>
+<tr>
+<td>Signal loss</td>
+<td>None through transistor body</td>
+</tr>
+<tr>
+<td>Gate side</td>
+<td>Left / Right (yellow sphere)</td>
+</tr>
+<tr>
+<td>Collector side</td>
+<td>Front (red sphere) — power IN</td>
+</tr>
+<tr>
+<td>Emitter side</td>
+<td>Back (green sphere) — power OUT</td>
+</tr>
+<tr>
+<td>Real analogy</td>
+<td>BJT PNP — base current blocks collector-emitter flow</td>
+</tr>
+</tbody></table></div>
+<h4 id="pin-colour-reference-same-on-both-types"><a class="anchor" href="#pin-colour-reference-same-on-both-types" aria-label="Link to this section">§</a>Pin colour reference (same on both types)</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Colour</th>
+<th>Pin</th>
+<th>Role</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Yellow</td>
+<td>Gate</td>
+<td>Control input</td>
+</tr>
+<tr>
+<td>Red</td>
+<td>Collector</td>
+<td>Power IN</td>
+</tr>
+<tr>
+<td>Green</td>
+<td>Emitter</td>
+<td>Power OUT</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="resistor"><a class="anchor" href="#resistor" aria-label="Link to this section">§</a>Resistor</h3>
+<p>Reduces signal strength by a fixed amount as it passes through.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Strength reduction</td>
+<td>4 per resistor</td>
+</tr>
+<tr>
+<td>Use case</td>
+<td>Drop a signal below a gate threshold, or kill a weak signal entirely</td>
+</tr>
+<tr>
+<td>Real analogy</td>
+<td>Ohm&#39;s Law: V = IR</td>
+</tr>
+<tr>
+<td>Tip</td>
+<td>Two in series drops by 8. Four in series kills any signal</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="led"><a class="anchor" href="#led" aria-label="Link to this section">§</a>LED</h3>
+<p>Lights up when it receives any signal. Terminal — does not pass signal onward.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Minimum signal</td>
+<td>1</td>
+</tr>
+<tr>
+<td>Output</td>
+<td>None (terminal component)</td>
+</tr>
+<tr>
+<td>Brightness</td>
+<td>Scales with incoming signal strength</td>
+</tr>
+<tr>
+<td>Visual</td>
+<td>Small cube glows bright green, brightness proportional to strength</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h3 id="clock"><a class="anchor" href="#clock" aria-label="Link to this section">§</a>Clock</h3>
+<p>Auto-oscillating source. Pulses between HIGH and LOW automatically. Required for sequential logic.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Property</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Default frequency</td>
+<td>1 Hz (0.5s per half-cycle)</td>
+</tr>
+<tr>
+<td>Right-click</td>
+<td>Cycles through preset frequencies</td>
+</tr>
+<tr>
+<td>Presets</td>
+<td>1Hz / 2Hz / 4Hz / 10Hz / 20Hz</td>
+</tr>
+<tr>
+<td>Use case</td>
+<td>Flip-flops, counters, shift registers, CPUs</td>
+</tr>
+<tr>
+<td>Visual</td>
+<td>Cyan cube, pulses on/off</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="4-signal-system"><a class="anchor" href="#4-signal-system" aria-label="Link to this section">§</a>4. Signal System</h2>
+<p>Signal strength is an integer from 0 to 15. It works identically to Minecraft redstone signal strength.</p>
+<h3 id="decay"><a class="anchor" href="#decay" aria-label="Link to this section">§</a>Decay</h3>
+<p>Every wire tile a signal passes through reduces its strength by 1.</p>
+<pre><code>Source(15) → Wire(14) → Wire(13) → Wire(12) → ... → Wire(1) → Wire(0, dead)
+</code></pre>
+<p>A signal dies after 15 wire tiles. Place a Repeater to reset it to 15.</p>
+<h3 id="repeater"><a class="anchor" href="#repeater" aria-label="Link to this section">§</a>Repeater</h3>
+<pre><code>Source(15) → Wire(14) → Repeater(15) → Wire(14) → Wire(13) → ...
+</code></pre>
+<h3 id="resistor"><a class="anchor" href="#resistor" aria-label="Link to this section">§</a>Resistor</h3>
+<pre><code>Source(15) → Resistor → Wire(10) → Wire(9) → ...  (drops 4+1 per tile)
+</code></pre>
+<h3 id="rules-summary"><a class="anchor" href="#rules-summary" aria-label="Link to this section">§</a>Rules summary</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Effect on signal</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wire</td>
+<td>-1 per tile</td>
+</tr>
+<tr>
+<td>Repeater</td>
+<td>Reset to 15</td>
+</tr>
+<tr>
+<td>Resistor</td>
+<td>-4</td>
+</tr>
+<tr>
+<td>Transistor (open)</td>
+<td>No loss</td>
+</tr>
+<tr>
+<td>LED</td>
+<td>Absorbs signal, outputs nothing</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>Always 15 when active</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="5-transistor-guide"><a class="anchor" href="#5-transistor-guide" aria-label="Link to this section">§</a>5. Transistor Guide</h2>
+<h3 id="npn-normally-open"><a class="anchor" href="#npn-normally-open" aria-label="Link to this section">§</a>NPN — Normally Open</h3>
+<p>Think of NPN as a door that is normally shut. Sending signal to the gate opens the door.</p>
+<pre><code>[Collector] → power enters here
+[Gate]      → when HIGH, opens the transistor
+[Emitter]   → power exits here when gate is open
+</code></pre>
+<p><strong>Truth table:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Collector powered</th>
+<th>Gate signal</th>
+<th>Emitter output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Yes</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Yes</td>
+<td>Yes</td>
+<td><strong>Yes</strong></td>
+</tr>
+</tbody></table></div>
+<h3 id="pnp-normally-closed"><a class="anchor" href="#pnp-normally-closed" aria-label="Link to this section">§</a>PNP — Normally Closed</h3>
+<p>Think of PNP as a door that is normally open. Sending signal to the gate closes the door.</p>
+<pre><code>[Collector] → power enters here
+[Gate]      → when LOW, conducts. When HIGH, blocks
+[Emitter]   → power exits here when gate is LOW
+</code></pre>
+<p><strong>Truth table:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Collector powered</th>
+<th>Gate signal</th>
+<th>Emitter output</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>No</td>
+<td>No</td>
+<td>No</td>
+</tr>
+<tr>
+<td>Yes</td>
+<td>No</td>
+<td><strong>Yes</strong></td>
+</tr>
+<tr>
+<td>Yes</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+<tr>
+<td>No</td>
+<td>Yes</td>
+<td>No</td>
+</tr>
+</tbody></table></div>
+<h3 id="rotation"><a class="anchor" href="#rotation" aria-label="Link to this section">§</a>Rotation</h3>
+<p>Press R before placing to rotate the transistor. The yellow gate sphere indicates the gate sides. Red collector sphere and green emitter sphere show power in and power out respectively. Rotate until the pins face the correct wire connections for your layout.</p>
+<h3 id="chaining-transistors"><a class="anchor" href="#chaining-transistors" aria-label="Link to this section">§</a>Chaining transistors</h3>
+<p>Transistors can chain — the emitter of one can feed the gate or collector of another. The simulation resolves chains correctly regardless of depth: each emitter activation immediately propagates downstream, so the next transistor in the chain sees the correct input on the same simulation tick.</p>
+<hr>
+<h2 id="6-logic-gate-blueprints"><a class="anchor" href="#6-logic-gate-blueprints" aria-label="Link to this section">§</a>6. Logic Gate Blueprints</h2>
+<p>All layouts use the default transistor orientation. C = Collector (red/front), E = Emitter (green/back), G = Gate (yellow/left or right). Arrows show wire connections.</p>
+<h3 id="buffer-npn"><a class="anchor" href="#buffer-npn" aria-label="Link to this section">§</a>Buffer (NPN)</h3>
+<p>Output is HIGH when input is HIGH.</p>
+<pre><code>[VCC] → [C-NPN-E] → [LED]
+[Input] → [G]
+</code></pre>
+<h3 id="not-gate-pnp"><a class="anchor" href="#not-gate-pnp" aria-label="Link to this section">§</a>NOT Gate (PNP)</h3>
+<p>Output is HIGH when input is LOW.</p>
+<pre><code>[VCC] → [C-PNP-E] → [LED]
+[Input] → [G]
+</code></pre>
+<h3 id="and-gate-2-npn-in-series"><a class="anchor" href="#and-gate-2-npn-in-series" aria-label="Link to this section">§</a>AND Gate (2× NPN in series)</h3>
+<p>Output HIGH only when both inputs are HIGH.</p>
+<pre><code>[VCC] → [C-NPN1-E] → [C-NPN2-E] → [LED]
+[Input A] → [NPN1 Gate]
+[Input B] → [NPN2 Gate]
+</code></pre>
+<h3 id="or-gate-2-npn-in-parallel"><a class="anchor" href="#or-gate-2-npn-in-parallel" aria-label="Link to this section">§</a>OR Gate (2× NPN in parallel)</h3>
+<p>Output HIGH when either input is HIGH.</p>
+<pre><code>[VCC] → [C-NPN1-E] → [LED wire]
+[VCC] → [C-NPN2-E] → [same LED wire]
+[Input A] → [NPN1 Gate]
+[Input B] → [NPN2 Gate]
+</code></pre>
+<h3 id="nand-gate-and-pnp-invert"><a class="anchor" href="#nand-gate-and-pnp-invert" aria-label="Link to this section">§</a>NAND Gate (AND + PNP invert)</h3>
+<p>Output HIGH unless both inputs are HIGH.</p>
+<pre><code>[VCC] → [C-NPN1-E] → [C-NPN2-E] → [PNP Gate]
+[VCC] → [C-PNP-E] → [LED]
+[Input A] → [NPN1 Gate]
+[Input B] → [NPN2 Gate]
+</code></pre>
+<h3 id="nor-gate-or-pnp-invert"><a class="anchor" href="#nor-gate-or-pnp-invert" aria-label="Link to this section">§</a>NOR Gate (OR + PNP invert)</h3>
+<p>Output HIGH only when both inputs are LOW.</p>
+<pre><code>[VCC] → [C-NPN1-E] → [PNP Gate wire]
+[VCC] → [C-NPN2-E] → [same PNP Gate wire]
+[VCC] → [C-PNP-E] → [LED]
+[Input A] → [NPN1 Gate]
+[Input B] → [NPN2 Gate]
+</code></pre>
+<h3 id="xor-gate"><a class="anchor" href="#xor-gate" aria-label="Link to this section">§</a>XOR Gate</h3>
+<p>Output HIGH when inputs differ. Requires NAND + OR feeding a second AND stage.</p>
+<pre><code>Stage 1: Build a NAND gate   → NAND output wire
+Stage 2: Build an OR gate    → OR output wire
+Stage 3: AND gate with:
+  NPN1 collector ← VCC
+  NPN1 gate      ← NAND output wire
+  NPN1 emitter   → NPN2 collector
+  NPN2 gate      ← OR output wire
+  NPN2 emitter   → LED
+</code></pre>
+<p>Output is HIGH when exactly one input is HIGH.</p>
+<blockquote>
+<p><em>XOR gate verified working in-game — see screenshots.</em></p>
+</blockquote>
+<p>A=0; B=1</p>
+<figure class="embed"><img src="../../assets/derived/inline/xor1.webp" alt="XOR1" loading="lazy" decoding="async" width="1200" height="674"></figure>
+
+
+
+<p>A=1;B=0</p>
+<figure class="embed"><img src="../../assets/derived/inline/xor3.webp" alt="XOR3" loading="lazy" decoding="async" width="1200" height="674"></figure>
+
+
+
+<p>A=1; B=1</p>
+<figure class="embed"><img src="../../assets/derived/inline/xor2.webp" alt="XOR2" loading="lazy" decoding="async" width="1200" height="674"></figure>
+
+
+<hr>
+<h2 id="7-architecture-overview"><a class="anchor" href="#7-architecture-overview" aria-label="Link to this section">§</a>7. Architecture Overview</h2>
+<p>The project is split into three clean layers that don&#39;t know about each other:</p>
+<pre><code>┌─────────────────────────────────────┐
+│         Visual Layer                │
+│  Component scenes, meshes,          │
+│  emission materials, indicator      │
+│  spheres. Purely cosmetic.          │
+└────────────────┬────────────────────┘
+                 │ on_sim_update()
+┌────────────────▼────────────────────┐
+│         Grid Layer                  │
+│  CircuitBoard.gd                    │
+│  2D Dictionary keyed by Vector2i.   │
+│  Source of truth for what is        │
+│  placed where. Handles raycasting,  │
+│  placement, removal, connection     │
+│  routing with rotation support.     │
+└────────────────┬────────────────────┘
+                 │ register/unregister nodes
+┌────────────────▼────────────────────┐
+│         Simulation Layer            │
+│  SimulationManager.gd (Autoload)    │
+│  Pure graph of sim nodes. Knows     │
+│  nothing about 3D. BFS solver with  │
+│  ordered transistor resolution.     │
+└─────────────────────────────────────┘
+</code></pre>
+<h3 id="key-design-principles"><a class="anchor" href="#key-design-principles" aria-label="Link to this section">§</a>Key design principles</h3>
+<ul>
+<li><strong>Simulation is 3D-unaware.</strong> The solver operates on a graph of dictionaries. Nodes have types, strengths, and connection lists. No Vector3, no Node3D.</li>
+<li><strong>Event-driven.</strong> <code>run_simulation</code> only runs when <code>mark_dirty()</code> is called. No per-frame simulation cost when nothing is changing.</li>
+<li><strong>Changed-only visual updates.</strong> After each sim run, <code>on_sim_update</code> is only called on nodes whose <code>powered</code> or <code>strength</code> state changed. No unnecessary material writes.</li>
+<li><strong>Directional connections.</strong> Transistors expose <code>get_node_id_for_side(dir)</code> which CircuitBoard calls to route adjacent wires to the correct gate/collector/emitter node based on physical position and rotation.</li>
+</ul>
+<hr>
+<h2 id="8-file-structure"><a class="anchor" href="#8-file-structure" aria-label="Link to this section">§</a>8. File Structure</h2>
+<pre><code>res://
+├── autoloads/
+│   ├── SimulationManager.gd    ← Global circuit solver (Autoload)
+│   └── ComponentRegistry.gd   ← All component definitions (Autoload)
+├── nodes/
+│   ├── CircuitBoard.gd         ← Grid, placement, connection routing
+│   └── Player.gd               ← First-person controller
+├── components/
+│   ├── ComponentBase.gd        ← Base class (class_name ComponentBase)
+│   ├── Wire.gd
+│   ├── Source.gd
+│   ├── Repeater.gd
+│   ├── Resistor.gd
+│   ├── LED.gd
+│   ├── Clock.gd
+│   ├── TransistorNPN.gd
+│   └── TransistorPNP.gd
+└── ui/
+    ├── InfoPanel.gd
+    └── Hotbar.gd
+</code></pre>
+<h3 id="autoload-registration-order-matters"><a class="anchor" href="#autoload-registration-order-matters" aria-label="Link to this section">§</a>Autoload registration order (matters)</h3>
+<ol>
+<li>SimulationManager</li>
+<li>ComponentRegistry</li>
+</ol>
+<hr>
+<h2 id="9-simulation-engine"><a class="anchor" href="#9-simulation-engine" aria-label="Link to this section">§</a>9. Simulation Engine</h2>
+<h3 id="simnode-dictionary-structure"><a class="anchor" href="#simnode-dictionary-structure" aria-label="Link to this section">§</a>SimNode dictionary structure</h3>
+<p>Every placed component registers one or more sim nodes. Each node is a GDScript Dictionary:</p>
+<pre><code class="language-gdscript">{
+    &quot;id&quot;:           String,       # unique node ID
+    &quot;type&quot;:         String,       # see type list below
+    &quot;powered&quot;:      bool,
+    &quot;strength&quot;:     int,          # 0-15
+    &quot;connections&quot;:  Array,        # list of connected node IDs
+    &quot;visual_node&quot;:  Node3D,       # reference for on_sim_update calls
+    # type-specific fields:
+    &quot;transistor_id&quot;:  String,     # transistors only
+    &quot;gate_threshold&quot;: int,        # transistors only
+    &quot;resistance&quot;:     int,        # resistors only
+    &quot;clock_interval&quot;: float,      # clocks only
+}
+</code></pre>
+<h3 id="node-types"><a class="anchor" href="#node-types" aria-label="Link to this section">§</a>Node types</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Type</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>source</code></td>
+<td>Active power source</td>
+</tr>
+<tr>
+<td><code>wire</code></td>
+<td>Signal carrier, decays by 1</td>
+</tr>
+<tr>
+<td><code>repeater</code></td>
+<td>Resets signal to 15</td>
+</tr>
+<tr>
+<td><code>resistor</code></td>
+<td>Drops signal by <code>resistance</code></td>
+</tr>
+<tr>
+<td><code>led</code></td>
+<td>Terminal receiver</td>
+</tr>
+<tr>
+<td><code>transistor_emitter_npn</code></td>
+<td>NPN output node</td>
+</tr>
+<tr>
+<td><code>transistor_gate_npn</code></td>
+<td>NPN control input</td>
+</tr>
+<tr>
+<td><code>transistor_collector_npn</code></td>
+<td>NPN power input</td>
+</tr>
+<tr>
+<td><code>transistor_emitter_pnp</code></td>
+<td>PNP output node</td>
+</tr>
+<tr>
+<td><code>transistor_gate_pnp</code></td>
+<td>PNP control input</td>
+</tr>
+<tr>
+<td><code>transistor_collector_pnp</code></td>
+<td>PNP power input</td>
+</tr>
+</tbody></table></div>
+<h3 id="solver-sequence"><a class="anchor" href="#solver-sequence" aria-label="Link to this section">§</a>Solver sequence</h3>
+<pre><code>run_simulation()
+│
+├── Snapshot previous state (for change detection)
+│
+├── Step 1: Reset all non-source nodes to strength=0, powered=false
+│
+├── Step 2: BFS from all active sources
+│   └── Propagates through: wires, repeaters, resistors,
+│       gates, collectors. Skips emitters.
+│
+├── Step 3: Unified emitter resolution loop
+│   └── Scan all emitter nodes
+│       ├── NPN: conducts if gate.strength &gt;= 1 AND col.strength &gt; 0
+│       ├── PNP: conducts if gate.strength &lt; 1  AND col.strength &gt; 0
+│       ├── If conducts: set emitter strength, _bfs([emitter_id])
+│       └── Repeat until full scan finds nothing new (safety cap: 128)
+│
+└── Step 4: Notify only changed nodes via on_sim_update()
+</code></pre>
+<p>The immediate BFS after each emitter activation is the critical detail — it propagates the emitter&#39;s output into downstream gates and collectors before the next emitter is evaluated, allowing chains of any depth and type to resolve correctly in a single <code>run_simulation</code> call.</p>
+<h3 id="adding-a-new-component-type"><a class="anchor" href="#adding-a-new-component-type" aria-label="Link to this section">§</a>Adding a new component type</h3>
+<ol>
+<li>Add an entry to <code>ComponentRegistry.COMPONENTS</code> with scene path, sim template, and info text</li>
+<li>Create the <code>.tscn</code> scene with a <code>ComponentBase</code>-extending script as the root</li>
+<li>Implement <code>on_sim_update(powered, strength)</code> for visual feedback</li>
+<li>If the component needs special sim behaviour, add a case to <code>SimulationManager._strength_into()</code></li>
+<li>If directional (like transistors), implement <code>get_node_id_for_side(dir)</code> and call <code>init_sim_nodes</code> from CircuitBoard</li>
+</ol>
+<hr>
+<h2 id="10-known-issues-limitations"><a class="anchor" href="#10-known-issues-limitations" aria-label="Link to this section">§</a>10. Known Issues &amp; Limitations</h2>
+<h3 id="infopanel-text-wraps-vertically"><a class="anchor" href="#infopanel-text-wraps-vertically" aria-label="Link to this section">§</a>InfoPanel text wraps vertically</h3>
+<p>The info panel PanelContainer is too narrow for some screen sizes, causing text to wrap character by character. Workaround: increase the panel width in the InfoPanel scene (set VBox minimum width to 400+).</p>
+<h3 id="no-component-rotation-persistence"><a class="anchor" href="#no-component-rotation-persistence" aria-label="Link to this section">§</a>No component rotation persistence</h3>
+<p>Rotation resets to 0 between placements. You must press R again for each new component. Intentional for now but could be made sticky per component type.</p>
+<h3 id="fixed-board-size"><a class="anchor" href="#fixed-board-size" aria-label="Link to this section">§</a>Fixed board size</h3>
+<p>The board is a fixed 64×64 grid. No infinite terrain, no multi-board connections yet. A 64×64 grid gives 4,096 cells which is sufficient for complex gates and small CPUs but would need expansion for larger projects.</p>
+<h3 id="no-save-load"><a class="anchor" href="#no-save-load" aria-label="Link to this section">§</a>No save/load</h3>
+<p>Circuit state is not persisted between sessions. The IC system (next milestone) will introduce JSON serialisation which will also enable board save/load.</p>
+<h3 id="signal-decay-affects-transistor-gate-inputs"><a class="anchor" href="#signal-decay-affects-transistor-gate-inputs" aria-label="Link to this section">§</a>Signal decay affects transistor gate inputs</h3>
+<p>A gate wire that has travelled 15+ tiles without a repeater will have strength 0 and fail to open an NPN transistor. Always use a repeater before a long gate wire run, or place the gate source close to the transistor.</p>
+<hr>
+<h2 id="11-roadmap"><a class="anchor" href="#11-roadmap" aria-label="Link to this section">§</a>11. Roadmap</h2>
+<h3 id="next-v0-2"><a class="anchor" href="#next-v0-2" aria-label="Link to this section">§</a>Next (v0.2)</h3>
+<ul>
+<li><strong>Wire visual connection stubs</strong> — wires extend visually toward adjacent wires so circuit runs look like lines rather than isolated cubes</li>
+<li><strong>InfoPanel UI fix</strong> — readable text at all screen sizes</li>
+<li><strong>IC save system</strong> — select a region, name it, save as reusable black-box component placed from hotbar</li>
+</ul>
+<h3 id="near-term-v0-3"><a class="anchor" href="#near-term-v0-3" aria-label="Link to this section">§</a>Near term (v0.3)</h3>
+<ul>
+<li><strong>Copy/paste region</strong> — select a rectangle of components and stamp elsewhere</li>
+<li><strong>Grid overlay</strong> — faint grid lines on board surface for alignment</li>
+<li><strong>Component labels/signs</strong> — placeable text signs for labelling circuit sections</li>
+</ul>
+<h3 id="medium-term-v0-4"><a class="anchor" href="#medium-term-v0-4" aria-label="Link to this section">§</a>Medium term (v0.4)</h3>
+<ul>
+<li><strong>Blender models</strong> — replace placeholder cubes with real component geometry (max 0.9 × 0.9 × 0.4m per tile)</li>
+<li><strong>Multiple boards</strong> — vertical wall boards, boards connecting via port nodes at edges</li>
+<li><strong>Sound design</strong> — click on place/remove, hum on powered boards</li>
+</ul>
+<h3 id="long-term"><a class="anchor" href="#long-term" aria-label="Link to this section">§</a>Long term</h3>
+<ul>
+<li><strong>Analog simulation</strong> — resistors, capacitors, inductors with real voltage/current values using Modified Nodal Analysis (MNA) solver implemented in C++ via GDExtension</li>
+<li><strong>Audio output</strong> — speaker component routing simulated voltage to Godot&#39;s AudioStreamGenerator</li>
+<li><strong>Multiplayer</strong> — shared boards, collaborative circuit building</li>
+</ul>
+<hr>
+<h2 id="appendix-godot-project-setup"><a class="anchor" href="#appendix-godot-project-setup" aria-label="Link to this section">§</a>Appendix: Godot Project Setup</h2>
+<h3 id="autoloads-project-settings-autoload"><a class="anchor" href="#autoloads-project-settings-autoload" aria-label="Link to this section">§</a>Autoloads (Project Settings → Autoload)</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Path</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SimulationManager</td>
+<td>res://autoloads/SimulationManager.gd</td>
+</tr>
+<tr>
+<td>ComponentRegistry</td>
+<td>res://autoloads/ComponentRegistry.gd</td>
+</tr>
+</tbody></table></div>
+<p>SimulationManager must be listed above ComponentRegistry.</p>
+<h3 id="scene-hierarchy-main-tscn"><a class="anchor" href="#scene-hierarchy-main-tscn" aria-label="Link to this section">§</a>Scene hierarchy (Main.tscn)</h3>
+<pre><code>Node3D (Main)
+├── WorldEnvironment
+├── DirectionalLight3D
+├── CircuitBoard (StaticBody3D + CircuitBoard.gd)
+│   └── CollisionShape3D (BoxShape3D 64×0.2×64)
+│   └── BoardMesh (PlaneMesh 64×64, dark grey material)
+└── Player (CharacterBody3D + Player.gd)
+    ├── CollisionShape3D (CapsuleShape3D)
+    ├── Head (Node3D, y=1.65)
+    │   └── Camera3D
+    │       └── Ray (RayCast3D, target z=-10)
+    ├── Highlight (MeshInstance3D, PlaneMesh 1×1)
+    └── HUD (CanvasLayer)
+        ├── InfoPanel (PanelContainer + InfoPanel.gd)
+        └── Hotbar (HBoxContainer + Hotbar.gd)
+</code></pre>
+<h3 id="collision-layers"><a class="anchor" href="#collision-layers" aria-label="Link to this section">§</a>Collision layers</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Layer</th>
+<th>Name</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>1</td>
+<td>world</td>
+<td>CircuitBoard StaticBody3D</td>
+</tr>
+<tr>
+<td>2</td>
+<td>player</td>
+<td>Player CharacterBody3D</td>
+</tr>
+</tbody></table></div>
+<p>Player RayCast3D collision mask: Layer 1 only.</p>
+<h3 id="component-scene-structure"><a class="anchor" href="#component-scene-structure" aria-label="Link to this section">§</a>Component scene structure</h3>
+<p>All component scenes follow this pattern:</p>
+<pre><code>Node3D (root, extends ComponentBase via attached script)
+└── Mesh (MeshInstance3D with BoxMesh)
+</code></pre>
+<p>Transistor scenes additionally have:</p>
+<pre><code>Node3D (root)
+├── Mesh
+├── GateLight      (SphereMesh, x=-0.38, y=0.18, z=0)
+├── CollectorLight (SphereMesh, x=0, y=0.18, z=-0.38)
+└── EmitterLight   (SphereMesh, x=0, y=0.18, z=+0.38)
+</code></pre>
+<h3 id="placeholder-mesh-sizes"><a class="anchor" href="#placeholder-mesh-sizes" aria-label="Link to this section">§</a>Placeholder mesh sizes</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>BoxMesh size (x × y × z)</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wire</td>
+<td>0.8 × 0.05 × 0.8</td>
+</tr>
+<tr>
+<td>Source</td>
+<td>0.6 × 0.3 × 0.6</td>
+</tr>
+<tr>
+<td>Repeater</td>
+<td>0.7 × 0.2 × 0.7</td>
+</tr>
+<tr>
+<td>NPN / PNP</td>
+<td>0.7 × 0.25 × 0.7</td>
+</tr>
+<tr>
+<td>Resistor</td>
+<td>0.8 × 0.15 × 0.8</td>
+</tr>
+<tr>
+<td>LED</td>
+<td>0.5 × 0.18 × 0.5</td>
+</tr>
+<tr>
+<td>Clock</td>
+<td>0.6 × 0.3 × 0.6</td>
+</tr>
+</tbody></table></div>
+<p>When replacing with Blender models, maximum bounding box per component is <strong>0.9 × 0.9 × 0.4m</strong> to fit within one tile with clearance. Export as <code>.glb</code>, Forward axis -Z, Up axis Y, apply all transforms before export.</p>
+<hr>
+<p><em>Transistor Game — Internal Development Documentation</em> <em>Built with Godot 4 — GDScript</em></p>
+</div>
+  </div>
+  
+</article>
+<footer class="footer panel panel--ink">
+  <div class="footer__grid">
+    <p class="footer__sig">Vivaan Kaushal</p>
+    <p class="footer__links"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><span aria-hidden="true"> · </span><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><span aria-hidden="true"> · </span><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><span aria-hidden="true"> · </span><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><span aria-hidden="true"> · </span><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></p>
+  </div>
+  <div class="footer__menacing" aria-hidden="true">ゴゴゴゴゴゴゴゴ</div>
+</footer>
+</main>
+
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

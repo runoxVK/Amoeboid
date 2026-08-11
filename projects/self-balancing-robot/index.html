@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Self Balancing Robot — Vivaan Kaushal</title>
+<meta name="description" content="A two-wheeled robot that balances itself on an ESP32 and MPU-6050, running a 200 Hz PID loop tunable live over Bluetooth.">
+<meta name="author" content="Vivaan Kaushal">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Self Balancing Robot — Vivaan Kaushal">
+<meta property="og:description" content="A two-wheeled robot that balances itself on an ESP32 and MPU-6050, running a 200 Hz PID loop tunable live over Bluetooth.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../assets/derived/thumb/self-balancing-robot-1400.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..900;1,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body class="page-projects">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="topbar__id" href="../../">Vivaan Kaushal</a>
+  <button class="topbar__toggle" type="button" aria-expanded="false" aria-controls="spine">
+    <span aria-hidden="true">☰</span><span class="sr">Menu</span>
+  </button>
+</header>
+
+<aside class="spine" id="spine">
+    <a class="spine__id" href="../../">
+      <span class="spine__name">Vivaan<br>Kaushal</span>
+      <span class="spine__role">EE + Physics · Northeastern</span>
+    </a>
+    <nav class="spine__nav" aria-label="Sections">
+    <a class="navlink is-active" href="../../projects/">
+      <span class="navlink__num" aria-hidden="true">01</span>
+      <span class="navlink__label">Projects</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../art/">
+      <span class="navlink__num" aria-hidden="true">02</span>
+      <span class="navlink__label">Art</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../about/">
+      <span class="navlink__num" aria-hidden="true">03</span>
+      <span class="navlink__label">About</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../other/">
+      <span class="navlink__num" aria-hidden="true">04</span>
+      <span class="navlink__label">Other</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a></nav>
+    <div class="spine__foot">
+      <div class="spine__social"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></div>
+    </div>
+  </aside>
+
+<main id="main" class="main">
+
+<article class="article">
+  <header class="ahead panel--ink halftone">
+    <a class="ahead__back" href="../"><span aria-hidden="true">◂</span> Projects</a>
+    <p class="kicker kicker--gold">Electronics</p>
+    <h1 class="ahead__title">Self Balancing Robot</h1>
+    <p class="ahead__desc">A two-wheeled robot that balances itself on an ESP32 and MPU-6050, running a 200 Hz PID loop tunable live over Bluetooth.</p>
+    <div class="linkrow"><a class="btn btn--github" href="https://github.com/runoxVK/SelfBalancingPIDRobot-VK" target="_blank" rel="noopener noreferrer">
+       <span class="btn__icon" aria-hidden="true">↗</span>GitHub</a></div>
+    <dl class="spec"><div class="spec__row"><dt>Project</dt><dd>Two-wheeled self-balancing robot with PID control</dd></div><div class="spec__row"><dt>Author</dt><dd>Vivaan</dd></div><div class="spec__row"><dt>Hardware</dt><dd>ESP32 DevKit C, MPU-6050, DRV8833, N20 200RPM motors, 7.4V LiPo</dd></div></dl>
+    <div class="ahead__menacing" aria-hidden="true">ゴゴゴ</div>
+  </header>
+  <figure class="ahero"><img src="../../assets/derived/thumb/self-balancing-robot-1400.webp" alt="" loading="eager" decoding="async"></figure>
+  <div class="article__grid">
+    <nav class="toc" aria-label="Contents">
+         <p class="toc__title">Contents</p>
+         <ol><li class="toc__l2"><a href="#table-of-contents">Table of Contents</a></li><li class="toc__l2"><a href="#project-overview">Project Overview</a></li><li class="toc__l2"><a href="#hardware-specification">Hardware Specification</a></li><li class="toc__l2"><a href="#wiring-reference">Wiring Reference</a></li><li class="toc__l2"><a href="#imu-calibration-offsets">IMU Calibration Offsets</a></li><li class="toc__l2"><a href="#final-working-script">Final Working Script</a></li><li class="toc__l2"><a href="#tuning-guide">Tuning Guide</a></li><li class="toc__l2"><a href="#build-logs">Build Logs</a></li></ol>
+       </nav>
+    <div class="prose"><hr>
+<h2 id="table-of-contents"><a class="anchor" href="#table-of-contents" aria-label="Link to this section">§</a>Table of Contents</h2>
+<ol>
+<li>Project Overview</li>
+<li>Hardware Specifications</li>
+<li>Wiring Reference</li>
+<li>IMU Calibration Offsets</li>
+<li>Final Working Script</li>
+<li>Tuning Guide</li>
+<li>Build Logs</li>
+</ol>
+<hr>
+<h2 id="project-overview"><a class="anchor" href="#project-overview" aria-label="Link to this section">§</a>Project Overview</h2>
+<p>A small two-wheeled self-balancing robot built from scratch. The robot implements an inverted pendulum control system — continuously reading tilt angle from an IMU and driving motors to stay balanced under its own centre of mass via a PID control loop.</p>
+<p><strong>Core concept:</strong> The robot is an upside-down pendulum. When it tips forward, the wheels drive forward to reposition under the centre of mass. When it tips backward, the wheels drive backward. The PID loop runs at 200Hz to continuously compute and apply corrections.</p>
+<p><strong>Key design decisions:</strong></p>
+<ul>
+<li>ESP32 chosen over Arduino Nano for built-in Bluetooth, enabling live PID tuning without reflashing</li>
+<li>N20 motors chosen over steppers for faster response, lower idle power, and lighter weight</li>
+<li>20kHz PWM frequency to reduce motor stiction at low duty cycles</li>
+<li>IMU calibration offsets hardcoded from dedicated calibration run for stable angle readings</li>
+<li>Hardware timer ISR at 200Hz guarantees consistent sample timing regardless of loop overhead</li>
+</ul>
+<hr>
+<h2 id="hardware-specification"><a class="anchor" href="#hardware-specification" aria-label="Link to this section">§</a>Hardware Specification</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Part</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Microcontroller</td>
+<td>ESP32 DevKit C</td>
+<td>240MHz dual-core, built-in Bluetooth</td>
+</tr>
+<tr>
+<td>IMU</td>
+<td>MPU-6050 (GY-521 breakout)</td>
+<td>I2C, address 0x68 (AD0 → GND)</td>
+</tr>
+<tr>
+<td>Motors</td>
+<td>N20 6V 200RPM DC, plain 2-wire</td>
+<td>No encoders — angle-only PID</td>
+</tr>
+<tr>
+<td>Motor driver</td>
+<td>DRV8833 breakout</td>
+<td>SLP pin → 3.3V to enable</td>
+</tr>
+<tr>
+<td>Buck converter</td>
+<td>MP1584</td>
+<td>Set to 3.3V output</td>
+</tr>
+<tr>
+<td>Battery</td>
+<td>7.4V 2S LiPo</td>
+<td>VM direct to DRV8833</td>
+</tr>
+<tr>
+<td>Switch</td>
+<td>E-Switch RA11131100 rocker</td>
+<td>Inline on LiPo positive</td>
+</tr>
+<tr>
+<td>Wheels</td>
+<td>65mm rubber, 3mm D-shaft</td>
+<td></td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="wiring-reference"><a class="anchor" href="#wiring-reference" aria-label="Link to this section">§</a>Wiring Reference</h2>
+<figure class="embed"><img src="../../assets/derived/inline/robotschematic.webp" alt="RobotSchematic" loading="lazy" decoding="async" width="1200" height="1437"></figure>
+
+
+<h3 id="power-chain"><a class="anchor" href="#power-chain" aria-label="Link to this section">§</a>Power chain</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>From</th>
+<th>To</th>
+<th>Notes</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>LiPo positive</td>
+<td>Switch input</td>
+<td>Raw 7.4V</td>
+</tr>
+<tr>
+<td>Switch output</td>
+<td>Buck converter VIN</td>
+<td>Switched 7.4V</td>
+</tr>
+<tr>
+<td>Switch output</td>
+<td>DRV8833 VM</td>
+<td>Motor power, bypasses buck</td>
+</tr>
+<tr>
+<td>Buck VOUT</td>
+<td>ESP32 3V3</td>
+<td>3.3V logic rail</td>
+</tr>
+<tr>
+<td>Buck VOUT</td>
+<td>MPU-6050 VCC</td>
+<td></td>
+</tr>
+<tr>
+<td>Buck VOUT</td>
+<td>DRV8833 SLP</td>
+<td>Enables driver</td>
+</tr>
+<tr>
+<td>LiPo negative</td>
+<td>Common GND</td>
+<td></td>
+</tr>
+<tr>
+<td>Buck GND</td>
+<td>Common GND</td>
+<td></td>
+</tr>
+<tr>
+<td>ESP32 GND</td>
+<td>Common GND</td>
+<td></td>
+</tr>
+<tr>
+<td>MPU-6050 GND</td>
+<td>Common GND</td>
+<td></td>
+</tr>
+<tr>
+<td>DRV8833 GND</td>
+<td>Common GND</td>
+<td></td>
+</tr>
+</tbody></table></div>
+<h3 id="esp32-pin-assignments"><a class="anchor" href="#esp32-pin-assignments" aria-label="Link to this section">§</a>ESP32 pin assignments</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>GPIO</th>
+<th>Function</th>
+<th>Connected to</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>GPIO 21</td>
+<td>SDA</td>
+<td>MPU-6050 SDA</td>
+</tr>
+<tr>
+<td>GPIO 22</td>
+<td>SCL</td>
+<td>MPU-6050 SCL</td>
+</tr>
+<tr>
+<td>GPIO 25</td>
+<td>AIN1</td>
+<td>DRV8833 AIN1</td>
+</tr>
+<tr>
+<td>GPIO 26</td>
+<td>AIN2</td>
+<td>DRV8833 AIN2</td>
+</tr>
+<tr>
+<td>GPIO 27</td>
+<td>BIN1</td>
+<td>DRV8833 BIN1</td>
+</tr>
+<tr>
+<td>GPIO 14</td>
+<td>BIN2</td>
+<td>DRV8833 BIN2</td>
+</tr>
+<tr>
+<td>3V3</td>
+<td>Power out</td>
+<td>MPU-6050 VCC, DRV8833 SLP</td>
+</tr>
+<tr>
+<td>GND</td>
+<td>Ground</td>
+<td>Common GND rail</td>
+</tr>
+</tbody></table></div>
+<h3 id="motor-connections"><a class="anchor" href="#motor-connections" aria-label="Link to this section">§</a>Motor connections</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>DRV8833 pin</th>
+<th>Connected to</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>AOUT1</td>
+<td>Motor A wire 1</td>
+</tr>
+<tr>
+<td>AOUT2</td>
+<td>Motor A wire 2</td>
+</tr>
+<tr>
+<td>BOUT1</td>
+<td>Motor B wire 1</td>
+</tr>
+<tr>
+<td>BOUT2</td>
+<td>Motor B wire 2</td>
+</tr>
+</tbody></table></div>
+<p><strong>Note:</strong> Motor B is physically mirrored on the chassis. Both motors drive in the same direction when AIN and BIN signals match — no hardware flip needed, handled in software.</p>
+<p><strong>Critical:</strong> Buck converter GND must be wired to common rail even though input and output GND are the same node internally. Without it the 3.3V output has no return path.</p>
+<hr>
+<h2 id="imu-calibration-offsets"><a class="anchor" href="#imu-calibration-offsets" aria-label="Link to this section">§</a>IMU Calibration Offsets</h2>
+<p>Calibrated using Luis Ródenas / Jeff Rowberg method. Robot placed flat on level surface, deadzone 15 for accelerometer, 5 for gyroscope.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ax_offset</td>
+<td>2048</td>
+</tr>
+<tr>
+<td>ay_offset</td>
+<td>-475</td>
+</tr>
+<tr>
+<td>az_offset</td>
+<td>3256</td>
+</tr>
+<tr>
+<td>gx_offset</td>
+<td>58</td>
+</tr>
+<tr>
+<td>gy_offset</td>
+<td>51</td>
+</tr>
+<tr>
+<td>gz_offset</td>
+<td>27</td>
+</tr>
+</tbody></table></div>
+<p>Only Y accel, Z accel, and X gyro are applied in the balancing script — matching the reference robot implementation.</p>
+<hr>
+<h2 id="final-working-script"><a class="anchor" href="#final-working-script" aria-label="Link to this section">§</a>Final Working Script</h2>
+<p>Based on ERL Engineering reference implementation using identical hardware (N20 200RPM, MPU-6050). Ported from Arduino Nano to ESP32 with hardware timer ISR replacing AVR Timer1.</p>
+<pre><code class="language-cpp">#include &lt;Wire.h&gt;
+#include &lt;MPU6050.h&gt;
+
+MPU6050 mpu;
+
+#define AIN1 25
+#define AIN2 26
+#define BIN1 27
+#define BIN2 14
+
+#define PWM_FREQ 20000  // 20kHz reduces N20 motor stiction
+#define PWM_RES  8
+
+// IMU calibration offsets — specific to this unit
+#define Y_ACCEL_OFFSET  -475
+#define Z_ACCEL_OFFSET   3256
+#define X_GYRO_OFFSET    58
+
+// PID constants — from reference robot, same hardware
+#define Kp         40.0
+#define Kd         0.05
+#define Ki         40.0
+#define sampleTime 0.005  // 5ms = 200Hz
+
+// Adjust target angle empirically — robot&#39;s true upright position
+float targetAngle = -2.5;
+
+int16_t accY, accZ, gyroX;
+volatile int motorPower = 0;
+volatile float accAngle, gyroAngle, currentAngle, prevAngle = 0;
+volatile float error, errorSum = 0;
+
+hw_timer_t *timer = NULL;
+volatile bool doISR = false;
+
+void IRAM_ATTR onTimer() {
+  doISR = true;
+}
+
+void setMotors(int power) {
+  power = constrain(power, -255, 255);
+  if (power &gt; 0) {
+    ledcWrite(AIN1, power); ledcWrite(AIN2, 0);
+    ledcWrite(BIN1, power); ledcWrite(BIN2, 0);
+  } else if (power &lt; 0) {
+    ledcWrite(AIN1, 0); ledcWrite(AIN2, -power);
+    ledcWrite(BIN1, 0); ledcWrite(BIN2, -power);
+  } else {
+    ledcWrite(AIN1, 0); ledcWrite(AIN2, 0);
+    ledcWrite(BIN1, 0); ledcWrite(BIN2, 0);
+  }
+}
+
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22);
+  Wire.setClock(400000);
+
+  mpu.initialize();
+  mpu.setYAccelOffset(Y_ACCEL_OFFSET);
+  mpu.setZAccelOffset(Z_ACCEL_OFFSET);
+  mpu.setXGyroOffset(X_GYRO_OFFSET);
+
+  ledcAttach(AIN1, PWM_FREQ, PWM_RES);
+  ledcAttach(AIN2, PWM_FREQ, PWM_RES);
+  ledcAttach(BIN1, PWM_FREQ, PWM_RES);
+  ledcAttach(BIN2, PWM_FREQ, PWM_RES);
+
+  ledcWrite(AIN1, 0); ledcWrite(AIN2, 0);
+  ledcWrite(BIN1, 0); ledcWrite(BIN2, 0);
+
+  // hardware timer fires every 5ms (200Hz)
+  timer = timerBegin(1000000);
+  timerAttachInterrupt(timer, &amp;onTimer);
+  timerAlarm(timer, 5000, true, 0);
+
+  Serial.println(&quot;Ready. y=status  t/v=target&quot;);
+}
+
+void loop() {
+  if (doISR) {
+    doISR = false;
+
+    accY  = mpu.getAccelerationY();
+    accZ  = mpu.getAccelerationZ();
+    gyroX = mpu.getRotationX();
+
+    // complementary filter — 0.9934/0.0066 ratio from reference robot
+    accAngle  = atan2(accY, accZ) * RAD_TO_DEG;
+    int gyroRate = map(gyroX, -32768, 32767, -250, 250);
+    gyroAngle = (float)gyroRate * sampleTime;
+    currentAngle = 0.9934 * (prevAngle + gyroAngle) + 0.0066 * accAngle;
+
+    // PID
+    error    = currentAngle - targetAngle;
+    errorSum = errorSum + error;
+    errorSum = constrain(errorSum, -300, 300);
+    motorPower = Kp * error + Ki * errorSum * sampleTime - Kd * (currentAngle - prevAngle) / sampleTime;
+    motorPower = constrain(motorPower, -255, 255);
+
+    prevAngle = currentAngle;
+    setMotors(motorPower);
+  }
+
+  // serial tuning commands
+  if (Serial.available()) {
+    char c = Serial.read();
+    if (c == &#39;t&#39;) { targetAngle += 0.5; Serial.print(&quot;Target:&quot;); Serial.println(targetAngle); }
+    if (c == &#39;v&#39;) { targetAngle -= 0.5; Serial.print(&quot;Target:&quot;); Serial.println(targetAngle); }
+    if (c == &#39;y&#39;) {
+      Serial.print(&quot;Angle:&quot;); Serial.print(currentAngle);
+      Serial.print(&quot; Target:&quot;); Serial.print(targetAngle);
+      Serial.print(&quot; Power:&quot;); Serial.println(motorPower);
+    }
+  }
+}
+</code></pre>
+<hr>
+<h2 id="tuning-guide"><a class="anchor" href="#tuning-guide" aria-label="Link to this section">§</a>Tuning Guide</h2>
+<h3 id="finding-the-target-angle"><a class="anchor" href="#finding-the-target-angle" aria-label="Link to this section">§</a>Finding the target angle</h3>
+<p>Power on the robot and hold it perfectly upright. Send <code>y</code> in the serial monitor. Note the angle value — that is your true upright angle. Use <code>t</code> (increases by 0.5) or <code>v</code> (decreases by 0.5) to move <code>targetAngle</code> to match. When <code>Power</code> reads close to zero while held upright, the target is correct.</p>
+<h3 id="pid-tuning-order"><a class="anchor" href="#pid-tuning-order" aria-label="Link to this section">§</a>PID tuning order</h3>
+<ol>
+<li>Set Ki and Kd to zero, increase Kp until the robot oscillates around the balance point</li>
+<li>Back Kp off 20%, then increase Kd to damp the oscillations</li>
+<li>Add small Ki to correct steady-state lean — start at 5.0 and increase slowly</li>
+<li>Reference starting values: Kp:40, Ki:40, Kd:0.05 with sampleTime:0.005</li>
+</ol>
+<h3 id="serial-monitor-commands"><a class="anchor" href="#serial-monitor-commands" aria-label="Link to this section">§</a>Serial monitor commands</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>y</code></td>
+<td>Print current angle, target, and motor power</td>
+</tr>
+<tr>
+<td><code>t</code></td>
+<td>Increase target angle by 0.5°</td>
+</tr>
+<tr>
+<td><code>v</code></td>
+<td>Decrease target angle by 0.5°</td>
+</tr>
+</tbody></table></div>
+<h3 id="known-limitations"><a class="anchor" href="#known-limitations" aria-label="Link to this section">§</a>Known limitations</h3>
+<ul>
+<li>200RPM N20 motors are at the edge of what&#39;s needed — upgrading to 500-1000RPM N20 motors will significantly improve reaction speed</li>
+<li>Chassis height should be at least 20-25cm for reliable balancing — shorter robots tip too fast for the motors to catch</li>
+<li>PWM frequency at 20kHz is critical — at 1kHz the motors have too much stiction to respond smoothly at low duty cycles</li>
+</ul>
+<hr>
+<h2 id="build-logs"><a class="anchor" href="#build-logs" aria-label="Link to this section">§</a>Build Logs</h2>
+<hr>
+<h3 id="log-1-april-12-2026"><a class="anchor" href="#log-1-april-12-2026" aria-label="Link to this section">§</a>Log #1 — April 12, 2026</h3>
+<p><strong>Status:</strong> Planning and procurement complete</p>
+<h4 id="project-overview"><a class="anchor" href="#project-overview" aria-label="Link to this section">§</a>Project overview</h4>
+<p>Designing and building a small two-wheeled self-balancing robot. The robot uses an inverted pendulum control system — continuously reading tilt angle from an IMU and driving motors to stay balanced under its own centre of mass via a PID control loop. Live PID tuning via Bluetooth from a phone.</p>
+<h4 id="design-decisions"><a class="anchor" href="#design-decisions" aria-label="Link to this section">§</a>Design decisions</h4>
+<p><strong>Microcontroller — ESP32 DevKit C</strong> Chosen over Arduino Nano for built-in Bluetooth, enabling live PID gain adjustment without reflashing. Runs at 240MHz dual-core, hardware LEDC PWM peripheral for smooth motor control, I2C peripheral for IMU. 3.3V logic throughout.</p>
+<p><strong>IMU — MPU-6050 (GY-521 breakout)</strong> 6-axis accelerometer + gyroscope over I2C. Gyro measures angular velocity, accelerometer measures tilt against gravity. Both fused via complementary filter to produce stable angle estimate. Must be mounted rigidly — any flex introduces angle noise.</p>
+<p><strong>Motors — N20 6V 200RPM</strong> Chosen over stepper motors for faster response (no step latency), lower idle power draw, and lighter weight. 200RPM gear ratio provides enough torque for the chassis weight.</p>
+<p><strong>Motor driver — DRV8833</strong> ESP32 GPIO pins output 3.3V at ~12mA — too weak to drive motors directly. DRV8833 acts as H-bridge, taking 3.3V logic and switching raw 7.4V LiPo power to motors. Chosen over L298N for lower voltage drop and 3.3V logic compatibility.</p>
+<p><strong>Power — 7.4V 2S LiPo + MP1584 buck converter</strong> LiPo provides raw 7.4V. Buck converter steps down to 3.3V for ESP32 and MPU-6050. DRV8833 motor power taken directly from raw 7.4V rail.</p>
+<p><strong>Wheels — 65mm rubber, 3mm D-shaft</strong> 65mm chosen for balance between ground speed and reaction time.</p>
+<h4 id="bill-of-materials"><a class="anchor" href="#bill-of-materials" aria-label="Link to this section">§</a>Bill of materials</h4>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Part</th>
+<th>Source</th>
+<th>Est. Cost</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ESP32 DevKit C</td>
+<td>DigiKey</td>
+<td>~$15</td>
+</tr>
+<tr>
+<td>DRV8833 breakout</td>
+<td>DigiKey</td>
+<td>~$6</td>
+</tr>
+<tr>
+<td>E-Switch RA11131100</td>
+<td>DigiKey</td>
+<td>~$2</td>
+</tr>
+<tr>
+<td>GY-521 MPU-6050</td>
+<td>AliExpress</td>
+<td>~$2</td>
+</tr>
+<tr>
+<td>N20 6V 200RPM ×2</td>
+<td>AliExpress</td>
+<td>$10–16</td>
+</tr>
+<tr>
+<td>65mm wheels ×2</td>
+<td>AliExpress</td>
+<td>$4–6</td>
+</tr>
+<tr>
+<td>N20 motor brackets ×2</td>
+<td>AliExpress</td>
+<td>$1–3</td>
+</tr>
+<tr>
+<td>7.4V 2S LiPo</td>
+<td>Amazon</td>
+<td>$10–15</td>
+</tr>
+<tr>
+<td>MP1584 buck converter</td>
+<td>Amazon</td>
+<td>~$2</td>
+</tr>
+<tr>
+<td>Misc (wire, jumpers, hardware)</td>
+<td>On hand</td>
+<td>~$10</td>
+</tr>
+<tr>
+<td><strong>Total</strong></td>
+<td></td>
+<td><strong>~$62–77</strong></td>
+</tr>
+</tbody></table></div>
+<figure class="embed"><img src="../../assets/derived/inline/robotbuild1.webp" alt="RobotBuild1" loading="lazy" decoding="async" width="1200" height="652"></figure>
+
+
+<hr>
+<h3 id="log-2-april-16-2026"><a class="anchor" href="#log-2-april-16-2026" aria-label="Link to this section">§</a>Log #2 — April 16, 2026</h3>
+<p><strong>Status:</strong> IMU validated over USB power — awaiting motor driver delivery</p>
+<h4 id="summary"><a class="anchor" href="#summary" aria-label="Link to this section">§</a>Summary</h4>
+<p>ESP32 development environment set up and IMU validated. Motor driver not yet arrived — no motor or power circuit work done. ESP32 powered via USB, MPU-6050 powered from ESP32 3V3 pin.</p>
+<h4 id="development-environment-setup"><a class="anchor" href="#development-environment-setup" aria-label="Link to this section">§</a>Development environment setup</h4>
+<ul>
+<li>Installed Arduino IDE 2 from arduino.cc</li>
+<li>Added Espressif board manager URL in File → Preferences</li>
+<li>Installed ESP32 package by Espressif Systems via Boards Manager</li>
+<li>Board: Tools → Board → esp32 → ESP32 Dev Module</li>
+<li>Libraries installed: MPU6050 by Electronic Cats, PID by Brett Beauregard</li>
+</ul>
+<h4 id="problems-solved"><a class="anchor" href="#problems-solved" aria-label="Link to this section">§</a>Problems solved</h4>
+<blockquote>
+<p><strong>Problem: ESP32 not recognized by Windows</strong> DevKit C uses CP210N USB-to-UART chip. No COM port appeared until Silicon Labs CP210x driver installed. Downloaded CP210x Universal Windows Driver, ran CP210xVCPInstaller_x64.exe, replugged — COM9 appeared.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: Upload write timeout</strong> Fixed by holding BOOT button on ESP32 the moment &quot;Connecting...&quot; appeared in upload console.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: Wrong COM port</strong> Resolved by unplugging ESP32, noting which ports disappeared, replugging and selecting the new port.</p>
+</blockquote>
+<h4 id="imu-validation"><a class="anchor" href="#imu-validation" aria-label="Link to this section">§</a>IMU validation</h4>
+<p><strong>Stage 1 — I2C scanner</strong> Confirmed MPU-6050 responding at address 0x68.</p>
+<p><strong>Stage 2 — Axis identification</strong> Printed all three axes while tilting board to find the forward/back balance axis.</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Axis</th>
+<th>Value at 45° tilt</th>
+<th>Result</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>X</td>
+<td>-3.01</td>
+<td>Barely moves</td>
+</tr>
+<tr>
+<td>Y</td>
+<td>-47.64</td>
+<td>Full response ✓</td>
+</tr>
+<tr>
+<td>Z</td>
+<td>-92.74</td>
+<td>At limit</td>
+</tr>
+</tbody></table></div>
+<p>Confirmed axis: <code>atan2(ax, az)</code> responds correctly to forward/back tilt.</p>
+<p><strong>Stage 3 — Final IMU sketch</strong></p>
+<pre><code class="language-cpp">#include &lt;Wire.h&gt;
+#include &lt;MPU6050.h&gt;
+MPU6050 mpu;
+void setup() {
+  Serial.begin(115200);
+  Wire.begin(21, 22);
+  mpu.initialize();
+}
+void loop() {
+  int16_t ax, ay, az, gx, gy, gz;
+  mpu.getMotion6(&amp;ax, &amp;ay, &amp;az, &amp;gx, &amp;gy, &amp;gz);
+  float angleY = atan2(ax, az) * 180.0 / PI;
+  Serial.print(&quot;AngleY: &quot;);
+  Serial.println(angleY);
+  delay(50);
+}
+</code></pre>
+<p>Output confirmed smooth, responsive, no NaN or jumping values.</p>
+<h4 id="next-steps-at-end-of-session"><a class="anchor" href="#next-steps-at-end-of-session" aria-label="Link to this section">§</a>Next steps at end of session</h4>
+<ul>
+<li>Await DRV8833 motor driver delivery</li>
+<li>Wire full circuit and set buck converter to 3.3V</li>
+<li>Stage 4: Motor control test</li>
+</ul>
+<figure class="embed"><img src="../../assets/derived/inline/robotbuild2.webp" alt="RobotBuild2" loading="lazy" decoding="async" width="1200" height="1600"></figure>
+
+
+<hr>
+<h3 id="log-3-may-6-2026"><a class="anchor" href="#log-3-may-6-2026" aria-label="Link to this section">§</a>Log #3 — May 6, 2026</h3>
+<p><strong>Status:</strong> Full hardware integration complete — active PID tuning in progress</p>
+<h4 id="summary"><a class="anchor" href="#summary" aria-label="Link to this section">§</a>Summary</h4>
+<p>Full hardware integration completed. Motor driver wired and confirmed working. IMU calibration run with hardware offsets. Reference robot logic (ERL Engineering, identical hardware) ported to ESP32. Robot demonstrates active balancing behavior.</p>
+<h4 id="hardware-changes"><a class="anchor" href="#hardware-changes" aria-label="Link to this section">§</a>Hardware changes</h4>
+<ul>
+<li>DRV8833 wired and motor directions confirmed</li>
+<li>7.4V LiPo connected to DRV8833 VM directly</li>
+<li>SLP pin tied to 3.3V to enable driver</li>
+<li>Center of mass tested in both high and low configurations</li>
+<li>Full power circuit assembled</li>
+</ul>
+<h4 id="motor-test-results"><a class="anchor" href="#motor-test-results" aria-label="Link to this section">§</a>Motor test results</h4>
+<p>Both motors confirmed spinning in correct direction. Motor B physically mirrored on chassis — handled in software by matching AIN/BIN signal direction. Motors are plain 2-wire — no encoders. GPIO 34/35/32/33 unused.</p>
+<h4 id="problems-encountered-and-solved"><a class="anchor" href="#problems-encountered-and-solved" aria-label="Link to this section">§</a>Problems encountered and solved</h4>
+<blockquote>
+<p><strong>Problem: PID library sample time conflict</strong> PID library&#39;s internal timing was skipping most compute cycles. Fixed by replacing PID library with manual PID computation.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: Loop executing multiple times per ms</strong> Corrupted dt values breaking the complementary filter. Fixed using hardware timer ISR flag (doISR) guaranteeing exactly one execution per 5ms period.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: Complementary filter drift</strong> Angle drifted continuously at rest. Fixed with proper accelerometer correction weighting and averaged startup initialization.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: IMU axis confusion</strong> Multiple axis combinations tested across sessions. Final confirmed working combination: <code>atan2(accY, accZ)</code> paired with <code>getRotationX()</code> — matching reference robot exactly.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: Motor stiction</strong> N20 motors wouldn&#39;t move smoothly at low PWM. Fixed by raising PWM frequency from 1kHz to 20kHz.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: Serial output corruption</strong> Garbled characters in serial monitor from conflicting Bluetooth + USB serial writes. Fixed by removing Bluetooth serial during tuning.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: IMU lost connection mid-session</strong> MPU-6050 stopped responding due to vibration loosening breadboard connections. Fixed by reseating wires, confirmed with I2C scanner.</p>
+</blockquote>
+<blockquote>
+<p><strong>Problem: Kd having no visible effect</strong> Derivative term scale too small relative to Kp. Resolved by porting reference robot formula directly which uses correct Kd/sampleTime scaling.</p>
+</blockquote>
+<h4 id="imu-calibration"><a class="anchor" href="#imu-calibration" aria-label="Link to this section">§</a>IMU calibration</h4>
+<p>Ran Luis Ródenas / Jeff Rowberg calibration sketch. Robot flat on level surface. Deadzone 15 (accel), 5 (gyro).</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Offset</th>
+<th>Value</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>ax_offset</td>
+<td>2048</td>
+</tr>
+<tr>
+<td>ay_offset</td>
+<td>-475</td>
+</tr>
+<tr>
+<td>az_offset</td>
+<td>3256</td>
+</tr>
+<tr>
+<td>gx_offset</td>
+<td>58</td>
+</tr>
+<tr>
+<td>gy_offset</td>
+<td>51</td>
+</tr>
+<tr>
+<td>gz_offset</td>
+<td>27</td>
+</tr>
+</tbody></table></div>
+<h4 id="reference-robot-analysis"><a class="anchor" href="#reference-robot-analysis" aria-label="Link to this section">§</a>Reference robot analysis</h4>
+<p>Identified ERL Engineering implementation using identical hardware. Key logic ported:</p>
+<ul>
+<li><code>atan2(accY, accZ)</code> + <code>getRotationX()</code> axis combination</li>
+<li>Complementary filter 0.9934/0.0066 ratio</li>
+<li>200Hz hardware timer ISR (5ms sampleTime)</li>
+<li>Kp:40, Ki:40, Kd:0.05 starting gains</li>
+<li>motorPower computed in ISR loop, applied in main loop</li>
+</ul>
+<h4 id="current-status"><a class="anchor" href="#current-status" aria-label="Link to this section">§</a>Current status</h4>
+<p>Robot shows active balancing behavior — corrects tilt in the right direction at the right time. Sustained balancing limited by 200RPM motor reaction speed at current chassis height.</p>
+<h4 id="remaining-challenges"><a class="anchor" href="#remaining-challenges" aria-label="Link to this section">§</a>Remaining challenges</h4>
+<ul>
+<li>200RPM motors are at the edge of what&#39;s needed — 500-1000RPM N20 motors would significantly improve recovery from larger tilts</li>
+<li>Target angle must be manually tuned via <code>t</code>/<code>v</code> commands after each power cycle</li>
+<li>Bluetooth PID tuning not yet implemented</li>
+</ul>
+<figure class="embed"><img src="../../assets/derived/inline/robotbuild3.webp" alt="RobotBuild3" loading="lazy" decoding="async" width="1200" height="1092"></figure>
+
+
+
+
+<hr>
+<p><em>Self-Balancing Robot — Vivaan — 2026</em></p>
+</div>
+  </div>
+  
+</article>
+<footer class="footer panel panel--ink">
+  <div class="footer__grid">
+    <p class="footer__sig">Vivaan Kaushal</p>
+    <p class="footer__links"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><span aria-hidden="true"> · </span><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><span aria-hidden="true"> · </span><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><span aria-hidden="true"> · </span><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><span aria-hidden="true"> · </span><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></p>
+  </div>
+  <div class="footer__menacing" aria-hidden="true">ゴゴゴゴゴゴゴゴ</div>
+</footer>
+</main>
+
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Digital Synthesizer — Vivaan Kaushal</title>
+<meta name="description" content="A three-phase monophonic synthesizer built on the Raspberry Pi Pico. You can play the C Major scale with it and you can change the pitch, tone and octave using knobs to make all sorts of sounds. Overall its a very simple bare bones synthesizer with good utility.">
+<meta name="author" content="Vivaan Kaushal">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Digital Synthesizer — Vivaan Kaushal">
+<meta property="og:description" content="A three-phase monophonic synthesizer built on the Raspberry Pi Pico. You can play the C Major scale with it and you can change the pitch, tone and octave using knobs to make all sorts of sounds. Overall its a very simple bare bones synthesizer with good utility.">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../assets/derived/thumb/digital-synthesizer-1400.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..900;1,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body class="page-projects">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="topbar__id" href="../../">Vivaan Kaushal</a>
+  <button class="topbar__toggle" type="button" aria-expanded="false" aria-controls="spine">
+    <span aria-hidden="true">☰</span><span class="sr">Menu</span>
+  </button>
+</header>
+
+<aside class="spine" id="spine">
+    <a class="spine__id" href="../../">
+      <span class="spine__name">Vivaan<br>Kaushal</span>
+      <span class="spine__role">EE + Physics · Northeastern</span>
+    </a>
+    <nav class="spine__nav" aria-label="Sections">
+    <a class="navlink is-active" href="../../projects/">
+      <span class="navlink__num" aria-hidden="true">01</span>
+      <span class="navlink__label">Projects</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../art/">
+      <span class="navlink__num" aria-hidden="true">02</span>
+      <span class="navlink__label">Art</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../about/">
+      <span class="navlink__num" aria-hidden="true">03</span>
+      <span class="navlink__label">About</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../other/">
+      <span class="navlink__num" aria-hidden="true">04</span>
+      <span class="navlink__label">Other</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a></nav>
+    <div class="spine__foot">
+      <div class="spine__social"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></div>
+    </div>
+  </aside>
+
+<main id="main" class="main">
+
+<article class="article">
+  <header class="ahead panel--ink halftone">
+    <a class="ahead__back" href="../"><span aria-hidden="true">◂</span> Projects</a>
+    <p class="kicker kicker--gold">Electronics</p>
+    <h1 class="ahead__title">Digital Synthesizer</h1>
+    <p class="ahead__desc">A three-phase monophonic synthesizer built on the Raspberry Pi Pico. You can play the C Major scale with it and you can change the pitch, tone and octave using knobs to make all sorts of sounds. Overall its a very simple bare bones synthesizer with good utility.</p>
+    <div class="linkrow"><a class="btn btn--video" href="https://youtu.be/7it6Z9qBXX4?si=z7N5v-2RsTX4AGbL" target="_blank" rel="noopener noreferrer">
+       <span class="btn__icon" aria-hidden="true">▶</span>Watch</a><a class="btn btn--github" href="https://github.com/runoxVK/RaspberryPiPico-Synthesizer-VK" target="_blank" rel="noopener noreferrer">
+       <span class="btn__icon" aria-hidden="true">↗</span>GitHub</a></div>
+    
+    <div class="ahead__menacing" aria-hidden="true">ゴゴゴ</div>
+  </header>
+  <figure class="ahero"><img src="../../assets/derived/thumb/digital-synthesizer-1400.webp" alt="" loading="eager" decoding="async"></figure>
+  <div class="article__grid">
+    <nav class="toc" aria-label="Contents">
+         <p class="toc__title">Contents</p>
+         <ol><li class="toc__l2"><a href="#schematic">Schematic</a></li><li class="toc__l2"><a href="#phase-i-concept-test">Phase I — Concept test</a></li><li class="toc__l2"><a href="#phase-ii-stepped-potentiometer-control">Phase II — Stepped potentiometer control</a></li><li class="toc__l2"><a href="#phase-iii-lm386-amplifier-output">Phase III — LM386 amplifier output</a></li><li class="toc__l2"><a href="#phase-comparison">Phase comparison</a></li><li class="toc__l2"><a href="#concepts-reference">Concepts reference</a></li></ol>
+       </nav>
+    <div class="prose"><p>A three-phase monophonic synthesizer built on the Raspberry Pi Pico using MicroPython. Each phase adds a layer of hardware and software complexity, culminating in a fully amplified instrument with real-time potentiometer control over pitch, octave, and timbre.</p>
+<hr>
+<h2 id="schematic"><a class="anchor" href="#schematic" aria-label="Link to this section">§</a>Schematic</h2>
+<figure class="embed"><img src="../../assets/derived/inline/picosynthesizer-vkaushal.webp" alt="PicoSynthesizer VKAUSHAL" loading="lazy" decoding="async" width="1200" height="927"></figure>
+
+
+<hr>
+<ul>
+<li><a class="wikilink wikilink--anchor" href="#phase-i-concept-test">Phase I — Concept test</a><ul>
+<li><a class="wikilink wikilink--anchor" href="#overview">Overview</a></li>
+<li><a class="wikilink wikilink--anchor" href="#hardware">Hardware</a></li>
+<li><a class="wikilink wikilink--anchor" href="#key-logic">Key logic</a></li>
+<li><a class="wikilink wikilink--anchor" href="#pseudocode">Pseudocode</a></li>
+</ul>
+</li>
+<li><a class="wikilink wikilink--anchor" href="#phase-ii-stepped-potentiometer-control">Phase II — Stepped potentiometer control</a><ul>
+<li><a class="wikilink wikilink--anchor" href="#overview">Overview</a></li>
+<li><a class="wikilink wikilink--anchor" href="#hardware">Hardware</a></li>
+<li><a class="wikilink wikilink--anchor" href="#key-logic">Key logic</a></li>
+<li><a class="wikilink wikilink--anchor" href="#knob-definitions">Knob definitions</a></li>
+<li><a class="wikilink wikilink--anchor" href="#pseudocode">Pseudocode</a></li>
+</ul>
+</li>
+<li><a class="wikilink wikilink--anchor" href="#phase-iii-lm386-amplifier-output">Phase III — LM386 amplifier output</a><ul>
+<li><a class="wikilink wikilink--anchor" href="#overview">Overview</a></li>
+<li><a class="wikilink wikilink--anchor" href="#hardware">Hardware</a></li>
+<li><a class="wikilink wikilink--anchor" href="#changes-from-phase-ii">Changes from Phase II</a></li>
+<li><a class="wikilink wikilink--anchor" href="#pseudocode">Pseudocode</a></li>
+</ul>
+</li>
+<li><a class="wikilink wikilink--anchor" href="#phase-comparison">Phase comparison</a></li>
+<li><a class="wikilink wikilink--anchor" href="#concepts-reference">Concepts reference</a></li>
+</ul>
+<h2 id="phase-i-concept-test"><a class="anchor" href="#phase-i-concept-test" aria-label="Link to this section">§</a>Phase I — Concept test</h2>
+<p><em>File: <code>PiezoBuzzerTest_VKAUS.py</code></em></p>
+<h3 id="overview"><a class="anchor" href="#overview" aria-label="Link to this section">§</a>Overview</h3>
+<p>Proof-of-concept that establishes the core interaction model: seven buttons map to the C4 major scale, and pressing multiple buttons simultaneously produces a blended chord tone via geometric mean frequency calculation.</p>
+<h3 id="hardware"><a class="anchor" href="#hardware" aria-label="Link to this section">§</a>Hardware</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Pin</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Piezo buzzer</td>
+<td>GP15 (PWM)</td>
+</tr>
+<tr>
+<td>Button — C4</td>
+<td>GP2</td>
+</tr>
+<tr>
+<td>Button — D4</td>
+<td>GP3</td>
+</tr>
+<tr>
+<td>Button — E4</td>
+<td>GP4</td>
+</tr>
+<tr>
+<td>Button — F4</td>
+<td>GP5</td>
+</tr>
+<tr>
+<td>Button — G4</td>
+<td>GP6</td>
+</tr>
+<tr>
+<td>Button — A4</td>
+<td>GP7</td>
+</tr>
+<tr>
+<td>Button — B4</td>
+<td>GP8</td>
+</tr>
+</tbody></table></div>
+<p>All buttons wired with internal pull-up resistors. Pin reads HIGH at rest, LOW when pressed.</p>
+<h3 id="key-logic"><a class="anchor" href="#key-logic" aria-label="Link to this section">§</a>Key logic</h3>
+<p><strong>Chord blending — geometric mean</strong> The buzzer is monophonic (one frequency at a time). When multiple buttons are held, a single representative frequency is computed using the geometric mean rather than an arithmetic average. The geometric mean preserves musical interval ratios — it sits proportionally between notes rather than just numerically between them.</p>
+<pre><code>combined_freq(pressed_notes):
+    product = 1.0
+    for each note in pressed_notes:
+        product *= frequency[note]
+    return product ^ (1 / number of notes)
+
+Example:
+    C4 (261.63 Hz) + G4 (392.00 Hz)
+    → geometric mean ≈ 320 Hz  (proportionally between C and G)
+    → arithmetic mean = 326 Hz (no musical meaning)
+</code></pre>
+<p><strong>Change detection</strong> The button combo is compared against the previous loop&#39;s combo. The buzzer only updates when the combo changes, avoiding redundant PWM writes every 10ms.</p>
+<p><strong>PWM</strong></p>
+<ul>
+<li><code>freq</code> sets pitch in Hz</li>
+<li><code>duty_u16</code> sets timbre; 32768 = 50% square wave (full, buzzy tone)</li>
+<li>Setting duty to 0 silences output; hardware stays at last frequency</li>
+</ul>
+<h3 id="pseudocode"><a class="anchor" href="#pseudocode" aria-label="Link to this section">§</a>Pseudocode</h3>
+<pre><code>DEFINE note_freq: {C4:261.63, D4:293.66, E4:329.63, F4:349.23,
+                   G4:392.00, A4:440.00, B4:493.88}
+
+SETUP buzzer as PWM on GP15
+SETUP buttons on GP2–GP8 with pull-up resistors
+
+FUNCTION combined_freq(pressed_notes):
+    product = 1.0
+    FOR each note in pressed_notes:
+        product = product × note_freq[note]
+    RETURN product ^ (1 / count of pressed_notes)
+
+FUNCTION play(freq):
+    set PWM frequency to freq
+    set duty cycle to 32768
+
+FUNCTION stop():
+    set duty cycle to 0
+
+last_combo = nothing
+
+LOOP forever:
+    pressed = [note for each button if button is LOW]
+
+    IF pressed is empty:
+        stop()
+        last_combo = nothing
+    ELSE IF pressed ≠ last_combo:
+        freq = combined_freq(pressed)
+        print note names + freq to console
+        play(freq)
+        last_combo = pressed
+
+    sleep 10ms
+</code></pre>
+<hr>
+<h2 id="phase-ii-stepped-potentiometer-control"><a class="anchor" href="#phase-ii-stepped-potentiometer-control" aria-label="Link to this section">§</a>Phase II — Stepped potentiometer control</h2>
+<p><em>File: <code>PiezoWithAnalogControl.py</code></em></p>
+<h3 id="overview"><a class="anchor" href="#overview" aria-label="Link to this section">§</a>Overview</h3>
+<p>Adds three potentiometers that give real-time control over pitch transposition, octave, and tone (duty cycle / timbre). Continuous ADC values are mapped to discrete steps so knobs behave like detented physical controls.</p>
+<h3 id="hardware"><a class="anchor" href="#hardware" aria-label="Link to this section">§</a>Hardware</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Pin</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Piezo buzzer</td>
+<td>GP15 (PWM)</td>
+</tr>
+<tr>
+<td>Buttons C4–B4</td>
+<td>GP2–GP8 (pull-up)</td>
+</tr>
+<tr>
+<td>Pot — pitch shift</td>
+<td>GP26 (ADC)</td>
+</tr>
+<tr>
+<td>Pot — octave</td>
+<td>GP27 (ADC)</td>
+</tr>
+<tr>
+<td>Pot — tone</td>
+<td>GP28 (ADC)</td>
+</tr>
+</tbody></table></div>
+<h3 id="key-logic"><a class="anchor" href="#key-logic" aria-label="Link to this section">§</a>Key logic</h3>
+<p><strong>ADC noise averaging</strong> Even a stationary pot produces slightly jittering ADC readings. Averaging 8 consecutive reads smooths this out so knob state feels stable.</p>
+<pre><code>read_pot(adc_pin):
+    total = 0
+    repeat 8 times:
+        total += adc_pin.read_u16()   // returns 0–65535
+    return total / 8
+</code></pre>
+<p><strong>Stepped mapping</strong> Maps a smooth 0–65535 ADC range to N discrete positions. Divides the full range into equal-width buckets and returns the bucket index.</p>
+<pre><code>stepped(raw_value, steps_list):
+    n = length of steps_list
+    index = (raw_value × n) // 65536  // integer divide → bucket
+    return min(index, n-1)            // clamp to last bucket at max reading
+</code></pre>
+<p><strong>Clamping</strong> Before writing to the PWM hardware, frequency is clamped to 20–20000 Hz (the audible range). The combination of pitch ratio and octave multiplier could otherwise produce 0 or an arbitrarily large value, which would crash or misbehave on the hardware.</p>
+<pre><code>clamp(freq, 20, 20000):
+    max(20, min(20000, freq))
+    // min(20000, freq) → never exceeds 20000
+    // max(20, ...)     → never drops below 20
+</code></pre>
+<h3 id="knob-definitions"><a class="anchor" href="#knob-definitions" aria-label="Link to this section">§</a>Knob definitions</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Knob</th>
+<th>Steps</th>
+<th>Values</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Pitch (GP26)</td>
+<td>7</td>
+<td>−3, −2, −1, 0, +1, +2, +3 semitones → ratios: 2^(n/12)</td>
+</tr>
+<tr>
+<td>Octave (GP27)</td>
+<td>5</td>
+<td>×0.25, ×0.5, ×1.0, ×2.0, ×4.0</td>
+</tr>
+<tr>
+<td>Tone (GP28)</td>
+<td>5</td>
+<td>Thin (5000), Soft (16384), Full (32768), Warm (49152), Reed (60000)</td>
+</tr>
+</tbody></table></div>
+<h3 id="pseudocode"><a class="anchor" href="#pseudocode" aria-label="Link to this section">§</a>Pseudocode</h3>
+<pre><code>DEFINE base_notes: {0:261.63, 1:293.66, 2:329.63, 3:349.23,
+                    4:392.00, 5:440.00, 6:493.88}
+DEFINE pitch_ratios: [2^(-3/12), 2^(-2/12), 2^(-1/12), 1,
+                      2^(1/12), 2^(2/12), 2^(3/12)]
+DEFINE octave_steps: [0.25, 0.5, 1.0, 2.0, 4.0]
+DEFINE tone_duties:  [5000, 16384, 32768, 49152, 60000]
+
+SETUP PWM on GP15
+SETUP buttons on GP2–GP8 (pull-up)
+SETUP ADC on GP26, GP27, GP28
+
+FUNCTION play_note(freq, duty):
+    freq = clamp(freq, 20, 20000)
+    set PWM frequency to freq
+    set PWM duty to duty
+
+FUNCTION stop():
+    set duty to 0
+
+last_debug = nothing
+
+LOOP forever:
+    raw_pitch  = read_pot(GP26)
+    raw_octave = read_pot(GP27)
+    raw_tone   = read_pot(GP28)
+
+    pitch_ratio  = pitch_ratios[stepped(raw_pitch,  pitch_ratios)]
+    octave_mult  = octave_steps[stepped(raw_octave, octave_steps)]
+    duty         = tone_duties [stepped(raw_tone,   tone_duties)]
+
+    IF knob labels changed since last loop:
+        print pitch / octave / tone labels to console
+        last_debug = current labels
+
+    pressed = [index for each button if button is LOW]
+
+    IF none pressed:
+        stop()
+    ELSE:
+        product = 1.0
+        FOR each pressed index i:
+            product = product × base_notes[i]
+        geo_mean   = product ^ (1 / count of pressed)
+        final_freq = geo_mean × pitch_ratio × octave_mult
+        play_note(final_freq, duty)
+
+    sleep 10ms
+</code></pre>
+<hr>
+<h2 id="phase-iii-lm386-amplifier-output"><a class="anchor" href="#phase-iii-lm386-amplifier-output" aria-label="Link to this section">§</a>Phase III — LM386 amplifier output</h2>
+<p><em>File: <code>LM386AmpSynth.py</code></em></p>
+<h3 id="overview"><a class="anchor" href="#overview" aria-label="Link to this section">§</a>Overview</h3>
+<p>Identical control structure to Phase II, but the PWM signal is routed through an LM386 audio amplifier IC before reaching the speaker. Two targeted changes prevent audio artifacts introduced by the amplifier.</p>
+<h3 id="hardware"><a class="anchor" href="#hardware" aria-label="Link to this section">§</a>Hardware</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Component</th>
+<th>Pin / Location</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PWM output</td>
+<td>GP15</td>
+</tr>
+<tr>
+<td>Buttons C4–B4</td>
+<td>GP2–GP8 (pull-up)</td>
+</tr>
+<tr>
+<td>Pot — pitch</td>
+<td>GP26 (ADC)</td>
+</tr>
+<tr>
+<td>Pot — octave</td>
+<td>GP27 (ADC)</td>
+</tr>
+<tr>
+<td>Pot — tone</td>
+<td>GP28 (ADC)</td>
+</tr>
+<tr>
+<td>LM386 amp</td>
+<td>Between GP15 and speaker</td>
+</tr>
+<tr>
+<td>Speaker</td>
+<td>LM386 output</td>
+</tr>
+</tbody></table></div>
+<h3 id="changes-from-phase-ii"><a class="anchor" href="#changes-from-phase-ii" aria-label="Link to this section">§</a>Changes from Phase II</h3>
+<p><strong>1. Reduced duty cycle ceiling</strong> The LM386 amplifies the signal. Phase II duty values that sound clean through a piezo overdrive the amp at high volume, causing clipping distortion. Values are pulled back across all five tone steps:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Label</th>
+<th>Phase II</th>
+<th>Phase III</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Thin</td>
+<td>5000</td>
+<td>3000</td>
+</tr>
+<tr>
+<td>Soft</td>
+<td>16384</td>
+<td>10000</td>
+</tr>
+<tr>
+<td>Full</td>
+<td>32768</td>
+<td>20000</td>
+</tr>
+<tr>
+<td>Warm</td>
+<td>49152</td>
+<td>32768</td>
+</tr>
+<tr>
+<td>Reed</td>
+<td>60000</td>
+<td>45000</td>
+</tr>
+</tbody></table></div>
+<p>Tune by ear — exact values depend on the gain resistor and speaker used.</p>
+<p><strong>2. Frequency reset on stop</strong> When duty is set to 0 the output goes silent, but the PWM hardware remains configured at the last audio frequency. The LM386 is sensitive enough to pick up residual switching noise from that carrier and pass it to the speaker as a faint buzz. Setting the frequency to 10 Hz (effectively DC, well below the audible range) on every stop call eliminates this.</p>
+<pre><code>FUNCTION stop():
+    set duty to 0
+    set PWM frequency to 10   // kills residual carrier noise through LM386
+</code></pre>
+<h3 id="pseudocode"><a class="anchor" href="#pseudocode" aria-label="Link to this section">§</a>Pseudocode</h3>
+<pre><code>DEFINE base_notes, pitch_ratios, octave_steps  (same as Phase II)
+DEFINE tone_duties: [3000, 10000, 20000, 32768, 45000]  // ← reduced
+
+SETUP PWM on GP15
+SETUP buttons on GP2–GP8 (pull-up)
+SETUP ADC on GP26, GP27, GP28
+
+FUNCTION play_note(freq, duty):
+    freq = clamp(freq, 20, 20000)
+    set PWM frequency to freq
+    set PWM duty to duty
+
+FUNCTION stop():
+    set duty to 0
+    set PWM frequency to 10   // ← new vs Phase II
+
+LOOP forever:
+    read pots → stepped indices → pitch_ratio, octave_mult, duty
+    IF knob state changed: print labels to console
+
+    pressed = [buttons currently held LOW]
+    IF none: stop()
+    ELSE:
+        geo_mean   = geometric mean of base_notes[pressed indices]
+        final_freq = geo_mean × pitch_ratio × octave_mult
+        play_note(final_freq, duty)
+
+    sleep 10ms
+</code></pre>
+<hr>
+<h2 id="phase-comparison"><a class="anchor" href="#phase-comparison" aria-label="Link to this section">§</a>Phase comparison</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Feature</th>
+<th>Phase I</th>
+<th>Phase II</th>
+<th>Phase III</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Buttons</td>
+<td>7 (GP2–8)</td>
+<td>7 (GP2–8)</td>
+<td>7 (GP2–8)</td>
+</tr>
+<tr>
+<td>Potentiometers</td>
+<td>none</td>
+<td>3 (GP26–28)</td>
+<td>3 (GP26–28)</td>
+</tr>
+<tr>
+<td>Output stage</td>
+<td>Piezo direct</td>
+<td>Piezo direct</td>
+<td>LM386 + speaker</td>
+</tr>
+<tr>
+<td>Duty cycle range</td>
+<td>Fixed 32768</td>
+<td>5000–60000</td>
+<td>3000–45000</td>
+</tr>
+<tr>
+<td>Stop behaviour</td>
+<td>duty = 0</td>
+<td>duty = 0</td>
+<td>duty = 0, freq = 10 Hz</td>
+</tr>
+<tr>
+<td>Chord method</td>
+<td>Geometric mean</td>
+<td>Geometric mean</td>
+<td>Geometric mean</td>
+</tr>
+<tr>
+<td>Pitch control</td>
+<td>none</td>
+<td>±3 semitones</td>
+<td>±3 semitones</td>
+</tr>
+<tr>
+<td>Octave control</td>
+<td>none</td>
+<td>×0.25 – ×4.0</td>
+<td>×0.25 – ×4.0</td>
+</tr>
+<tr>
+<td>Tone control</td>
+<td>none</td>
+<td>5 steps</td>
+<td>5 steps</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="concepts-reference"><a class="anchor" href="#concepts-reference" aria-label="Link to this section">§</a>Concepts reference</h2>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Term</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>PWM</td>
+<td>Pulse Width Modulation — pin switches on/off at audio frequency to produce sound</td>
+</tr>
+<tr>
+<td>Duty cycle</td>
+<td>Ratio of on-time to off-time per cycle (0–65535). Controls timbre</td>
+</tr>
+<tr>
+<td>Pull-up resistor</td>
+<td>Holds a pin HIGH by default; pressing the button pulls it LOW</td>
+</tr>
+<tr>
+<td>Geometric mean</td>
+<td><code>(f1 × f2 × ... × fN)^(1/N)</code> — preserves musical interval ratios across chord tones</td>
+</tr>
+<tr>
+<td>ADC</td>
+<td>Analog-to-Digital Converter — reads pot voltage as integer 0–65535</td>
+</tr>
+<tr>
+<td>Stepped mapping</td>
+<td>Divides ADC range into N equal buckets; knob snaps to discrete positions</td>
+</tr>
+<tr>
+<td>Clamping</td>
+<td>Forces a value within a min/max range: <code>max(min_val, min(max_val, x))</code></td>
+</tr>
+<tr>
+<td>Dirty checking</td>
+<td>Storing previous state and only acting when it changes</td>
+</tr>
+<tr>
+<td>LM386</td>
+<td>Audio amplifier IC — boosts PWM signal to drive a speaker at audible volume</td>
+</tr>
+</tbody></table></div>
+</div>
+  </div>
+  
+</article>
+<footer class="footer panel panel--ink">
+  <div class="footer__grid">
+    <p class="footer__sig">Vivaan Kaushal</p>
+    <p class="footer__links"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><span aria-hidden="true"> · </span><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><span aria-hidden="true"> · </span><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><span aria-hidden="true"> · </span><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><span aria-hidden="true"> · </span><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></p>
+  </div>
+  <div class="footer__menacing" aria-hidden="true">ゴゴゴゴゴゴゴゴ</div>
+</footer>
+</main>
+
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>

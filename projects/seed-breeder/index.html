@@ -1,0 +1,732 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Seed Breeder — Vivaan Kaushal</title>
+<meta name="description" content="A Farming game built with SDL2 and C">
+<meta name="author" content="Vivaan Kaushal">
+<meta name="color-scheme" content="light">
+<meta property="og:title" content="Seed Breeder — Vivaan Kaushal">
+<meta property="og:description" content="A Farming game built with SDL2 and C">
+<meta property="og:type" content="website">
+<meta property="og:image" content="../../assets/derived/thumb/seed-breeder-1400.webp">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400..900;1,400..900&family=Newsreader:ital,opsz,wght@0,6..72,300..700;1,6..72,300..600&display=swap">
+<link rel="stylesheet" href="../../assets/css/site.css">
+</head>
+<body class="page-projects">
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="topbar">
+  <a class="topbar__id" href="../../">Vivaan Kaushal</a>
+  <button class="topbar__toggle" type="button" aria-expanded="false" aria-controls="spine">
+    <span aria-hidden="true">☰</span><span class="sr">Menu</span>
+  </button>
+</header>
+
+<aside class="spine" id="spine">
+    <a class="spine__id" href="../../">
+      <span class="spine__name">Vivaan<br>Kaushal</span>
+      <span class="spine__role">EE + Physics · Northeastern</span>
+    </a>
+    <nav class="spine__nav" aria-label="Sections">
+    <a class="navlink is-active" href="../../projects/">
+      <span class="navlink__num" aria-hidden="true">01</span>
+      <span class="navlink__label">Projects</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../art/">
+      <span class="navlink__num" aria-hidden="true">02</span>
+      <span class="navlink__label">Art</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../about/">
+      <span class="navlink__num" aria-hidden="true">03</span>
+      <span class="navlink__label">About</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a>
+    <a class="navlink" href="../../other/">
+      <span class="navlink__num" aria-hidden="true">04</span>
+      <span class="navlink__label">Other</span>
+      <span class="navlink__mark" aria-hidden="true">▸</span>
+    </a></nav>
+    <div class="spine__foot">
+      <div class="spine__social"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></div>
+    </div>
+  </aside>
+
+<main id="main" class="main">
+
+<article class="article">
+  <header class="ahead panel--ink halftone">
+    <a class="ahead__back" href="../"><span aria-hidden="true">◂</span> Projects</a>
+    <p class="kicker kicker--gold">Game development</p>
+    <h1 class="ahead__title">Seed Breeder</h1>
+    <p class="ahead__desc">A Farming game built with SDL2 and C</p>
+    <div class="linkrow"><a class="btn btn--github" href="https://github.com/runoxVK/SeedBreederSDL2" target="_blank" rel="noopener noreferrer">
+       <span class="btn__icon" aria-hidden="true">↗</span>GitHub</a><a class="btn btn--itch" href="https://runox.itch.io/seed-breeder" target="_blank" rel="noopener noreferrer">
+       <span class="btn__icon" aria-hidden="true">↗</span>Itch.io</a></div>
+    <dl class="spec"><div class="spec__row"><dt>Language</dt><dd>C</dd></div><div class="spec__row"><dt>Libraries</dt><dd>SDL2, SDL2_ttf</dd></div><div class="spec__row"><dt>Platform</dt><dd>Windows (MSYS2 UCRT64 toolchain)</dd></div><div class="spec__row"><dt>Editor</dt><dd>VS Code</dd></div><div class="spec__row"><dt>Terminal</dt><dd>Git Bash</dd></div><div class="spec__row"><dt>Status</dt><dd>Complete (v1.0)</dd></div></dl>
+    <div class="ahead__menacing" aria-hidden="true">ゴゴゴ</div>
+  </header>
+  <figure class="ahero"><img src="../../assets/derived/thumb/seed-breeder-1400.webp" alt="" loading="eager" decoding="async"></figure>
+  <div class="article__grid">
+    <nav class="toc" aria-label="Contents">
+         <p class="toc__title">Contents</p>
+         <ol><li class="toc__l2"><a href="#table-of-contents">Table of Contents</a></li><li class="toc__l2"><a href="#project-overview">Project Overview</a></li><li class="toc__l2"><a href="#development-environment-setup">Development Environment Setup</a></li><li class="toc__l2"><a href="#architecture-overview">Architecture Overview</a></li><li class="toc__l2"><a href="#file-structure">File Structure</a></li><li class="toc__l2"><a href="#data-structures">Data Structures</a></li><li class="toc__l2"><a href="#game-systems">Game Systems</a></li><li class="toc__l2"><a href="#rendering-pipeline">Rendering Pipeline</a></li><li class="toc__l2"><a href="#input-system">Input System</a></li><li class="toc__l2"><a href="#save-load-system">Save &amp; Load System</a></li><li class="toc__l2"><a href="#build-instructions">Build Instructions</a></li><li class="toc__l2"><a href="#design-decisions-rationale">Design Decisions &amp; Rationale</a></li><li class="toc__l2"><a href="#development-phases">Development Phases</a></li><li class="toc__l2"><a href="#c-concepts-learned">C Concepts Learned</a></li><li class="toc__l2"><a href="#known-limitations-future-ideas">Known Limitations &amp; Future Ideas</a></li></ol>
+       </nav>
+    <div class="prose"><hr>
+<h2 id="table-of-contents"><a class="anchor" href="#table-of-contents" aria-label="Link to this section">§</a>Table of Contents</h2>
+<ul>
+<li><a class="wikilink wikilink--anchor" href="#project-overview">Project Overview</a></li>
+<li><a class="wikilink wikilink--anchor" href="#development-environment-setup">Development Environment Setup</a></li>
+<li><a class="wikilink wikilink--anchor" href="#architecture-overview">Architecture Overview</a></li>
+<li><a class="wikilink wikilink--anchor" href="#file-structure">File Structure</a></li>
+<li><a class="wikilink wikilink--anchor" href="#data-structures">Data Structures</a><ul>
+<li><a class="wikilink wikilink--anchor" href="#planttype">PlantType</a></li>
+<li><a class="wikilink wikilink--anchor" href="#tilestate">TileState</a></li>
+<li><a class="wikilink wikilink--anchor" href="#tile">Tile</a></li>
+<li><a class="wikilink wikilink--anchor" href="#farm">Farm</a></li>
+</ul>
+</li>
+<li><a class="wikilink wikilink--anchor" href="#game-systems">Game Systems</a><ul>
+<li><a class="wikilink wikilink--anchor" href="#tile-system">Tile System</a></li>
+<li><a class="wikilink wikilink--anchor" href="#farm-logic">Farm Logic</a></li>
+<li><a class="wikilink wikilink--anchor" href="#breeding-system">Breeding System</a></li>
+<li><a class="wikilink wikilink--anchor" href="#shop-system">Shop System</a></li>
+</ul>
+</li>
+<li><a class="wikilink wikilink--anchor" href="#rendering-pipeline">Rendering Pipeline</a><ul>
+<li><a class="wikilink wikilink--anchor" href="#tile-visuals">Tile Visuals</a></li>
+<li><a class="wikilink wikilink--anchor" href="#circle-drawing-algorithm">Circle Drawing Algorithm</a></li>
+<li><a class="wikilink wikilink--anchor" href="#text-rendering">Text Rendering</a></li>
+<li><a class="wikilink wikilink--anchor" href="#growth-progress-bar">Growth Progress Bar</a></li>
+</ul>
+</li>
+<li><a class="wikilink wikilink--anchor" href="#input-system">Input System</a></li>
+<li><a class="wikilink wikilink--anchor" href="#save-load-system">Save &amp; Load System</a></li>
+<li><a class="wikilink wikilink--anchor" href="#build-instructions">Build Instructions</a></li>
+<li><a class="wikilink wikilink--anchor" href="#design-decisions-rationale">Design Decisions &amp; Rationale</a></li>
+<li><a class="wikilink wikilink--anchor" href="#development-phases">Development Phases</a></li>
+<li><a class="wikilink wikilink--anchor" href="#c-concepts-learned">C Concepts Learned</a></li>
+<li><a class="wikilink wikilink--anchor" href="#known-limitations-future-ideas">Known Limitations &amp; Future Ideas</a></li>
+</ul>
+<hr>
+<h2 id="project-overview"><a class="anchor" href="#project-overview" aria-label="Link to this section">§</a>Project Overview</h2>
+<p>A 2D farming simulation game built from scratch in C using SDL2. The player manages a 10×8 grid of farmland, planting seeds, watering crops, and harvesting produce to sell for money. A <a class="wikilink wikilink--anchor" href="#breeding-system">Breeding System</a> allows adjacent grown crops to produce hybrid plant varieties with unique names, colors, and stats.</p>
+<p>The project was built as a learning exercise in C — covering <a class="wikilink wikilink--anchor" href="#pointers">Pointers</a>, <a class="wikilink wikilink--anchor" href="#structs">Structs</a>, <a class="wikilink wikilink--anchor" href="#enums">Enums</a>, manual memory management (<a class="wikilink wikilink--anchor" href="#stack-vs-heap">Stack vs Heap</a>), <a class="wikilink wikilink--anchor" href="#file-structure">multi-file architecture</a>, and manual compilation.</p>
+<p><strong>Core gameplay loop:</strong></p>
+<ol>
+<li>Plant seeds on empty tiles</li>
+<li>Switch to watering mode and water planted tiles</li>
+<li>Advance the day (Next Day button or right-click)</li>
+<li>Harvest grown crops</li>
+<li>Sell crops in the <a class="wikilink wikilink--anchor" href="#shop-system">Shop System</a>, buy new seed types</li>
+<li>Breed adjacent crops to discover hybrid plants</li>
+</ol>
+<hr>
+<h2 id="development-environment-setup"><a class="anchor" href="#development-environment-setup" aria-label="Link to this section">§</a>Development Environment Setup</h2>
+<h3 id="toolchain"><a class="anchor" href="#toolchain" aria-label="Link to this section">§</a>Toolchain</h3>
+<ul>
+<li><strong>Compiler:</strong> GCC 15.2.0 (MSYS2 UCRT64)</li>
+<li><strong>Package manager:</strong> MSYS2 pacman</li>
+<li><strong>Environment:</strong> UCRT64 (chosen over MinGW64 for modern Windows compatibility — see <a class="wikilink wikilink--anchor" href="#design-decisions-rationale">Design Decisions &amp; Rationale</a>)</li>
+</ul>
+<h3 id="installation-steps"><a class="anchor" href="#installation-steps" aria-label="Link to this section">§</a>Installation Steps</h3>
+<pre><code>1. Install MSYS2 from https://www.msys2.org
+2. Open MSYS2 UCRT64 terminal
+3. pacman -Syu                                    # update package database
+4. pacman -S mingw-w64-ucrt-x86_64-gcc           # install GCC
+5. pacman -S mingw-w64-ucrt-x86_64-SDL2          # install SDL2
+6. pacman -S mingw-w64-ucrt-x86_64-SDL2_ttf      # install SDL2_ttf
+7. Add C:\msys64\ucrt64\bin to Windows PATH
+8. Configure VS Code to use Git Bash as terminal
+9. Add C:/msys64/ucrt64/include to IntelliSense includePath
+</code></pre>
+<h3 id="key-issue-resolved"><a class="anchor" href="#key-issue-resolved" aria-label="Link to this section">§</a>Key Issue Resolved</h3>
+<p>An early issue arose from mixing MinGW64 and UCRT64 environments — SDL2 was installed under MinGW64 but GCC was from UCRT64. These are entirely separate environments that do not share libraries. Resolution: install all packages exclusively under UCRT64.</p>
+<hr>
+<h2 id="architecture-overview"><a class="anchor" href="#architecture-overview" aria-label="Link to this section">§</a>Architecture Overview</h2>
+<p>The game follows a classic <strong>game loop</strong> pattern:</p>
+<pre><code>LOOP forever:
+    1. Handle Input   → poll SDL event queue
+    2. Update State   → state changes happen inside input handlers
+    3. Draw           → clear → draw tiles → draw UI → present
+</code></pre>
+<p>Data flows in one direction only:</p>
+<pre><code>main.c
+  └── owns Farm (on the stack)
+        └── Farm contains Tiles[8][10]
+        └── Farm contains PlantTypes[64]
+        └── Farm contains seed_inventory[64]
+        └── Farm contains crop_inventory[64]
+</code></pre>
+<p><code>tile.c</code> knows nothing about <code>Farm</code> or SDL. <code>farm.c</code> knows about <code>Tile</code> and SDL but not <code>main.c</code>. <code>main.c</code> owns everything and drives the loop.</p>
+<p>See also: <a class="wikilink wikilink--anchor" href="#file-structure">File Structure</a>, <a class="wikilink wikilink--anchor" href="#data-structures">Data Structures</a></p>
+<hr>
+<h2 id="file-structure"><a class="anchor" href="#file-structure" aria-label="Link to this section">§</a>File Structure</h2>
+<pre><code>FarmingGame/
+├── src/
+│   ├── main.c       — entry point, game loop, SDL init/cleanup
+│   ├── tile.h       — PlantType, TileState, Tile struct definitions
+│   ├── tile.c       — tile_init, tile_plant, tile_water, tile_update
+│   ├── farm.h       — Farm struct definition, all function declarations
+│   └── farm.c       — all game logic, rendering, input, save/load
+├── assets/
+│   └── arial.ttf    — font used for all in-game text
+└── farming_game.exe — compiled output
+</code></pre>
+<h3 id="header-vs-source-files"><a class="anchor" href="#header-vs-source-files" aria-label="Link to this section">§</a>Header vs Source Files</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>File type</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>.h</code> header</td>
+<td>Declares that things exist — like a table of contents</td>
+</tr>
+<tr>
+<td><code>.c</code> source</td>
+<td>Defines what things actually do</td>
+</tr>
+</tbody></table></div>
+<p>Other <code>.c</code> files <code>#include</code> a <code>.h</code> to know what they can use. Header guards (<code>#ifndef / #define / #endif</code>) prevent double-inclusion errors.</p>
+<hr>
+<h2 id="data-structures"><a class="anchor" href="#data-structures" aria-label="Link to this section">§</a>Data Structures</h2>
+<h3 id="planttype"><a class="anchor" href="#planttype" aria-label="Link to this section">§</a>PlantType</h3>
+<p>Defined in <code>tile.h</code>. Describes the identity of a seed/crop variety.</p>
+<pre><code class="language-c">typedef struct {
+    char name[32];    // display name (e.g. &quot;Wheat&quot;, &quot;Tomato&quot;, &quot;Whmato&quot;)
+    int r, g, b;      // RGB color shown when grown
+    int growth_rate;  // growth added per watered day
+    int sell_price;   // money earned when crop is sold
+    int id;           // unique index in farm-&gt;plant_types[]
+} PlantType;
+</code></pre>
+<p>See also: <a class="wikilink wikilink--anchor" href="#breeding-system">Breeding System</a>, <a class="wikilink wikilink--anchor" href="#shop-system">Shop System</a></p>
+<hr>
+<h3 id="tilestate"><a class="anchor" href="#tilestate" aria-label="Link to this section">§</a>TileState</h3>
+<p>Defined in <code>tile.h</code>. An enum representing the four states a tile can be in.</p>
+<pre><code class="language-c">typedef enum {
+    TILE_EMPTY,    // 0 — bare soil
+    TILE_PLANTED,  // 1 — seed in ground, needs water
+    TILE_WATERED,  // 2 — watered, will grow on next day
+    TILE_GROWN,    // 3 — ready to harvest
+} TileState;
+</code></pre>
+<p>See also: <a class="wikilink wikilink--anchor" href="#enums">Enums</a>, <a class="wikilink wikilink--anchor" href="#tile-system">Tile System</a></p>
+<hr>
+<h3 id="tile"><a class="anchor" href="#tile" aria-label="Link to this section">§</a>Tile</h3>
+<p>Defined in <code>tile.h</code>. Represents one square on the farm grid.</p>
+<pre><code class="language-c">typedef struct {
+    TileState state;
+    int growth;        // 0–100
+    int watered;       // 1 if watered today
+    int water_count;   // total waterings
+    int plant_type_id; // index into farm-&gt;plant_types[] (-1 = empty)
+    int bred;          // 1 if this tile has already triggered breeding
+} Tile;
+</code></pre>
+<p>See also: <a class="wikilink wikilink--anchor" href="#tile-system">Tile System</a>, <a class="wikilink wikilink--anchor" href="#breeding-system">Breeding System</a></p>
+<hr>
+<h3 id="farm"><a class="anchor" href="#farm" aria-label="Link to this section">§</a>Farm</h3>
+<p>Defined in <code>farm.h</code>. The central game state struct — everything lives here.</p>
+<pre><code class="language-c">typedef struct {
+    Tile tiles[GRID_ROWS][GRID_COLS];          // 8×10 tile grid
+    PlantType plant_types[MAX_PLANT_TYPES];    // up to 64 plant varieties
+    int plant_type_count;
+    int seed_inventory[MAX_PLANT_TYPES];       // seeds available to plant
+    int crop_inventory[MAX_PLANT_TYPES];       // harvested crops to sell
+    int selected_seed;
+    int watering_mode;                         // 0=plant mode, 1=water mode
+    int shop_open;                             // 0=farm view, 1=shop view
+    int money;
+    int day;
+} Farm;
+</code></pre>
+<p><strong>Constants:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Constant</th>
+<th>Value</th>
+<th>Meaning</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>GRID_COLS</code></td>
+<td>10</td>
+<td>Grid width in tiles</td>
+</tr>
+<tr>
+<td><code>GRID_ROWS</code></td>
+<td>8</td>
+<td>Grid height in tiles</td>
+</tr>
+<tr>
+<td><code>TILE_SIZE</code></td>
+<td>64</td>
+<td>Pixels per tile</td>
+</tr>
+<tr>
+<td><code>MAX_PLANT_TYPES</code></td>
+<td>64</td>
+<td>Max plant varieties</td>
+</tr>
+</tbody></table></div>
+<hr>
+<h2 id="game-systems"><a class="anchor" href="#game-systems" aria-label="Link to this section">§</a>Game Systems</h2>
+<h3 id="tile-system"><a class="anchor" href="#tile-system" aria-label="Link to this section">§</a>Tile System</h3>
+<p>Implemented in <code>tile.c</code>. Four functions manage individual tile state:</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Function</th>
+<th>Behaviour</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>tile_init</code></td>
+<td>Resets tile to empty, clears all fields</td>
+</tr>
+<tr>
+<td><code>tile_plant(tile, id)</code></td>
+<td>Sets state to PLANTED, stores plant_type_id</td>
+</tr>
+<tr>
+<td><code>tile_water(tile)</code></td>
+<td>Sets state to WATERED, increments water_count</td>
+</tr>
+<tr>
+<td><code>tile_update(tile, rate)</code></td>
+<td>If watered: adds growth_rate to growth, resets to PLANTED. If growth ≥ 100: sets GROWN</td>
+</tr>
+</tbody></table></div>
+<p>See also: <a class="wikilink wikilink--anchor" href="#tilestate">TileState</a>, <a class="wikilink wikilink--anchor" href="#tile">Tile</a></p>
+<hr>
+<h3 id="farm-logic"><a class="anchor" href="#farm-logic" aria-label="Link to this section">§</a>Farm Logic</h3>
+<p>Implemented in <code>farm.c</code>.</p>
+<p><strong>farm_update</strong> — called when Next Day is pressed or right-clicked:</p>
+<ol>
+<li>Increments <code>farm-&gt;day</code></li>
+<li>For each tile: looks up its <a class="wikilink wikilink--anchor" href="#planttype">PlantType</a> growth_rate, calls <code>tile_update</code></li>
+<li>Detects the moment a tile transitions to <code>TILE_GROWN</code></li>
+<li>If newly grown and <code>bred == 0</code>: calls <code>farm_try_breed</code> once, sets <code>bred = 1</code></li>
+</ol>
+<p><strong>farm_harvest</strong> — called when clicking a grown tile in normal mode:</p>
+<ul>
+<li>Gives player <code>1–4</code> seeds of that type (random)</li>
+<li>Gives player <code>2–5</code> crops of that type (random)</li>
+<li>Resets tile to empty</li>
+</ul>
+<p>See also: <a class="wikilink wikilink--anchor" href="#breeding-system">Breeding System</a>, <a class="wikilink wikilink--anchor" href="#input-system">Input System</a></p>
+<hr>
+<h3 id="breeding-system"><a class="anchor" href="#breeding-system" aria-label="Link to this section">§</a>Breeding System</h3>
+<p>Triggered exactly once per tile at the moment it becomes fully grown. See <a class="wikilink wikilink--anchor" href="#farm-logic">Farm Logic</a> for when it fires.</p>
+<pre><code>For each of the 4 neighbours:
+    If neighbour is TILE_GROWN AND a different plant type:
+        Roll rand() % 100
+        If &lt; 20 (20% chance):
+            Create hybrid PlantType
+            Register in farm-&gt;plant_types[]
+            Add 1 seed to seed_inventory
+            Stop (one breed per tile maximum)
+</code></pre>
+<p><strong>Hybrid name generation:</strong></p>
+<pre><code>child.name = first half of parent A&#39;s name
+           + second half of parent B&#39;s name
+
+Example: &quot;Wheat&quot; + &quot;Tomato&quot; → &quot;Wh&quot; + &quot;mato&quot; → &quot;Whmato&quot;
+</code></pre>
+<p><strong>Hybrid stats:</strong></p>
+<ul>
+<li>Color: average of both parents&#39; RGB values</li>
+<li>Growth rate: average of both parents&#39; growth rates</li>
+<li>Sell price: average + 5 bonus</li>
+</ul>
+<p><strong>Duplicate prevention:</strong> <code>farm_add_plant_type</code> uses <code>strcmp</code> to check if a plant with that name already exists. If it does, its index is returned and the seed count for that type is simply incremented.</p>
+<p>See also: <a class="wikilink wikilink--anchor" href="#planttype">PlantType</a>, <a class="wikilink wikilink--anchor" href="#tile">Tile</a>, <a class="wikilink wikilink--anchor" href="#binary-serialization">Binary Serialization</a></p>
+<hr>
+<h3 id="shop-system"><a class="anchor" href="#shop-system" aria-label="Link to this section">§</a>Shop System</h3>
+<p>The shop replaces the entire screen when open (<code>farm-&gt;shop_open = 1</code>).</p>
+<p><strong>Sell side (left):</strong> Lists all crop types with quantity &gt; 0. Clicking SELL sells all crops of that type at once for <code>quantity × sell_price</code>.</p>
+<p><strong>Buy side (right):</strong> Lists all known plant types with their buy price (<code>sell_price × 2</code>). Button is greyed out if the player can&#39;t afford it.</p>
+<p><strong>Starter plants:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Plant</th>
+<th>Color</th>
+<th>Growth Rate</th>
+<th>Sell Price</th>
+<th>Buy Price</th>
+<th>Available at start</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Wheat</td>
+<td>Golden yellow</td>
+<td>25/day</td>
+<td>$20</td>
+<td>$40</td>
+<td></td>
+</tr>
+<tr>
+<td>Tomato</td>
+<td>Red</td>
+<td>20/day</td>
+<td>$30</td>
+<td>$60</td>
+<td></td>
+</tr>
+<tr>
+<td>Carrot</td>
+<td>Orange</td>
+<td>30/day</td>
+<td>$25</td>
+<td>$50</td>
+<td></td>
+</tr>
+<tr>
+<td>Blueberry</td>
+<td>Blue</td>
+<td>15/day</td>
+<td>$40</td>
+<td>$80</td>
+<td>Shop only</td>
+</tr>
+<tr>
+<td>Pumpkin</td>
+<td>Dark orange</td>
+<td>20/day</td>
+<td>$35</td>
+<td>$70</td>
+<td>Shop only</td>
+</tr>
+<tr>
+<td>Corn</td>
+<td>Yellow</td>
+<td>30/day</td>
+<td>$22</td>
+<td>$44</td>
+<td>Shop only</td>
+</tr>
+</tbody></table></div>
+<p>See also: <a class="wikilink wikilink--anchor" href="#input-system">Input System</a>, <a class="wikilink wikilink--anchor" href="#architecture-overview">Architecture Overview</a></p>
+<hr>
+<h2 id="rendering-pipeline"><a class="anchor" href="#rendering-pipeline" aria-label="Link to this section">§</a>Rendering Pipeline</h2>
+<p>Every frame follows this exact order:</p>
+<pre><code>SDL_RenderClear        — fill screen with dark background
+farm_draw              — draw tile grid
+farm_draw_ui           — draw right side panel
+farm_draw_actionbar    — draw bottom button strip
+farm_draw_tooltip      — draw hover tooltip on top of everything
+SDL_RenderPresent      — swap back buffer to screen
+</code></pre>
+<p>SDL uses <strong>double buffering</strong> — all drawing happens on a hidden back buffer. <code>SDL_RenderPresent</code> swaps it to the visible screen all at once, preventing flickering.</p>
+<hr>
+<h3 id="tile-visuals"><a class="anchor" href="#tile-visuals" aria-label="Link to this section">§</a>Tile Visuals</h3>
+<p>Each tile state has distinct visuals drawn entirely with SDL primitives (no image files):</p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>State</th>
+<th>Visual</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>TILE_EMPTY</td>
+<td>Brown soil with horizontal furrow lines</td>
+</tr>
+<tr>
+<td>TILE_PLANTED</td>
+<td>Darker soil with a small mound and tiny sprout</td>
+</tr>
+<tr>
+<td>TILE_WATERED</td>
+<td>Wet dark soil with blue droplet circles</td>
+</tr>
+<tr>
+<td>TILE_GROWN</td>
+<td>Full plant shape — see visual types below</td>
+</tr>
+</tbody></table></div>
+<p><strong>Visual types for grown plants:</strong></p>
+<ul>
+<li><strong>Type 0 — Round fruit</strong> (Tomato, Blueberry): stem + two leaves + colored circle with highlight</li>
+<li><strong>Type 1 — Leafy</strong> (Carrot, Pumpkin): stem + three fanning leaves + vein lines</li>
+<li><strong>Type 2 — Tall stalk</strong> (Wheat, Corn): double-line stalk + alternating leaves + grain head</li>
+</ul>
+<p>Visual type is determined by the first letter of the plant name, so hybrids automatically inherit a shape. See <a class="wikilink wikilink--anchor" href="#circle-drawing-algorithm">Circle Drawing Algorithm</a> and <a class="wikilink wikilink--anchor" href="#breeding-system">Breeding System</a>.</p>
+<hr>
+<h3 id="circle-drawing-algorithm"><a class="anchor" href="#circle-drawing-algorithm" aria-label="Link to this section">§</a>Circle Drawing Algorithm</h3>
+<p>SDL has no built-in circle function. Circles are drawn using the midpoint algorithm:</p>
+<pre><code>For each row dy from -radius to +radius:
+    dx = √(radius² - dy²)     ← Pythagoras
+    Draw horizontal line from (cx-dx, cy+dy) to (cx+dx, cy+dy)
+</code></pre>
+<p>Stacking these lines produces a filled circle. See <a class="wikilink wikilink--anchor" href="#tile-visuals">Tile Visuals</a>.</p>
+<hr>
+<h3 id="text-rendering"><a class="anchor" href="#text-rendering" aria-label="Link to this section">§</a>Text Rendering</h3>
+<p>Uses SDL2_ttf. Text rendering is a two-step process:</p>
+<ol>
+<li><code>TTF_RenderText_Solid</code> → creates an <code>SDL_Surface</code> (pixels in RAM)</li>
+<li><code>SDL_CreateTextureFromSurface</code> → uploads to GPU as <code>SDL_Texture</code></li>
+<li><code>SDL_RenderCopy</code> → draws texture to screen</li>
+<li>Free both surface and texture immediately after use</li>
+</ol>
+<p>See also: <a class="wikilink wikilink--anchor" href="#stack-vs-heap">Stack vs Heap</a></p>
+<hr>
+<h3 id="growth-progress-bar"><a class="anchor" href="#growth-progress-bar" aria-label="Link to this section">§</a>Growth Progress Bar</h3>
+<p>Each planted tile shows a small bar at the bottom:</p>
+<pre><code>bar_width = (growth × max_bar_width) / 100
+</code></pre>
+<p>Integer math maps 0–100 growth to 0–58 pixels.</p>
+<hr>
+<h2 id="input-system"><a class="anchor" href="#input-system" aria-label="Link to this section">§</a>Input System</h2>
+<p>All mouse clicks route through <code>farm_handle_click</code> (or <code>farm_handle_shop_click</code> when the shop is open).</p>
+<p><strong>Click routing:</strong></p>
+<pre><code>if shop is open        → farm_handle_shop_click
+else if y &gt;= 512       → action bar button check
+else if within grid    → tile interaction
+</code></pre>
+<p><strong>Normal mode (<code>watering_mode = 0</code>):</strong></p>
+<ul>
+<li>Click EMPTY tile → plant selected seed</li>
+<li>Click GROWN tile → harvest</li>
+</ul>
+<p><strong>Watering mode (<code>watering_mode = 1</code>):</strong></p>
+<ul>
+<li>Click PLANTED or WATERED tile → water it</li>
+</ul>
+<p><strong>Right-click:</strong> Always advances the day.</p>
+<p><strong>Scroll wheel:</strong> Cycles through seed types. Wraps circularly.</p>
+<p><strong>S key:</strong> Save game.</p>
+<p><strong>Action bar buttons:</strong></p>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Button</th>
+<th>X Range</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Save</td>
+<td>10–140</td>
+<td>Write savegame.bin</td>
+</tr>
+<tr>
+<td>Next Day</td>
+<td>150–280</td>
+<td>Advance day</td>
+</tr>
+<tr>
+<td>Water ON/OFF</td>
+<td>290–420</td>
+<td>Toggle watering mode</td>
+</tr>
+<tr>
+<td>Shop</td>
+<td>430–560</td>
+<td>Open <a class="wikilink wikilink--anchor" href="#shop-system">Shop System</a></td>
+</tr>
+</tbody></table></div>
+<p><strong>Hover tooltip:</strong> <code>SDL_GetMouseState</code> is called every frame. If hovering over a non-empty tile, a popup shows plant name, growth %, and state. Position clamps to screen edges.</p>
+<p>See also: <a class="wikilink wikilink--anchor" href="#farm-logic">Farm Logic</a>, <a class="wikilink wikilink--anchor" href="#rendering-pipeline">Rendering Pipeline</a></p>
+<hr>
+<h2 id="save-load-system"><a class="anchor" href="#save-load-system" aria-label="Link to this section">§</a>Save &amp; Load System</h2>
+<p>The entire <a class="wikilink wikilink--anchor" href="#farm">Farm</a> struct is written to disk as raw binary:</p>
+<pre><code class="language-c">fwrite(farm, sizeof(Farm), 1, file);  // save
+fread(farm, sizeof(Farm), 1, file);   // load
+</code></pre>
+<p><code>sizeof(Farm)</code> asks the compiler exactly how many bytes the struct occupies. Since <code>Farm</code> contains no pointers — only fixed-size arrays and integers — the raw bytes are fully portable between save and load.</p>
+<p><strong>Save file:</strong> <code>savegame.bin</code> in the game&#39;s working directory.
+<strong>Save triggers:</strong> S key, or the Save button.
+<strong>Load trigger:</strong> Automatically on startup.</p>
+<blockquote>
+<p>⚠️ If the <code>Farm</code> struct definition changes, old save files become incompatible and must be deleted.</p>
+</blockquote>
+<p>See also: <a class="wikilink wikilink--anchor" href="#binary-serialization">Binary Serialization</a>, <a class="wikilink wikilink--anchor" href="#farm">Farm</a></p>
+<hr>
+<h2 id="build-instructions"><a class="anchor" href="#build-instructions" aria-label="Link to this section">§</a>Build Instructions</h2>
+<h3 id="compile-command"><a class="anchor" href="#compile-command" aria-label="Link to this section">§</a>Compile Command</h3>
+<pre><code class="language-bash">gcc src/main.c src/tile.c src/farm.c -o farming_game.exe \
+    -I/c/msys64/ucrt64/include/SDL2 \
+    -L/c/msys64/ucrt64/lib \
+    -lmingw32 -lSDL2main -lSDL2 -lSDL2_ttf \
+    -mwindows
+</code></pre>
+<h3 id="flag-reference"><a class="anchor" href="#flag-reference" aria-label="Link to this section">§</a>Flag Reference</h3>
+<div class="table-wrap"><table>
+<thead>
+<tr>
+<th>Flag</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>src/main.c src/tile.c src/farm.c</code></td>
+<td>All source files</td>
+</tr>
+<tr>
+<td><code>-I/c/msys64/ucrt64/include/SDL2</code></td>
+<td>SDL2 header location</td>
+</tr>
+<tr>
+<td><code>-L/c/msys64/ucrt64/lib</code></td>
+<td>SDL2 library location</td>
+</tr>
+<tr>
+<td><code>-lmingw32</code></td>
+<td>MinGW32 runtime (must come first)</td>
+</tr>
+<tr>
+<td><code>-lSDL2main</code></td>
+<td>SDL2&#39;s WinMain bridge</td>
+</tr>
+<tr>
+<td><code>-lSDL2</code></td>
+<td>Core SDL2 library</td>
+</tr>
+<tr>
+<td><code>-lSDL2_ttf</code></td>
+<td>Font rendering library</td>
+</tr>
+<tr>
+<td><code>-mwindows</code></td>
+<td>GUI app — no console window</td>
+</tr>
+</tbody></table></div>
+<h3 id="linker-order"><a class="anchor" href="#linker-order" aria-label="Link to this section">§</a>Linker Order</h3>
+<p>GCC processes <code>-l</code> flags left to right. Dependencies must come after what depends on them:</p>
+<pre><code>-lmingw32 → -lSDL2main → -lSDL2
+</code></pre>
+<p>Getting this wrong causes <code>undefined reference to WinMain</code>.</p>
+<hr>
+<h2 id="design-decisions-rationale"><a class="anchor" href="#design-decisions-rationale" aria-label="Link to this section">§</a>Design Decisions &amp; Rationale</h2>
+<h3 id="binary-save-format"><a class="anchor" href="#binary-save-format" aria-label="Link to this section">§</a>Binary Save Format</h3>
+<p>Chosen over JSON/text because the entire <a class="wikilink wikilink--anchor" href="#farm">Farm</a> struct maps directly to bytes. No parsing needed — one <code>fwrite</code> saves everything, one <code>fread</code> restores it.</p>
+<h3 id="separated-seed-and-crop-inventories"><a class="anchor" href="#separated-seed-and-crop-inventories" aria-label="Link to this section">§</a>Separated Seed and Crop Inventories</h3>
+<p>Seeds are used for planting. Crops are sold in the <a class="wikilink wikilink--anchor" href="#shop-system">Shop System</a>. Keeping them separate gives the economy depth — you decide how many seeds to replant vs how many crops to sell.</p>
+<h3 id="breeding-triggers-once-at-grow-time"><a class="anchor" href="#breeding-triggers-once-at-grow-time" aria-label="Link to this section">§</a>Breeding Triggers Once at Grow-Time</h3>
+<p>Originally breeding was checked every day across all grown tiles. Changed so it fires exactly once at the moment a tile becomes fully grown, checking only that tile&#39;s neighbours. Makes breeding feel intentional rather than happening quietly in the background. See <a class="wikilink wikilink--anchor" href="#breeding-system">Breeding System</a>.</p>
+<h3 id="opaque-sdl-types-as-pointers"><a class="anchor" href="#opaque-sdl-types-as-pointers" aria-label="Link to this section">§</a>Opaque SDL Types as Pointers</h3>
+<p><code>SDL_Window</code>, <code>SDL_Renderer</code>, <code>SDL_Surface</code>, and <code>SDL_Texture</code> are incomplete types — their internals are hidden. SDL allocates them on the heap and returns a pointer. This is why <code>SDL_DestroyWindow</code> etc. must always be called. See <a class="wikilink wikilink--anchor" href="#stack-vs-heap">Stack vs Heap</a>.</p>
+<h3 id="ucrt64-over-mingw64"><a class="anchor" href="#ucrt64-over-mingw64" aria-label="Link to this section">§</a>UCRT64 Over MinGW64</h3>
+<p>UCRT64 is the modern recommended Windows environment. MinGW64 uses an older C runtime. Mixing the two causes linker failures. See <a class="wikilink wikilink--anchor" href="#development-environment-setup">Development Environment Setup</a>.</p>
+<h3 id="no-code-runner-extensions"><a class="anchor" href="#no-code-runner-extensions" aria-label="Link to this section">§</a>No Code Runner Extensions</h3>
+<p>All compilation is done manually via terminal. This was intentional — understanding what the compiler does, what flags mean, and how linking works is fundamental to C development. See <a class="wikilink wikilink--anchor" href="#build-instructions">Build Instructions</a>.</p>
+<hr>
+<h2 id="development-phases"><a class="anchor" href="#development-phases" aria-label="Link to this section">§</a>Development Phases</h2>
+<h3 id="phase-1-toolchain-setup"><a class="anchor" href="#phase-1-toolchain-setup" aria-label="Link to this section">§</a>Phase 1 — Toolchain Setup</h3>
+<p>March 2026</p>
+<p>Installed MSYS2, GCC, SDL2, SDL2_ttf. Resolved <a class="wikilink wikilink--anchor" href="#development-environment-setup">MinGW64 vs UCRT64</a> environment conflict. Configured Git Bash as VS Code terminal.</p>
+<h3 id="phase-2-first-c-program"><a class="anchor" href="#phase-2-first-c-program" aria-label="Link to this section">§</a>Phase 2 — First C Program</h3>
+<p>March 2026</p>
+<p>Wrote <code>main.c</code> with a simple <code>printf</code>. Learned the manual compile cycle. Understood what each <a class="wikilink wikilink--anchor" href="#build-instructions">compile flag</a> does.</p>
+<h3 id="phase-3-sdl2-window"><a class="anchor" href="#phase-3-sdl2-window" aria-label="Link to this section">§</a>Phase 3 — SDL2 Window</h3>
+<p>March 2026</p>
+<p>Opened a blank SDL2 window. Resolved <code>SDL_main</code> signature conflict. Resolved <a class="wikilink wikilink--anchor" href="#build-instructions">linker order</a> issue.</p>
+<h3 id="phase-4-game-architecture"><a class="anchor" href="#phase-4-game-architecture" aria-label="Link to this section">§</a>Phase 4 — Game Architecture</h3>
+<p>March 2026</p>
+<p>Designed the <a class="wikilink wikilink--anchor" href="#file-structure">multi-file structure</a>. Created <code>tile.h/c</code> and <code>farm.h/c</code>. Introduced <a class="wikilink wikilink--anchor" href="#structs">Structs</a>, <a class="wikilink wikilink--anchor" href="#enums">Enums</a>, <a class="wikilink wikilink--anchor" href="#header-guards">Header Guards</a>, and <a class="wikilink wikilink--anchor" href="#pointers">Pointers</a>.</p>
+<h3 id="phase-5-tile-grid-rendering"><a class="anchor" href="#phase-5-tile-grid-rendering" aria-label="Link to this section">§</a>Phase 5 — Tile Grid Rendering</h3>
+<p>March 2026</p>
+<p>Implemented <a class="wikilink wikilink--anchor" href="#rendering-pipeline">farm_draw</a>. Pixel coordinate calculation (<code>col × TILE_SIZE</code>). Integrated SDL_ttf for the <a class="wikilink wikilink--anchor" href="#text-rendering">right side UI panel</a>.</p>
+<h3 id="phase-6-mouse-input-interaction"><a class="anchor" href="#phase-6-mouse-input-interaction" aria-label="Link to this section">§</a>Phase 6 — Mouse Input &amp; Interaction</h3>
+<p>April 2026</p>
+<p>Implemented <a class="wikilink wikilink--anchor" href="#input-system">farm_handle_click</a>. Converted pixel coordinates to grid coordinates via integer division. Added plant/water/harvest state machine. Fixed click detection bug where check was outside <code>SDL_PollEvent</code> loop.</p>
+<h3 id="phase-7-save-load"><a class="anchor" href="#phase-7-save-load" aria-label="Link to this section">§</a>Phase 7 — Save &amp; Load</h3>
+<p>April 2026</p>
+<p>Implemented <a class="wikilink wikilink--anchor" href="#save-load-system">binary serialization</a> using <code>fwrite</code>/<code>fread</code>. Save on S key, load on startup.</p>
+<h3 id="phase-8-seed-breeding-system"><a class="anchor" href="#phase-8-seed-breeding-system" aria-label="Link to this section">§</a>Phase 8 — Seed Breeding System</h3>
+<p>April 2026</p>
+<p>Added <a class="wikilink wikilink--anchor" href="#planttype">PlantType</a> struct. Replaced single <code>seeds</code> counter with <code>seed_inventory[]</code> array. Implemented <a class="wikilink wikilink--anchor" href="#breeding-system">Breeding System</a> with duplicate name detection via <code>strcmp</code>.</p>
+<h3 id="phase-9-ui-polish"><a class="anchor" href="#phase-9-ui-polish" aria-label="Link to this section">§</a>Phase 9 — UI Polish</h3>
+<p>April 2026</p>
+<p>Added <a class="wikilink wikilink--anchor" href="#input-system">action bar</a> with Save, Next Day, Water Mode, and Shop buttons. Fixed repeated button coordinate mismatch bugs.</p>
+<h3 id="phase-10-shop-system"><a class="anchor" href="#phase-10-shop-system" aria-label="Link to this section">§</a>Phase 10 — Shop System</h3>
+<p>April 2026</p>
+<p>Built full-screen <a class="wikilink wikilink--anchor" href="#shop-system">Shop System</a> overlay. Separated seed and crop inventories. Harvest gives random seeds and crops. Added Blueberry, Pumpkin, and Corn as shop-only plants.</p>
+<h3 id="phase-11-visual-polish"><a class="anchor" href="#phase-11-visual-polish" aria-label="Link to this section">§</a>Phase 11 — Visual Polish</h3>
+<p>April 2026</p>
+<p>Replaced flat rectangles with SDL-drawn plant illustrations. Implemented <a class="wikilink wikilink--anchor" href="#circle-drawing-algorithm">Circle Drawing Algorithm</a>, <code>draw_leaf</code>. Added per-state <a class="wikilink wikilink--anchor" href="#tile-visuals">Tile Visuals</a>.</p>
+<h3 id="phase-12-hover-tooltip"><a class="anchor" href="#phase-12-hover-tooltip" aria-label="Link to this section">§</a>Phase 12 — Hover Tooltip</h3>
+<p>April 2026</p>
+<p>Added <code>farm_draw_tooltip</code> using <a class="wikilink wikilink--anchor" href="#input-system">SDL_GetMouseState</a> called every frame.</p>
+<hr>
+<h2 id="c-concepts-learned"><a class="anchor" href="#c-concepts-learned" aria-label="Link to this section">§</a>C Concepts Learned</h2>
+<h3 id="pointers"><a class="anchor" href="#pointers" aria-label="Link to this section">§</a>Pointers</h3>
+<p>Variables that store memory addresses. Used pervasively — SDL types are heap objects returned as pointers, and all farm/tile functions take <code>Farm *</code> or <code>Tile *</code> to modify originals rather than copies.</p>
+<pre><code class="language-c">Tile *tile = &amp;farm-&gt;tiles[row][col];  // pointer to a specific tile
+tile-&gt;state = TILE_GROWN;             // modify through pointer with -&gt;
+</code></pre>
+<p>See also: <a class="wikilink wikilink--anchor" href="#stack-vs-heap">Stack vs Heap</a>, <a class="wikilink wikilink--anchor" href="#opaque-sdl-types-as-pointers">Opaque SDL Types as Pointers</a></p>
+<hr>
+<h3 id="stack-vs-heap"><a class="anchor" href="#stack-vs-heap" aria-label="Link to this section">§</a>Stack vs Heap</h3>
+<ul>
+<li><strong>Stack:</strong> Local variables. Fixed size, gone when function returns. <code>Farm farm;</code> lives here.</li>
+<li><strong>Heap:</strong> <code>malloc</code>&#39;d memory. Lives until freed. SDL creates its objects here and returns pointers.</li>
+</ul>
+<p>See also: <a class="wikilink wikilink--anchor" href="#pointers">Pointers</a>, <a class="wikilink wikilink--anchor" href="#save-load-system">Save &amp; Load System</a></p>
+<hr>
+<h3 id="structs"><a class="anchor" href="#structs" aria-label="Link to this section">§</a>Structs</h3>
+<p>Bundles of related data — like a class with no methods. <code>typedef struct</code> lets you omit the <code>struct</code> keyword everywhere. See <a class="wikilink wikilink--anchor" href="#data-structures">Data Structures</a>.</p>
+<hr>
+<h3 id="enums"><a class="anchor" href="#enums" aria-label="Link to this section">§</a>Enums</h3>
+<p>Named integer constants. <code>TILE_EMPTY = 0</code>, <code>TILE_PLANTED = 1</code>, etc. Make switch statements readable. See <a class="wikilink wikilink--anchor" href="#tilestate">TileState</a>.</p>
+<hr>
+<h3 id="header-guards"><a class="anchor" href="#header-guards" aria-label="Link to this section">§</a>Header Guards</h3>
+<p><code>#ifndef / #define / #endif</code> prevents a header from being included twice, which would cause duplicate definition errors. See <a class="wikilink wikilink--anchor" href="#file-structure">File Structure</a>.</p>
+<hr>
+<h3 id="static-functions"><a class="anchor" href="#static-functions" aria-label="Link to this section">§</a>Static Functions</h3>
+<p><code>static</code> on a function makes it private to that <code>.c</code> file. Used for <code>get_plant_type</code>, <code>breed</code>, <code>draw_circle</code> — internal helpers no other file needs to call.</p>
+<hr>
+<h3 id="pointer-arithmetic"><a class="anchor" href="#pointer-arithmetic" aria-label="Link to this section">§</a>Pointer Arithmetic</h3>
+<p><code>b-&gt;name + half_b</code> moves a <code>char *</code> pointer forward by <code>half_b</code> characters — used in the <a class="wikilink wikilink--anchor" href="#breeding-system">hybrid name splicer</a> to start reading from the middle of a string.</p>
+<hr>
+<h3 id="binary-serialization"><a class="anchor" href="#binary-serialization" aria-label="Link to this section">§</a>Binary Serialization</h3>
+<p><code>fwrite(farm, sizeof(Farm), 1, file)</code> writes the raw bytes of the struct to disk. Works because <a class="wikilink wikilink--anchor" href="#farm">Farm</a> contains no pointers — only fixed-size arrays and integers. See <a class="wikilink wikilink--anchor" href="#save-load-system">Save &amp; Load System</a>.</p>
+<hr>
+<h2 id="known-limitations-future-ideas"><a class="anchor" href="#known-limitations-future-ideas" aria-label="Link to this section">§</a>Known Limitations &amp; Future Ideas</h2>
+<h3 id="known-limitations"><a class="anchor" href="#known-limitations" aria-label="Link to this section">§</a>Known Limitations</h3>
+<ul>
+<li>Save file incompatible if <a class="wikilink wikilink--anchor" href="#farm">Farm</a> struct changes — must delete <code>savegame.bin</code> after any struct modification. See <a class="wikilink wikilink--anchor" href="#save-load-system">Save &amp; Load System</a>.</li>
+<li>Seed list in the right panel can overflow off-screen if many <a class="wikilink wikilink--anchor" href="#breeding-system">hybrid types</a> are discovered</li>
+<li>Visual type detection uses first-letter heuristics — could be stored explicitly in <a class="wikilink wikilink--anchor" href="#planttype">PlantType</a></li>
+<li>No audio</li>
+</ul>
+<h3 id="future-ideas"><a class="anchor" href="#future-ideas" aria-label="Link to this section">§</a>Future Ideas</h3>
+<ul>
+<li><strong>Sprinklers</strong> — placeable items that auto-water adjacent tiles each day</li>
+<li><strong>Quota system</strong> — earn a target amount every N days or face a game over</li>
+<li><strong>Sound effects</strong> — SDL2_mixer</li>
+<li><strong>Animated tiles</strong> — multi-frame drawing for growth animations</li>
+<li><strong>Day/night cycle</strong> — tint the renderer at night</li>
+<li><strong>Achievements</strong> — track milestones like &quot;bred 10 hybrids&quot;</li>
+<li><strong>Multiple farm plots</strong> — unlock additional grid sections</li>
+</ul>
+</div>
+  </div>
+  
+</article>
+<footer class="footer panel panel--ink">
+  <div class="footer__grid">
+    <p class="footer__sig">Vivaan Kaushal</p>
+    <p class="footer__links"><a href="https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6" target="_blank" rel="noopener noreferrer">Spotify</a><span aria-hidden="true"> · </span><a href="https://github.com/runoxVK" target="_blank" rel="noopener noreferrer">GitHub</a><span aria-hidden="true"> · </span><a href="https://runox.itch.io" target="_blank" rel="noopener noreferrer">itch.io</a><span aria-hidden="true"> · </span><a href="https://instagram.com/vk.artsz" target="_blank" rel="noopener noreferrer">Instagram</a><span aria-hidden="true"> · </span><a href="mailto:kaushal.v@northeastern.edu" target="_blank" rel="noopener noreferrer">Email</a></p>
+  </div>
+  <div class="footer__menacing" aria-hidden="true">ゴゴゴゴゴゴゴゴ</div>
+</footer>
+</main>
+
+<script src="../../assets/js/site.js" defer></script>
+</body>
+</html>
