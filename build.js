@@ -28,7 +28,7 @@ const SITE = {
   // Where the site is served from. GitHub project pages live under /<repo>/.
   // Change to '/' if you move this to a custom domain or a <user>.github.io repo.
   // Only 404.html depends on this; every other page uses relative links.
-  basePath: '/PersonalSiteVK/',
+  basePath: '/Amoeboid/',
   // Runox on Spotify — shown on the Music page, in the sidebar and in the footer.
   spotify: 'https://open.spotify.com/artist/3JKtS3OZf6Wrio2MFBe2H6',
   // Releases, newest first. Spotify has no "discography" embed, so each one gets its
