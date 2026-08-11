@@ -1,7 +1,5 @@
-description: The Elevator is a work in progress fast paced shooter game I am making. It has a unique visual style with unique gameplay and a soul touching soundtrack. Think of it as a hybrid of Risk of Rain 2, Binding of Isaac and Ultrakill with my own touch
-
 # The Elevator Progress Log
-
+![[ElevatorPrototype.mp4]]
 ## One Month in Progress Log (6/25/26):
 
 1. Theme
